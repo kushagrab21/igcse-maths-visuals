@@ -1,11 +1,16 @@
 /**
- * Tome's /library next to the new topic index, both at 1280×800, light theme,
+ * Tome's /library next to this site's home, both at 1280×800, light theme,
  * stitched into one PNG so the resemblance can be seen rather than asserted.
+ *
+ *   node _checks/sidebyside.mjs <dir> [url]
+ *
+ * Needs Tome's dev server on :3000 and tome-stub.mjs on :8765.
  */
 import puppeteer from "puppeteer-core";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 
 const OUT = process.argv[2];
+await mkdir(OUT, { recursive: true });
 const b = await puppeteer.launch({
   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: "new",
@@ -22,7 +27,7 @@ for (const [name, url] of [
   await p.evaluateOnNewDocument(() => { try { localStorage.setItem("tome.theme", "light"); } catch (e) {} });
   await p.goto(url, { waitUntil: "networkidle0", timeout: 60000 });
   await new Promise(r => setTimeout(r, 1200));
-  shots[name] = `/-1280x800.png`;
+  shots[name] = `${OUT}/${name}-1280x800.png`;
   await p.screenshot({ path: shots[name] });
   console.log(name, "->", shots[name]);
   await p.close();
@@ -44,7 +49,7 @@ await p.setContent(`<!doctype html><meta charset="utf-8">
 <div class="row">
   <figure><figcaption>Tome — /library <span>· reference, localhost:3000</span></figcaption>
     <img src="data:image/png;base64,${await b64(shots["tome-library"])}"></figure>
-  <figure><figcaption>Maths Revision — home <span>· kushagrab21.github.io/igcse-maths-visuals/</span></figcaption>
+  <figure><figcaption>Maths Revision — home <span>· the deployed site</span></figcaption>
     <img src="data:image/png;base64,${await b64(shots["new-home"])}"></figure>
 </div>`, { waitUntil: "load" });
 await new Promise(r => setTimeout(r, 400));

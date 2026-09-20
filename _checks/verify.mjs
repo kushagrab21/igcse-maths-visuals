@@ -20,9 +20,11 @@ const VIEWPORTS = [
 ];
 const THEMES = ["light", "dark"];
 const PAGES = [
-  { name: "index", url: "/" },
-  { name: "notes", url: "/notes/" },
-  { name: "visual-proof", url: "/viz/visual-proof/" },
+  { name: "home", url: "/" },
+  { name: "topic-visual-proof", url: "/topic/visual-proof/" },
+  { name: "doubt-book", url: "/doubt-book/" },
+  { name: "reference", url: "/reference/" },
+  { name: "viz-visual-proof", url: "/viz/visual-proof/" },
 ];
 
 const origin = new URL(BASE).origin;
@@ -89,15 +91,16 @@ for (const vp of VIEWPORTS) {
             document.querySelector(".site-progress") ||
             document.querySelector('div[class*="origin-left"]')
           ),
-          // index-only structure
-          docs: document.querySelectorAll("section[aria-labelledby^='doc-']").length,
-          topicCards: document.querySelectorAll("section[aria-labelledby^='doc-'] section").length,
-          readyLinks: [
-            ...document.querySelectorAll("section[aria-labelledby^='doc-'] li a"),
-          ].filter((a) => !a.textContent.includes("coming soon")).length,
-          comingSoon: [
-            ...document.querySelectorAll("section[aria-labelledby^='doc-'] li"),
-          ].filter((li) => li.textContent.includes("coming soon")).length,
+          // home-only structure
+          rows: document.querySelectorAll("main article").length,
+          ready: [...document.querySelectorAll("main article")].filter((a) =>
+            a.textContent.includes("Ready"),
+          ).length,
+          soon: [...document.querySelectorAll("main article")].filter((a) =>
+            a.textContent.includes("Coming soon"),
+          ).length,
+          footer: !!document.querySelector("footer"),
+          photos: /\bIMG_\d+/.test(document.body.innerHTML),
           // diagram colour, for the theme-recolour proof
           regionStroke: (() => {
             const r = document.querySelector(".reg");
@@ -132,6 +135,8 @@ for (const vp of VIEWPORTS) {
       if (probe.dark !== (theme === "dark")) bad.push(`theme not applied (dark=${probe.dark})`);
       if (!probe.nav) bad.push("no nav");
       if (!probe.progress) bad.push("no progress bar");
+      if (!probe.footer) bad.push("no footer");
+      if (probe.photos) bad.push("a photo reference is rendered on the page");
       if (bad.length) failures++;
 
       const file = path.join(SHOTS, `${p.name}-${vp.name}-${theme}.png`);
@@ -158,7 +163,8 @@ for (const r of results) {
   const tag = r.ok ? "ok  " : "FAIL";
   console.log(`${tag} ${r.page.padEnd(13)} ${r.viewport.padEnd(9)} ${r.theme.padEnd(5)} ` +
     `reqs=${String(r.requests).padStart(3)} scrollW=${r.probe.scrollW}/${r.probe.clientW}` +
-    (r.probe.docs ? ` docs=${r.probe.docs} cards=${r.probe.topicCards} ready=${r.probe.readyLinks} soon=${r.probe.comingSoon}` : "") +
+    (r.probe.rows ? ` rows=${r.probe.rows} ready=${r.probe.ready} soon=${r.probe.soon}` : "") +
+    ` footer=${r.probe.footer ? "y" : "n"}` +
     (r.probe.regionFill ? ` fill=${r.probe.regionFill} stroke=${r.probe.regionStroke} tick=${r.probe.tickColor}` : "") +
     (r.probe.navBottom != null ? ` navB=${r.probe.navBottom} barT=${r.probe.barTop}` : ""));
   for (const p of r.problems) console.log(`       ${p}`);
