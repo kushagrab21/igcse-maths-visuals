@@ -81,7 +81,7 @@ export default function DoubtBookPage() {
                     <td className="px-2 py-2.5 align-top">
                       <a
                         href={`${href}#page=${sheet.page}`}
-                        className="text-ink-1 transition group-hover:text-accent"
+                        className="touch-row text-ink-1 transition group-hover:text-accent"
                       >
                         {sheet.title}
                       </a>
@@ -90,7 +90,7 @@ export default function DoubtBookPage() {
                       {topic ? (
                         <Link
                           href={`/topic/${topic.slug}/`}
-                          className="text-xs text-ink-3 transition hover:text-accent"
+                          className="touch-row text-xs text-ink-3 transition hover:text-accent"
                         >
                           {topic.title}
                         </Link>

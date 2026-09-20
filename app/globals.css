@@ -509,3 +509,33 @@ input:focus-visible, textarea:focus-visible, select:focus-visible {
   overflow-y: hidden;
   padding: 0.2em 0;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Touch targets.
+
+   Tome is a desktop-first app and sizes its controls for a cursor: nav links
+   land around 30 px tall, the theme toggle 36 px, a small button 32 px. A
+   thumb needs 44 px, which is the figure Apple publishes and the one a
+   fifteen-year-old reading this on a phone will actually be using.
+
+   Scoped to `pointer: coarse` so a mouse still gets Tome's exact geometry and
+   the port stays faithful where it is being compared. `.touch-target` grows
+   the control itself rather than painting an invisible pad over it, so what a
+   reader aims at and what lights up are the same rectangle.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* A link that is a row in a table: let it fill the cell rather than being a
+     thin line of text inside one. */
+  .touch-row {
+    display: block;
+    min-height: 44px;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    margin-top: -0.6rem;
+    margin-bottom: -0.6rem;
+  }
+}

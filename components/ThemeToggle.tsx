@@ -31,7 +31,7 @@ export function ThemeToggle() {
       onClick={next}
       aria-label={label}
       title={`Theme: ${theme}`}
-      className="flex h-9 w-9 items-center justify-center rounded-lg text-ink-3 transition hover:bg-muted hover:text-ink-1"
+      className="touch-target flex h-9 w-9 items-center justify-center rounded-lg text-ink-3 transition hover:bg-muted hover:text-ink-1"
     >
       <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
     </button>

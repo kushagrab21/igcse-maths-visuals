@@ -38,3 +38,10 @@ Tome's source root:
 - **No backend.** `Spine.tsx` fetches a table of contents when it opens. The
   four blocks here are already in the bundle, so `toggle` only flips state —
   which is why there is no loading or error branch.
+- **Touch targets.** Tome is sized for a cursor: its nav links land around
+  30 px tall, its theme toggle 36 px, a small button 32 px. A thumb needs 44.
+  `.touch-target` and `.touch-row` in `app/globals.css` raise those controls,
+  and the standalone pages get the same rule from `chrome.js`. Both are inside
+  `@media (pointer: coarse)`, so a mouse gets Tome's geometry to the pixel and
+  the side-by-side above still compares like with like. `_checks/mobile.mjs`
+  measures it: 25/25 across 320–768 px.

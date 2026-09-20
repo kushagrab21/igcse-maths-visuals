@@ -57,7 +57,7 @@ export default function ReferencePage() {
           href={copy.external.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-medium text-accent transition hover:text-accent-hover"
+          className="touch-target inline-flex items-center gap-1 py-2.5 -my-2.5 font-medium text-accent transition hover:text-accent-hover"
         >
           {copy.external.label}
           <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />

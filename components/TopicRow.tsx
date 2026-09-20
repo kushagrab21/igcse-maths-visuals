@@ -96,7 +96,7 @@ export function TopicRow({ topic, index }: { topic: Topic; index: number }) {
               <div className="mt-6 border-t border-line/60 pt-4">
                 <Link
                   href={`/topic/${topic.slug}/`}
-                  className="group/open inline-flex items-center gap-1.5 text-sm font-medium text-ink-2 transition hover:text-accent"
+                  className="touch-target group/open inline-flex items-center gap-1.5 text-sm font-medium text-ink-2 transition hover:text-accent"
                 >
                   {t.open}
                   <ChevronRight

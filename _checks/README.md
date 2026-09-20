@@ -14,6 +14,7 @@ npm --prefix _checks i puppeteer-core@23
 |---|---|
 | `verify.mjs <base> <dir>` | every page × viewport × theme: no console error, no HTTP ≥ 400, no horizontal scroll, no off-origin request, theme applied. Exits non-zero on any failure. |
 | `effects.mjs <base> <dir>` | measures the ported hover, expand and chrome effects and prints the computed values that `../EFFECTS_CHECKLIST.md` records; leaves hover and expanded screenshots behind. |
+| `mobile.mjs <base> <dir>` | five emulated phones and tablets, 320–768 px, with touch and a mobile UA: sideways scroll, any element past the edge, tap targets under 44 px, text under 11 px, and whether wide tables can scroll. Exits non-zero on any failure. |
 | `shot.mjs <base> <dir> <WxH> <theme> <path…>` | screenshots a list of paths and reports horizontal scroll and console errors. |
 | `incognito.mjs <dir>` | opens the live site in a real incognito window on a fresh profile: no cookies, no localStorage, no login wall. |
 | `sidebyside.mjs <dir> [url]` | stitches Tome's `/library` beside this site's home at 1280×800. |
@@ -25,6 +26,7 @@ npm --prefix _checks i puppeteer-core@23
 BASE=https://kushagrab21.github.io/igcse-maths-visuals
 
 node _checks/verify.mjs  "$BASE/" _checks/out
+node _checks/mobile.mjs  "$BASE"  _checks/out
 node _checks/effects.mjs "$BASE"  _checks/out
 node _checks/incognito.mjs        _checks/out
 
@@ -33,6 +35,16 @@ node _checks/tome-stub.mjs &
 ( cd ../../Projects/textbook_companion/frontend && npm run dev ) &
 node _checks/sidebyside.mjs _checks/out "$BASE/"
 ```
+
+## Two notes on what the probes excuse
+
+`mobile.mjs` skips two things that look like faults and are not. KaTeX emits a
+MathML copy of every formula for screen readers inside a 1×1 clipped span; its
+descendants keep their natural layout boxes, so they read as overflow while
+painting nothing. And KaTeX's own type — a superscript at 9.8 px, a strut
+carrying a zero-width space at 1 px — is not body text. A link sitting inside a
+sentence is also exempt from the 44 px rule, because it is read rather than
+aimed at.
 
 ## One caveat
 

@@ -22,7 +22,7 @@ function BlockHeading({ children, meta }: { children: React.ReactNode; meta?: st
 
 /** A row inside a block: the shared hover Tome uses on its concept rows. */
 const ROW =
-  "group/row flex items-center gap-3 rounded-lg px-3 py-2.5 -mx-3 transition hover:bg-surface-2";
+  "touch-target group/row flex items-center gap-3 rounded-lg px-3 py-2.5 -mx-3 transition hover:bg-surface-2";
 
 function DiagramBlock({ topic }: { topic: Topic }) {
   const ready = topic.viz.status === "ready";
@@ -68,20 +68,25 @@ function PractiseBlock({ topic }: { topic: Topic }) {
       <BlockHeading meta={`${topic.practice.length} sets`}>{t.practise}</BlockHeading>
       <ul className="space-y-0.5">
         {topic.practice.map((set) => (
-          <li key={set.qp} className={ROW}>
-            <FileText className="h-4 w-4 shrink-0 text-ink-4" strokeWidth={1.75} aria-hidden />
-            <span className="min-w-0 flex-1 text-sm text-ink-1">{set.label}</span>
-            <span className="flex shrink-0 items-center gap-2">
+          /* The label and the two buttons share a line from `sm` up. On a
+             narrow phone there is no room for both, so the label takes the
+             line and the buttons drop underneath it rather than overflowing. */
+          <li key={set.qp} className={`${ROW} flex-wrap`}>
+            <span className="flex min-w-0 flex-1 basis-full items-center gap-3 sm:basis-0">
+              <FileText className="h-4 w-4 shrink-0 text-ink-4" strokeWidth={1.75} aria-hidden />
+              <span className="min-w-0 text-sm text-ink-1">{set.label}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-2 sm:ml-auto">
               <a
                 href={asset(set.qp)}
-                className="inline-flex h-8 items-center justify-center rounded-lg border border-line-strong bg-surface px-3 text-xs font-medium text-ink-1 transition hover:border-accent hover:text-accent active:scale-[0.98]"
+                className="touch-target inline-flex h-8 items-center justify-center rounded-lg border border-line-strong bg-surface px-3 text-xs font-medium text-ink-1 transition hover:border-accent hover:text-accent active:scale-[0.98]"
               >
                 {t.questions}
                 <span className="ml-1.5 text-ink-4">{fileSize(set.qp_bytes)}</span>
               </a>
               <a
                 href={asset(set.ms)}
-                className="inline-flex h-8 items-center justify-center rounded-lg border border-line-strong bg-surface px-3 text-xs font-medium text-ink-1 transition hover:border-accent hover:text-accent active:scale-[0.98]"
+                className="touch-target inline-flex h-8 items-center justify-center rounded-lg border border-line-strong bg-surface px-3 text-xs font-medium text-ink-1 transition hover:border-accent hover:text-accent active:scale-[0.98]"
               >
                 {t.answers}
                 <span className="ml-1.5 text-ink-4">{fileSize(set.ms_bytes)}</span>

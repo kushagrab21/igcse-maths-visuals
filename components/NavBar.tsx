@@ -35,7 +35,7 @@ export function NavBar() {
         <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           <Link
             href="/"
-            className="group flex shrink-0 items-center gap-2 text-ink-1 transition hover:text-accent"
+            className="touch-target group flex shrink-0 items-center gap-2 text-ink-1 transition hover:text-accent"
           >
             <Compass
               className="h-5 w-5 transition group-hover:rotate-12"
@@ -52,7 +52,7 @@ export function NavBar() {
               <li key={href}>
                 <Link
                   href={href}
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-ink-3 transition hover:bg-muted hover:text-ink-1 sm:px-3"
+                  className="touch-target flex items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-ink-3 transition hover:bg-muted hover:text-ink-1 sm:px-3"
                 >
                   <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                   <span className="hidden sm:inline">{label}</span>

@@ -145,7 +145,13 @@
     ".card{transition:border-color .2s cubic-bezier(0.16,1,0.3,1)," +
     "box-shadow .2s cubic-bezier(0.16,1,0.3,1)}" +
     ".card:hover{border-color:rgb(var(--accent-1));" +
-    "box-shadow:0 1px 3px rgba(32,27,20,.08),0 4px 12px rgba(32,27,20,.05)}";
+    "box-shadow:0 1px 3px rgba(32,27,20,.08),0 4px 12px rgba(32,27,20,.05)}" +
+    /* Touch targets, matching the React app's globals.css: a thumb needs
+       44 px, a cursor keeps Tome's exact geometry. */
+    "@media (pointer: coarse){" +
+    ".site-brand,.site-link,.site-theme{min-height:44px;min-width:44px}" +
+    ".site-link,.site-theme{justify-content:center}" +
+    "}";
 
   /* ── 2 + 3. inject nav and progress bar ────────────────────────── */
 
