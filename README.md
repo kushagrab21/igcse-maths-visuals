@@ -1,19 +1,29 @@
-# G10 Maths — Visual Revision
+# Maths Revision
 
-Interactive revision pages built from a Grade-10 student's handwritten class
-notes (IMG_0249–IMG_0266), published as a static site.
+A static site for the eight topics in a Grade-10 maths quiz. One column of
+topic rows; open one and it gives you the method, questions with answers, the
+matching Doubt Book sheets, and a diagram where one has been built.
 
-- **Topic index** — every topic in the quiz scope, whether or not its page
-  exists yet, so the shape of the revision is visible from day one.
-- **Notes** — the 18 source photographs, grouped by document and topic.
-- **Visualisations** — self-contained interactive pages under `public/viz/`.
+| | |
+|---|---|
+| **/** | the eight topics, in the notes' own order |
+| **/topic/\<slug\>/** | one topic, deep-linkable — the same four blocks a row shows when it opens |
+| **/doubt-book/** | the thirty fifteen-minute sheets, with the PDF and its index |
+| **/reference/** | the formula list and the command words |
+| **/viz/\<id\>/** | a self-contained interactive page |
 
-The look is Tome's, copied rather than re-invented: see
-[DESIGN_SOURCE.md](./DESIGN_SOURCE.md).
+Three files explain the rest:
+
+- [DESIGN_SOURCE.md](./DESIGN_SOURCE.md) — every token and component is copied
+  from an app called Tome, and where from.
+- [EFFECTS_CHECKLIST.md](./EFFECTS_CHECKLIST.md) — each ported interaction
+  effect, its Tome source, and the value a browser computed for it.
+- [COPY_REWRITE.md](./COPY_REWRITE.md) — every string, as drafted and as
+  shipped, with the reason for each change.
 
 ---
 
-## Add a page in three steps
+## Adding a diagram, in three steps
 
 **1. Drop the HTML in.**
 
@@ -42,32 +52,100 @@ Start from a template rather than a blank file:
 `public/viz/_template-3d/` (Three.js cuboid, orbit and pinch). Neither is in
 the manifest, and `check.mjs` skips `_template-*`.
 
-**2. Add or flip the manifest entry** in `manifest.json`:
+**2. Flip the status.** `manifest.json` is generated, so edit the two places
+that feed it and regenerate:
 
-```json
-{
-  "id": "bearings", "topic": "bearings",
-  "title": "Bearings — drawing the diagram",
-  "blurb": "North lines at the point you measure from…",
-  "path": "viz/bearings/", "kind": "2d",
-  "source_pages": ["IMG_0251"], "status": "ready"
-}
+```js
+// scripts/build-manifest.mjs
+const VIZ_STATUS = { ..., bearings: "ready" };   // was "coming-soon"
+const KIND       = { ..., bearings: "3d" };      // only if it is 3D
 ```
 
-Seven entries are already there with `"status": "coming-soon"` — for those,
-change `coming-soon` to `ready` and nothing else. `topic` must match a topic
-slug under `documents`; `kind` is `"2d"` or `"3d"`.
+```ts
+// lib/copy.ts — the title shown on the row, rewritten for a student
+bearings: { blurb: "…", vizTitle: "Drawing the bearing" },
+```
+
+```sh
+node scripts/build-manifest.mjs
+```
 
 **3. Check, build, push.**
 
 ```sh
 npm run check && npm run build
-git add -A && git commit -m "Add the bearings page" && git push
+git add -A && git commit -m "Add the bearings diagram" && git push
 npm run deploy          # publishes site/out/ to the gh-pages branch
 ```
 
 `npm run check` must pass before `npm run build` — it is the only thing
 standing between a typo and a broken published page.
+
+---
+
+## Adding a practice set, in three steps
+
+**1. Point at the files.** In `scripts/build-library.py`, add the pair to
+`PICKS` for that topic — a path stem under `study_library/`, and the two
+suffixes that distinguish questions from answers:
+
+```python
+PICKS["bearings"] = [
+    ("03_practice/bearings/corbettmaths_bearings_practice", "QUESTIONS", "ANSWERS"),
+    ("05_past_paper_questions_by_topic/bearings/edexcel-igcse-4MA1/pmt_bearings_H", "QP", "MS"),
+]
+```
+
+Exactly two rows per topic. Skip the A-level packs under
+`05_past_paper_questions_by_topic/*/edexcel-a-level-pure/`.
+
+**2. Name them.** Add the two labels, in the same order, to
+`PRACTICE_LABELS` in `scripts/build-manifest.mjs`. These are read by a
+fifteen-year-old, so they are prose, not filenames.
+
+**3. Rebuild.**
+
+```sh
+python3 scripts/build-library.py    # copies + recompresses into public/library/
+node scripts/build-manifest.mjs
+npm run check && npm run build
+```
+
+`build-library.py` needs PyMuPDF and Pillow. It downsamples the scans to
+140 dpi, skips a file it has already published under a different topic, and
+refuses to finish if `public/library/` goes past 25 MB.
+
+---
+
+## Updating the Doubt Book, in three steps
+
+**1. Rebuild the PDF** in the library, from its own sources:
+
+```sh
+cd ../study_library/08_revision_sheets/book && python3 build_pdf.py
+```
+
+**2. Re-import it.** `build-library.py` recompresses the PDF *and* re-reads
+which page each `Sheet N` heading falls on, so a reflowed book cannot leave
+the site deep-linking to the wrong page:
+
+```sh
+cd ../../../site
+python3 scripts/build-library.py
+node scripts/build-content.mjs      # re-reads every sheet's front matter
+```
+
+**3. Re-map and rebuild.** If sheets were added, renumbered or moved between
+strands, update `SHEETS` in `scripts/build-manifest.mjs` — it maps sheet ids to
+topics — then:
+
+```sh
+node scripts/build-manifest.mjs
+npm run check && npm run build
+```
+
+`npm run check` asserts that every mapped sheet has a source file and that
+every page number lands inside the published PDF.
 
 ---
 
@@ -89,19 +167,28 @@ It feeds `basePath` and `assetPrefix` in `next.config.ts`, and `asset()` in
 
 `npm run check` (`scripts/check.mjs`) exits non-zero on any of:
 
-1. a `path` in `manifest.json` with `"status": "ready"` and no
-   `public/<path>index.html`;
-2. a file at that path in `out/` that is **not** the standalone page — a
-   prerendered `/viz/[slug]` route writes to the same place, and one would
-   silently clobber the other;
-3. a `public/viz/<id>/` directory (other than `_template-*`) that nothing in the
-   manifest points at, or whose entry is still `coming-soon`;
+1. a manifest path that resolves to nothing under `public/`;
+2. a file at a ready visualisation's path in `out/` that is **not** the
+   standalone page — a prerendered route would write to the same place and
+   silently clobber it;
+3. a `public/viz/<id>/` directory (other than `_template-*`) that no topic
+   claims, or whose topic is still `coming-soon`;
 4. a standalone page that does not link `tokens.css` and `chrome.js`;
-5. an external host — as a bare URL in authored source, as a `src`/`href`/
-   `url()`/`@import` in any shipped HTML or CSS, or as a URL literal handed to
-   `fetch`/`import`/`new Worker`/`.src` in any shipped JavaScript;
+5. any external host other than the one Cambridge past-papers link — checked as
+   a bare URL in authored source, as a `src`/`href`/`url()`/`@import` in shipped
+   HTML or CSS, and as a URL literal handed to `fetch`/`import`/`new Worker`/
+   `.src` in shipped JavaScript;
 6. any drift between the `:root` / `.dark` blocks in `public/tokens.css` and
-   `app/globals.css`.
+   `app/globals.css`;
+7. a topic without exactly two practice sets, or a practice file that is not in
+   `public/`;
+8. a mapped sheet with no source `.md`, or a page number outside the published
+   PDF;
+9. any surviving `IMG_` reference — the handwritten material is off the site, so
+   a stray citation is a leak;
+10. a raw hex colour in `app/` or `components/`. Two exemptions, both Tome's own:
+    a line defining a shadow, and the `@media print` block in `globals.css`,
+    which is copied verbatim and prints ink-on-white.
 
 ## Refreshing the design tokens
 
@@ -157,18 +244,42 @@ This repository has no GitHub Actions workflow — the token in use has no
 
 ```
 site/
-  app/            layout, index, /notes, /viz/[slug] (coming-soon topics only)
-  components/     NavBar, ReadingProgress, Theme*, Motion, ui — ported from Tome
-  lib/            manifest.ts (typed loader), notes.ts (photo grouping), cn.ts
-  manifest.json   the single source of truth
+  app/            layout, home, /topic/[slug], /doubt-book, /reference
+  components/     NavBar, Footer, ReadingProgress, Theme*, Motion, ui  (Tome)
+                  Shelf, TopicRow, TopicBlocks, TopicGlyph             (here)
+  lib/            copy.ts (every string), manifest.ts (typed loader), cn.ts
+  content/        GENERATED — briefs, sheets, reference, library file index
+  manifest.json   GENERATED by scripts/build-manifest.mjs
   public/
     tokens.css    GENERATED from app/globals.css
     chrome.js     nav + progress bar + theme + beat-pulse for standalone pages
     icon.svg      the site icon
     fonts/        self-hosted woff2
-    notes/        the 18 photographs + 560 px thumbnails
+    katex/        GENERATED — self-hosted KaTeX stylesheet + woff2
+    library/      GENERATED — the practice PDFs and the Doubt Book
     vendor/       three.js
     viz/<id>/     standalone pages
     viz/_template-2d/, _template-3d/
-  scripts/        check.mjs, gen-tokens.mjs, fetch-fonts.mjs, deploy.sh
+  scripts/
+    build-library.py    study_library PDFs → public/library/  (PyMuPDF, Pillow)
+    build-content.mjs   study_library Markdown → content/*.json + public/katex/
+    build-manifest.mjs  lib/copy.ts + content/ → manifest.json
+    gen-tokens.mjs      app/globals.css → public/tokens.css
+    fetch-fonts.mjs     the four families → public/fonts/
+    check.mjs           the ten build checks
+    deploy.sh           out/ → the gh-pages branch
+  _checks/        headless-browser checks; see _checks/README.md
+```
+
+### Regenerating everything
+
+The four generators run in this order, because each reads the last one's
+output. Only `build-library.py` needs Python.
+
+```sh
+python3 scripts/build-library.py   # PDFs, and where each sheet falls in them
+node scripts/build-content.mjs     # briefs, sheet front matter, reference, KaTeX
+node scripts/build-manifest.mjs    # manifest.json
+node scripts/gen-tokens.mjs        # public/tokens.css
+npm run check && npm run build
 ```

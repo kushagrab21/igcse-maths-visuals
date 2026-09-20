@@ -6,7 +6,9 @@ import "./globals.css";
 import { NavBar } from "../components/NavBar";
 import { ReadingProgress } from "../components/ReadingProgress";
 import { ThemeProvider, themeBootScript } from "../components/ThemeProvider";
-import { BASE_PATH, manifest } from "../lib/manifest";
+import { Footer } from "../components/Footer";
+import { BASE_PATH } from "../lib/manifest";
+import { site } from "../lib/copy";
 
 // next/font downloads and self-hosts these at build time — nothing is fetched
 // from a font CDN at runtime. The same four families are also written to
@@ -32,8 +34,8 @@ const hand = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: manifest.site.title,
-  description: manifest.site.subtitle,
+  title: site.title,
+  description: site.description,
   // Declared explicitly so no browser falls back to requesting /favicon.ico at
   // the origin root, which a base-path deployment does not own.
   icons: { icon: [{ url: `${BASE_PATH}/icon.svg`, type: "image/svg+xml" }] },
@@ -53,12 +55,18 @@ export default function RootLayout({
       <head>
         {/* Pre-hydration theme application — kills the light-flash on dark loads. */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        {/* KaTeX, self-hosted. The maths in the topic briefs is rendered at
+            build time; this is only the stylesheet those spans need. */}
+        <link rel="stylesheet" href={`${BASE_PATH}/katex/katex.min.css`} />
       </head>
       <body className="font-sans">
         <ThemeProvider>
           <ReadingProgress />
           <NavBar />
-          <div className="min-h-[calc(100dvh-3.5rem)]">{children}</div>
+          <div className="flex min-h-[calc(100dvh-3.5rem)] flex-col">
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

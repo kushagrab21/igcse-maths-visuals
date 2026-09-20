@@ -14,7 +14,7 @@
 
    What it does:
      1. applies the stored theme to <html> immediately;
-     2. injects the nav (Compass + "G10 Maths", "← All topics", the
+     2. injects the nav (Compass + "Maths Revision", "All topics", the
         topic and page title from <meta name="viz-topic" / "viz-title">,
         and the three-state theme toggle);
      3. injects the 2 px accent reading-progress bar;
@@ -138,7 +138,14 @@
     "color:rgb(var(--ink-3));cursor:pointer;transition:background-color .2s,color .2s}" +
     ".site-theme:hover{background:rgb(var(--bg-muted));color:rgb(var(--ink-1))}" +
     ".site-nav :focus-visible,.site-theme:focus-visible{outline:2px solid rgb(var(--ring));" +
-    "outline-offset:2px;border-radius:4px}";
+    "outline-offset:2px;border-radius:4px}" +
+    /* Cards on a standalone page pick up the shelf's hover: the border turns
+       accent and the shadow lifts soft -> card, exactly as components/ui.tsx
+       Card does inside the React app. */
+    ".card{transition:border-color .2s cubic-bezier(0.16,1,0.3,1)," +
+    "box-shadow .2s cubic-bezier(0.16,1,0.3,1)}" +
+    ".card:hover{border-color:rgb(var(--accent-1));" +
+    "box-shadow:0 1px 3px rgba(32,27,20,.08),0 4px 12px rgba(32,27,20,.05)}";
 
   /* ── 2 + 3. inject nav and progress bar ────────────────────────── */
 
@@ -173,7 +180,7 @@
       '<nav class="site-nav-in" aria-label="Primary">' +
       '<a class="site-brand" href="../../">' +
       icon(20, ICONS.compass) +
-      "<span>G10 Maths</span>" +
+      "<span>Maths Revision</span>" +
       "</a>" +
       '<div class="site-nav-right">' +
       '<div class="site-crumb"><b></b><i></i></div>' +

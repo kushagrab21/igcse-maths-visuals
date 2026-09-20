@@ -7,7 +7,7 @@
 <!--
 =====================================================================
 ② Visual Proof — interactive page
-Source of truth: Notes/images/IMG_0256.jpg, Notes/images/IMG_0257.jpg
+Topic: visual-proof (Math Plus ②)
 Scope: study_library/01_syllabus/quiz_scope.md §B2 `visual-proof` (4 items)
 One file. Inline CSS + SVG + plain JavaScript. No external requests.
 
@@ -15,8 +15,8 @@ VERIFICATION CHECKLIST — run in Chrome against this file.
 Full detail, palette, type scale and the language rewrite are in
 visual_proofs_README.md.
 
-  [PASS]  1. Diagrams re-checked against both photographs after restyling:
-            no label, edge, region letter or written line moved.
+  [PASS]  1. Diagrams re-checked against the source after restyling: no
+            label, edge, region letter or written line moved.
   [PASS]  2. a=5,b=2 and a=7,b=3 — every card stepped through end to end.
   [PASS]  3. Regions tile with no gaps or overlaps, all 44 valid (a,b) pairs
             (a = 3..10, b = 1..a−1).
@@ -43,7 +43,7 @@ visual_proofs_README.md.
      from the original, colours moved onto the tokens.
      ─────────────────────────────────────────────────────────────── -->
 <meta name="viz-topic" content="Visual Proof">
-<meta name="viz-title" content="Four area dissections">
+<meta name="viz-title" content="Four dissections you can drag">
 <link rel="stylesheet" href="../../tokens.css">
 <script src="../../chrome.js"></script>
 <style>
@@ -332,8 +332,8 @@ footer{
     </div>
     <div class="right">
       <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
-        <p class="why">The notes draw this square and stop, so here is the algebra the picture is pointing at.</p>
+        <div class="badge"><span class="sym">⊕</span> not in the notes</div>
+        <p class="why">The notes draw this square and stop. Here is the algebra it is pointing at.</p>
         <div class="ln" id="c2l1">
           <span class="t c-sky" data-keys="A" tabindex="0">A</span> =
           <span class="t" data-keys="sq" tabindex="0">a²</span> −
@@ -366,8 +366,8 @@ footer{
     </div>
     <div class="right">
       <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
-        <p class="why">The notes draw this cut and stop, so here is the rearrangement the picture is pointing at.</p>
+        <div class="badge"><span class="sym">⊕</span> not in the notes</div>
+        <p class="why">The notes draw this cut and stop. Here is the rearrangement it is pointing at.</p>
         <div class="ln step" id="c3l1">
           <span class="t c-mint" data-keys="A" tabindex="0">A</span> =
           <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
@@ -409,8 +409,8 @@ footer{
         </div>
       </div>
       <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
-        <p class="why">The notes stop after those two lines, so here are the last two steps.</p>
+        <div class="badge"><span class="sym">⊕</span> not in the notes</div>
+        <p class="why">The notes stop after those two lines. Here are the last two.</p>
         <div class="ln step" id="c4l1">
           <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
           <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
@@ -433,8 +433,8 @@ footer{
 </main>
 
 <footer>
-  These diagrams come from the handwritten notes, pages IMG_0256 and IMG_0257.
-  Steps marked ⊕ are not written on the page.
+  The diagrams are from the class notes. The steps marked ⊕ are not — they
+  finish an argument the notes leave hanging.
 </footer>
 
 </div>
@@ -473,7 +473,7 @@ function lab(x,y,s,anchor){
   return '<text class="elab" x="'+n(x)+'" y="'+n(y)+'"'
        + (anchor?' style="text-anchor:'+anchor+'"':'') + '>'+s+'</text>';
 }
-/* double-headed arrow, as drawn on IMG_0257 */
+/* double-headed arrow, as drawn in the notes */
 function arrow(x1,y1,x2,y2,cls){
   var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L===0) return '';
   var ux=dx/L, uy=dy/L, px=-uy, py=ux, h=5, w=3.2;
@@ -593,7 +593,7 @@ var A = 5, B = 2;   /* the two sliders */
 var G = {};         /* per-card geometry, rebuilt on every redraw */
 
 /* =================================================================
-   CARD 1 — (a+b)² = a² + 2ab + b²        [IMG_0256, top]
+   CARD 1 — (a+b)² = a² + 2ab + b²
    ================================================================= */
 function drawCard1(){
   var box = {x:58,y:46,w:284,h:284};
@@ -619,7 +619,7 @@ function drawCard1(){
 }
 
 /* =================================================================
-   CARD 2 — (a−b)² = a² − 2ab + b²        [IMG_0256, bottom]
+   CARD 2 — (a−b)² = a² − 2ab + b²
    ================================================================= */
 function drawCard2(){
   var box = {x:66,y:46,w:280,h:280};
@@ -642,7 +642,7 @@ function drawCard2(){
 }
 
 /* =================================================================
-   CARD 3 — a² − b² = (a+b)(a−b)          [IMG_0257, top]
+   CARD 3 — a² − b² = (a+b)(a−b)
    ================================================================= */
 function drawCard3(){
   var box = {x:76,y:34,w:272,h:292};
@@ -686,7 +686,7 @@ function drawCard3(){
 }
 
 /* =================================================================
-   CARD 4 — a² + b² = c²                  [IMG_0257, bottom]
+   CARD 4 — a² + b² = c²
    ================================================================= */
 function drawCard4(){
   var box = {x:58,y:46,w:284,h:284};

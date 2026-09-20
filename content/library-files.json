@@ -1,0 +1,233 @@
+{
+  "topics": {
+    "ambiguous-case": [
+      {
+        "qp": {
+          "path": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_QUESTIONS.pdf",
+          "bytes": 490429
+        },
+        "ms": {
+          "path": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_ANSWERS.pdf",
+          "bytes": 1638236
+        },
+        "stem": "corbettmaths_sine-cosine-rule_practice"
+      },
+      {
+        "qp": {
+          "path": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_QP.pdf",
+          "bytes": 1993758
+        },
+        "ms": {
+          "path": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_MS.pdf",
+          "bytes": 1412793
+        },
+        "stem": "pmt_sine-cosine-rule-and-area_H"
+      }
+    ],
+    "3d-trigonometry": [
+      {
+        "qp": {
+          "path": "library/3d-trigonometry/corbettmaths_3d-trigonometry_practice_QUESTIONS.pdf",
+          "bytes": 252528
+        },
+        "ms": {
+          "path": "library/3d-trigonometry/corbettmaths_3d-trigonometry_practice_ANSWERS.pdf",
+          "bytes": 1135017
+        },
+        "stem": "corbettmaths_3d-trigonometry_practice"
+      },
+      {
+        "qp": {
+          "path": "library/3d-trigonometry/pmt_pythagoras-and-trig-3D_H_QP.pdf",
+          "bytes": 1938053
+        },
+        "ms": {
+          "path": "library/3d-trigonometry/pmt_pythagoras-and-trig-3D_H_MS.pdf",
+          "bytes": 1347768
+        },
+        "stem": "pmt_pythagoras-and-trig-3D_H"
+      }
+    ],
+    "bearings": [
+      {
+        "qp": {
+          "path": "library/bearings/corbettmaths_bearings_practice_QUESTIONS.pdf",
+          "bytes": 262633
+        },
+        "ms": {
+          "path": "library/bearings/corbettmaths_bearings_practice_ANSWERS.pdf",
+          "bytes": 950355
+        },
+        "stem": "corbettmaths_bearings_practice"
+      },
+      {
+        "qp": {
+          "path": "library/bearings/pmt_bearings_H_QP.pdf",
+          "bytes": 1133656
+        },
+        "ms": {
+          "path": "library/bearings/pmt_bearings_H_MS.pdf",
+          "bytes": 897717
+        },
+        "stem": "pmt_bearings_H"
+      }
+    ],
+    "triangle-area-and-rules": [
+      {
+        "qp": {
+          "path": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_QUESTIONS.pdf",
+          "bytes": 490429
+        },
+        "ms": {
+          "path": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_ANSWERS.pdf",
+          "bytes": 1638236
+        },
+        "stem": "corbettmaths_sine-cosine-rule_practice"
+      },
+      {
+        "qp": {
+          "path": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_QP.pdf",
+          "bytes": 1993758
+        },
+        "ms": {
+          "path": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_MS.pdf",
+          "bytes": 1412793
+        },
+        "stem": "pmt_sine-cosine-rule-and-area_H"
+      }
+    ],
+    "algebraic-proof": [
+      {
+        "qp": {
+          "path": "library/algebraic-proof/corbettmaths_algebraic-proof_practice_QUESTIONS.pdf",
+          "bytes": 127672
+        },
+        "ms": {
+          "path": "library/algebraic-proof/corbettmaths_algebraic-proof_practice_ANSWERS.pdf",
+          "bytes": 975788
+        },
+        "stem": "corbettmaths_algebraic-proof_practice"
+      },
+      {
+        "qp": {
+          "path": "library/algebraic-proof/pmt_algebraic-proof_H_QP.pdf",
+          "bytes": 1298571
+        },
+        "ms": {
+          "path": "library/algebraic-proof/pmt_algebraic-proof_H_MS.pdf",
+          "bytes": 1124663
+        },
+        "stem": "pmt_algebraic-proof_H"
+      }
+    ],
+    "visual-proof": [
+      {
+        "qp": {
+          "path": "library/visual-proof/corbettmaths_expanding-two-brackets_QUESTIONS.pdf",
+          "bytes": 157649
+        },
+        "ms": {
+          "path": "library/visual-proof/corbettmaths_expanding-two-brackets_ANSWERS.pdf",
+          "bytes": 782387
+        },
+        "stem": "corbettmaths_expanding-two-brackets"
+      },
+      {
+        "qp": {
+          "path": "library/visual-proof/pmt_expanding-equations_H_QP.pdf",
+          "bytes": 1250098
+        },
+        "ms": {
+          "path": "library/visual-proof/pmt_expanding-equations_H_MS.pdf",
+          "bytes": 1026257
+        },
+        "stem": "pmt_expanding-equations_H"
+      }
+    ],
+    "exponents": [
+      {
+        "qp": {
+          "path": "library/exponents/corbettmaths_laws-of-indices_QUESTIONS.pdf",
+          "bytes": 145679
+        },
+        "ms": {
+          "path": "library/exponents/corbettmaths_laws-of-indices_ANSWERS.pdf",
+          "bytes": 491889
+        },
+        "stem": "corbettmaths_laws-of-indices"
+      },
+      {
+        "qp": {
+          "path": "library/exponents/pmt_solving-using-indices_H_QP.pdf",
+          "bytes": 1078493
+        },
+        "ms": {
+          "path": "library/exponents/pmt_solving-using-indices_H_MS.pdf",
+          "bytes": 945895
+        },
+        "stem": "pmt_solving-using-indices_H"
+      }
+    ],
+    "logarithms": [
+      {
+        "qp": {
+          "path": "library/logarithms/solomon_laws-of-logarithms-1_QUESTIONS.pdf",
+          "bytes": 14113
+        },
+        "ms": {
+          "path": "library/logarithms/solomon_laws-of-logarithms-1_ANSWERS.pdf",
+          "bytes": 20478
+        },
+        "stem": "solomon_laws-of-logarithms-1"
+      },
+      {
+        "qp": {
+          "path": "library/logarithms/solomon_laws-of-logarithms-2-further_QUESTIONS.pdf",
+          "bytes": 14365
+        },
+        "ms": {
+          "path": "library/logarithms/solomon_laws-of-logarithms-2-further_ANSWERS.pdf",
+          "bytes": 23419
+        },
+        "stem": "solomon_laws-of-logarithms-2-further"
+      }
+    ]
+  },
+  "doubt_book": {
+    "path": "library/doubt-book/The_Doubt_Book.pdf",
+    "bytes": 427443,
+    "pages": 94,
+    "sheet_pages": {
+      "1": 3,
+      "2": 6,
+      "3": 9,
+      "4": 12,
+      "5": 16,
+      "6": 19,
+      "7": 22,
+      "8": 25,
+      "9": 28,
+      "10": 31,
+      "11": 34,
+      "12": 37,
+      "13": 40,
+      "14": 43,
+      "15": 46,
+      "16": 50,
+      "17": 53,
+      "18": 56,
+      "19": 59,
+      "20": 62,
+      "21": 65,
+      "22": 68,
+      "23": 71,
+      "24": 74,
+      "25": 77,
+      "26": 80,
+      "27": 83,
+      "28": 86,
+      "29": 89,
+      "30": 92
+    }
+  }
+}

@@ -1,24 +1,28 @@
 /**
  * Top navigation bar — shared across every page.
  *
- * Ported from Tome's components/NavBar.tsx; only the brand, the link list and
- * the right-hand toggles differ. Brand left, nav links centre/right, theme
- * toggle far right. Mobile (<sm): icons only, no labels.
+ * Ported from Tome's components/NavBar.tsx: same sticky header, same 80 %
+ * surface with backdrop blur, same link and brand hover states, same
+ * icons-only collapse under `sm`.
+ *
+ * One deliberate difference from Tome: the links sit beside the brand on the
+ * left rather than out on the right, which is what the site's owner asked for.
+ * The theme toggle stays far right.
  *
  * public/chrome.js injects the same markup, in plain HTML, at the top of the
  * standalone visualisation pages — keep the two in step.
  */
 
 import Link from "next/link";
-import { Compass, Images, LayoutGrid } from "lucide-react";
+import { BookOpen, Compass, LayoutGrid, Library } from "lucide-react";
 
 import { ThemeToggle } from "./ThemeToggle";
+import { nav, site } from "../lib/copy";
 
-// Two destinations, which is the whole site: the topic map, and the photos the
-// pages were built from.
 const NAV = [
-  { href: "/", label: "Topics", Icon: LayoutGrid },
-  { href: "/notes/", label: "Notes", Icon: Images },
+  { href: "/", label: nav.topics, Icon: LayoutGrid },
+  { href: "/doubt-book/", label: nav.doubtBook, Icon: BookOpen },
+  { href: "/reference/", label: nav.reference, Icon: Library },
 ] as const;
 
 export function NavBar() {
@@ -26,22 +30,23 @@ export function NavBar() {
     <header className="sticky top-0 z-40 border-b border-line/80 bg-surface/80 backdrop-blur-md">
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-14 max-w-5xl items-center justify-between px-3 sm:px-6"
+        className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-3 sm:px-6"
       >
-        <Link
-          href="/"
-          className="group flex items-center gap-2 text-ink-1 transition hover:text-accent"
-        >
-          <Compass
-            className="h-5 w-5 transition group-hover:rotate-12"
-            strokeWidth={1.75}
-            aria-hidden
-          />
-          <span className="font-serif text-lg font-semibold tracking-tight">
-            G10 Maths
-          </span>
-        </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+          <Link
+            href="/"
+            className="group flex shrink-0 items-center gap-2 text-ink-1 transition hover:text-accent"
+          >
+            <Compass
+              className="h-5 w-5 transition group-hover:rotate-12"
+              strokeWidth={1.75}
+              aria-hidden
+            />
+            <span className="font-serif text-lg font-semibold tracking-tight">
+              {site.brand}
+            </span>
+          </Link>
+          <span className="mx-1 hidden h-5 w-px bg-line sm:block" aria-hidden />
           <ul className="flex items-center gap-0.5 sm:gap-1">
             {NAV.map(({ href, label, Icon }) => (
               <li key={href}>
@@ -55,9 +60,8 @@ export function NavBar() {
               </li>
             ))}
           </ul>
-          <span className="mx-1 h-5 w-px bg-line" aria-hidden />
-          <ThemeToggle />
         </div>
+        <ThemeToggle />
       </nav>
     </header>
   );

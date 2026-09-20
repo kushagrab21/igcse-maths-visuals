@@ -1,110 +1,689 @@
 {
   "site": {
-    "title": "G10 Maths — Visual Revision",
-    "subtitle": "Interactive pages built from the class notes"
+    "title": "Maths Revision"
   },
-  "documents": [
+  "documents": {
+    "essential-math": "G10 UWCE Essential Math",
+    "math-plus": "Math Plus"
+  },
+  "topics": [
     {
-      "id": "essential-math",
-      "title": "G10 UWCE Essential Math",
-      "topics": [
-        { "slug": "ambiguous-case", "title": "Ambiguous Case" },
-        { "slug": "3d-trigonometry", "title": "3D Trigonometry" },
-        { "slug": "bearings", "title": "Bearings" },
-        { "slug": "triangle-area-and-rules", "title": "Area of a Triangle, Sine Rule, Cosine Rule" }
-      ]
+      "slug": "ambiguous-case",
+      "title": "Ambiguous Case",
+      "document": "essential-math",
+      "glyph": "triangle",
+      "blurb": "Drop the height — here 12 sin 30° = 6 — and compare it with the side you were given. That tells you whether there are two triangles, one, or none.",
+      "brief": "ambiguous-case",
+      "practice": [
+        {
+          "label": "Sine and cosine rule — practice",
+          "qp": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_QUESTIONS.pdf",
+          "qp_bytes": 490429,
+          "ms": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_ANSWERS.pdf",
+          "ms_bytes": 1638236
+        },
+        {
+          "label": "Sine rule, cosine rule and area — exam questions",
+          "qp": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_QP.pdf",
+          "qp_bytes": 1993758,
+          "ms": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_MS.pdf",
+          "ms_bytes": 1412793
+        }
+      ],
+      "sheets": [
+        {
+          "id": "T04",
+          "number": 4,
+          "strand": "Trigonometry",
+          "title": "The sine rule — two possible angles",
+          "page": 12
+        },
+        {
+          "id": "T05",
+          "number": 5,
+          "strand": "Trigonometry",
+          "title": "How many triangles? The height test",
+          "page": 16
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "How many triangles close?",
+        "kind": "2d",
+        "path": "viz/ambiguous-case/"
+      }
     },
     {
-      "id": "math-plus",
-      "title": "Math Plus",
-      "topics": [
-        { "slug": "algebraic-proof", "title": "Algebraic Proof" },
-        { "slug": "visual-proof", "title": "Visual Proof" },
-        { "slug": "exponents", "title": "Exponents" },
-        { "slug": "logarithms", "title": "Logarithms" }
-      ]
+      "slug": "3d-trigonometry",
+      "title": "3D Trigonometry",
+      "document": "essential-math",
+      "glyph": "cuboid",
+      "blurb": "Find the right-angled triangle hiding inside the cuboid, then the angle its diagonal makes with the base.",
+      "brief": "3d-trigonometry",
+      "practice": [
+        {
+          "label": "3D trigonometry — practice",
+          "qp": "library/3d-trigonometry/corbettmaths_3d-trigonometry_practice_QUESTIONS.pdf",
+          "qp_bytes": 252528,
+          "ms": "library/3d-trigonometry/corbettmaths_3d-trigonometry_practice_ANSWERS.pdf",
+          "ms_bytes": 1135017
+        },
+        {
+          "label": "Pythagoras and 3D trigonometry — exam questions",
+          "qp": "library/3d-trigonometry/pmt_pythagoras-and-trig-3D_H_QP.pdf",
+          "qp_bytes": 1938053,
+          "ms": "library/3d-trigonometry/pmt_pythagoras-and-trig-3D_H_MS.pdf",
+          "ms_bytes": 1347768
+        }
+      ],
+      "sheets": [
+        {
+          "id": "T09",
+          "number": 9,
+          "strand": "Trigonometry",
+          "title": "3D trigonometry — finding the right triangle inside a solid",
+          "page": 28
+        },
+        {
+          "id": "T10",
+          "number": 10,
+          "strand": "Trigonometry",
+          "title": "The angle between a line and a plane",
+          "page": 31
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "The triangle inside the cuboid",
+        "kind": "3d",
+        "path": "viz/3d-trigonometry/"
+      }
+    },
+    {
+      "slug": "bearings",
+      "title": "Bearings",
+      "document": "essential-math",
+      "glyph": "compass",
+      "blurb": "Draw the north line at the point you are measuring from, then read clockwise. Three figures every time, even past 180°.",
+      "brief": "bearings",
+      "practice": [
+        {
+          "label": "Bearings — practice",
+          "qp": "library/bearings/corbettmaths_bearings_practice_QUESTIONS.pdf",
+          "qp_bytes": 262633,
+          "ms": "library/bearings/corbettmaths_bearings_practice_ANSWERS.pdf",
+          "ms_bytes": 950355
+        },
+        {
+          "label": "Bearings — exam questions",
+          "qp": "library/bearings/pmt_bearings_H_QP.pdf",
+          "qp_bytes": 1133656,
+          "ms": "library/bearings/pmt_bearings_H_MS.pdf",
+          "ms_bytes": 897717
+        }
+      ],
+      "sheets": [
+        {
+          "id": "T08",
+          "number": 8,
+          "strand": "Trigonometry",
+          "title": "Bearings",
+          "page": 25
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "Drawing the bearing",
+        "kind": "2d",
+        "path": "viz/bearings/"
+      }
+    },
+    {
+      "slug": "triangle-area-and-rules",
+      "title": "Area of a Triangle, Sine Rule, Cosine Rule",
+      "document": "essential-math",
+      "glyph": "height",
+      "blurb": "Drop one perpendicular and all three fall out: ½ab sin C, the sine rule, and a² = b² + c² − 2bc cos A.",
+      "brief": "triangle-area-and-rules",
+      "practice": [
+        {
+          "label": "Sine and cosine rule — practice",
+          "qp": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_QUESTIONS.pdf",
+          "qp_bytes": 490429,
+          "ms": "library/ambiguous-case/corbettmaths_sine-cosine-rule_practice_ANSWERS.pdf",
+          "ms_bytes": 1638236
+        },
+        {
+          "label": "Sine rule, cosine rule and area — exam questions",
+          "qp": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_QP.pdf",
+          "qp_bytes": 1993758,
+          "ms": "library/ambiguous-case/pmt_sine-cosine-rule-and-area_H_MS.pdf",
+          "ms_bytes": 1412793
+        }
+      ],
+      "sheets": [
+        {
+          "id": "T02",
+          "number": 2,
+          "strand": "Trigonometry",
+          "title": "The area of any triangle — A = ½ab sin C",
+          "page": 6
+        },
+        {
+          "id": "T03",
+          "number": 3,
+          "strand": "Trigonometry",
+          "title": "The sine rule — finding a side",
+          "page": 9
+        },
+        {
+          "id": "T06",
+          "number": 6,
+          "strand": "Trigonometry",
+          "title": "The cosine rule — finding a side",
+          "page": 19
+        },
+        {
+          "id": "T07",
+          "number": 7,
+          "strand": "Trigonometry",
+          "title": "The cosine rule — finding an angle, including obtuse",
+          "page": 22
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "One perpendicular, three rules",
+        "kind": "2d",
+        "path": "viz/triangle-area-and-rules/"
+      }
+    },
+    {
+      "slug": "algebraic-proof",
+      "title": "Algebraic Proof",
+      "document": "math-plus",
+      "glyph": "odd",
+      "blurb": "Call an odd number 2n+1, reach for a second letter when the two are independent, and write a two-digit number as 10x + y. You are aiming to land on 2(…) or 2(…)+1.",
+      "brief": "algebraic-proof",
+      "practice": [
+        {
+          "label": "Algebraic proof — practice",
+          "qp": "library/algebraic-proof/corbettmaths_algebraic-proof_practice_QUESTIONS.pdf",
+          "qp_bytes": 127672,
+          "ms": "library/algebraic-proof/corbettmaths_algebraic-proof_practice_ANSWERS.pdf",
+          "ms_bytes": 975788
+        },
+        {
+          "label": "Algebraic proof — exam questions",
+          "qp": "library/algebraic-proof/pmt_algebraic-proof_H_QP.pdf",
+          "qp_bytes": 1298571,
+          "ms": "library/algebraic-proof/pmt_algebraic-proof_H_MS.pdf",
+          "ms_bytes": 1124663
+        }
+      ],
+      "sheets": [
+        {
+          "id": "P11",
+          "number": 11,
+          "strand": "Proof",
+          "title": "What makes an argument a proof",
+          "page": 34
+        },
+        {
+          "id": "P12",
+          "number": 12,
+          "strand": "Proof",
+          "title": "One letter, or two?",
+          "page": 37
+        },
+        {
+          "id": "P13",
+          "number": 13,
+          "strand": "Proof",
+          "title": "Difference of two squares as a proof tool",
+          "page": 40
+        },
+        {
+          "id": "P14",
+          "number": 14,
+          "strand": "Proof",
+          "title": "Place value — two-digit numbers and their reverse",
+          "page": 43
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "From 2n+1 to the form you want",
+        "kind": "2d",
+        "path": "viz/algebraic-proof/"
+      }
+    },
+    {
+      "slug": "visual-proof",
+      "title": "Visual Proof",
+      "document": "math-plus",
+      "glyph": "dissection",
+      "blurb": "Four squares, cut into pieces you can drag. Move them and (a+b)², (a−b)², a²−b² and Pythagoras fall out.",
+      "brief": "visual-proof",
+      "practice": [
+        {
+          "label": "Expanding two brackets — practice",
+          "qp": "library/visual-proof/corbettmaths_expanding-two-brackets_QUESTIONS.pdf",
+          "qp_bytes": 157649,
+          "ms": "library/visual-proof/corbettmaths_expanding-two-brackets_ANSWERS.pdf",
+          "ms_bytes": 782387
+        },
+        {
+          "label": "Expanding and factorising — exam questions",
+          "qp": "library/visual-proof/pmt_expanding-equations_H_QP.pdf",
+          "qp_bytes": 1250098,
+          "ms": "library/visual-proof/pmt_expanding-equations_H_MS.pdf",
+          "ms_bytes": 1026257
+        }
+      ],
+      "sheets": [
+        {
+          "id": "P15",
+          "number": 15,
+          "strand": "Proof",
+          "title": "Visual proof — dissecting a square",
+          "page": 46
+        },
+        {
+          "id": "P16",
+          "number": 16,
+          "strand": "Proof",
+          "title": "Visual proof — a² − b² = (a + b)(a − b)",
+          "page": 50
+        },
+        {
+          "id": "P17",
+          "number": 17,
+          "strand": "Proof",
+          "title": "Visual proof — Pythagoras",
+          "page": 53
+        }
+      ],
+      "viz": {
+        "status": "ready",
+        "title": "Four dissections you can drag",
+        "kind": "2d",
+        "path": "viz/visual-proof/"
+      }
+    },
+    {
+      "slug": "exponents",
+      "title": "Exponents",
+      "document": "math-plus",
+      "glyph": "power",
+      "blurb": "Get both sides onto one base, then match the powers. Split a²ˣ⁺¹ when you need to, and spot the quadratic hiding behind y = 3ˣ.",
+      "brief": "exponents",
+      "practice": [
+        {
+          "label": "Laws of indices — practice",
+          "qp": "library/exponents/corbettmaths_laws-of-indices_QUESTIONS.pdf",
+          "qp_bytes": 145679,
+          "ms": "library/exponents/corbettmaths_laws-of-indices_ANSWERS.pdf",
+          "ms_bytes": 491889
+        },
+        {
+          "label": "Solving with indices — exam questions",
+          "qp": "library/exponents/pmt_solving-using-indices_H_QP.pdf",
+          "qp_bytes": 1078493,
+          "ms": "library/exponents/pmt_solving-using-indices_H_MS.pdf",
+          "ms_bytes": 945895
+        }
+      ],
+      "sheets": [
+        {
+          "id": "E18",
+          "number": 18,
+          "strand": "Exponents",
+          "title": "Index laws, and zero, negative and fractional indices",
+          "page": 56
+        },
+        {
+          "id": "E19",
+          "number": 19,
+          "strand": "Exponents",
+          "title": "Common base, then equate indices",
+          "page": 59
+        },
+        {
+          "id": "E20",
+          "number": 20,
+          "strand": "Exponents",
+          "title": "When the question wants an expression, not x",
+          "page": 62
+        },
+        {
+          "id": "E21",
+          "number": 21,
+          "strand": "Exponents",
+          "title": "Quadratics in disguise",
+          "page": 65
+        },
+        {
+          "id": "E22",
+          "number": 22,
+          "strand": "Exponents",
+          "title": "Simultaneous exponential equations",
+          "page": 68
+        },
+        {
+          "id": "E23",
+          "number": 23,
+          "strand": "Exponents",
+          "title": "Substituting one index relation into another",
+          "page": 71
+        },
+        {
+          "id": "E24",
+          "number": 24,
+          "strand": "Exponents",
+          "title": "When the bases will not match — take logarithms",
+          "page": 74
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "Onto a common base",
+        "kind": "2d",
+        "path": "viz/exponents/"
+      }
+    },
+    {
+      "slug": "logarithms",
+      "title": "Logarithms",
+      "document": "math-plus",
+      "glyph": "log",
+      "blurb": "Turn log₄32 = x back into 4ˣ = 32, split log(100x⁴/y⁶) apart, and change the base when they do not match. Then check which solutions you have to reject.",
+      "brief": "logarithms",
+      "practice": [
+        {
+          "label": "Laws of logarithms — practice",
+          "qp": "library/logarithms/solomon_laws-of-logarithms-1_QUESTIONS.pdf",
+          "qp_bytes": 14113,
+          "ms": "library/logarithms/solomon_laws-of-logarithms-1_ANSWERS.pdf",
+          "ms_bytes": 20478
+        },
+        {
+          "label": "Laws of logarithms — further practice",
+          "qp": "library/logarithms/solomon_laws-of-logarithms-2-further_QUESTIONS.pdf",
+          "qp_bytes": 14365,
+          "ms": "library/logarithms/solomon_laws-of-logarithms-2-further_ANSWERS.pdf",
+          "ms_bytes": 23419
+        }
+      ],
+      "sheets": [
+        {
+          "id": "L25",
+          "number": 25,
+          "strand": "Logarithms",
+          "title": "What a logarithm means, and exact values",
+          "page": 77
+        },
+        {
+          "id": "L26",
+          "number": 26,
+          "strand": "Logarithms",
+          "title": "The laws — splitting",
+          "page": 80
+        },
+        {
+          "id": "L27",
+          "number": 27,
+          "strand": "Logarithms",
+          "title": "Solving log equations, and rejecting roots",
+          "page": 83
+        },
+        {
+          "id": "L28",
+          "number": 28,
+          "strand": "Logarithms",
+          "title": "Change of base",
+          "page": 86
+        },
+        {
+          "id": "L29",
+          "number": 29,
+          "strand": "Logarithms",
+          "title": "Equations with mixed bases",
+          "page": 89
+        },
+        {
+          "id": "L30",
+          "number": 30,
+          "strand": "Logarithms",
+          "title": "Substitution — quadratics in logs and in eˣ",
+          "page": 92
+        }
+      ],
+      "viz": {
+        "status": "coming-soon",
+        "title": "Index form, splitting, change of base",
+        "kind": "2d",
+        "path": "viz/logarithms/"
+      }
     }
   ],
-  "visualisations": [
-    {
-      "id": "visual-proof",
-      "topic": "visual-proof",
-      "title": "Visual Proof — four area dissections",
-      "blurb": "(a+b)², (a−b)², a²−b² and Pythagoras, with draggable pieces.",
-      "path": "viz/visual-proof/",
-      "kind": "2d",
-      "source_pages": ["IMG_0256", "IMG_0257"],
-      "status": "ready"
-    },
-    {
-      "id": "ambiguous-case",
-      "topic": "ambiguous-case",
-      "title": "Ambiguous Case — when does the triangle close?",
-      "blurb": "The perpendicular height 12 sin 30° = 6 as the critical value: no triangle, exactly one, or two.",
-      "path": "viz/ambiguous-case/",
-      "kind": "2d",
-      "source_pages": ["IMG_0249", "IMG_0250"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "3d-trigonometry",
-      "topic": "3d-trigonometry",
-      "title": "3D Trigonometry — the angle between a line and a plane",
-      "blurb": "Finding the right-angled triangle hiding inside a cuboid, and the angle a diagonal makes with the base.",
-      "path": "viz/3d-trigonometry/",
-      "kind": "3d",
-      "source_pages": ["IMG_0251"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "bearings",
-      "topic": "bearings",
-      "title": "Bearings — drawing the diagram",
-      "blurb": "North lines at the point you measure from, three-figure bearings including reflex, and a two-leg journey.",
-      "path": "viz/bearings/",
-      "kind": "2d",
-      "source_pages": ["IMG_0251"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "triangle-area-and-rules",
-      "topic": "triangle-area-and-rules",
-      "title": "Area, Sine Rule, Cosine Rule — the shared perpendicular",
-      "blurb": "One dropped height derives ½ab sin C, the sine rule, and a² = b² + c² − 2bc cos A.",
-      "path": "viz/triangle-area-and-rules/",
-      "kind": "2d",
-      "source_pages": ["IMG_0258", "IMG_0259", "IMG_0260"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "algebraic-proof",
-      "topic": "algebraic-proof",
-      "title": "Algebraic Proof — 2n+1 and the forms you aim for",
-      "blurb": "Consecutive odd numbers, two independent letters, place value as 10x + y, and reaching 2(…) or 2(…)+1.",
-      "path": "viz/algebraic-proof/",
-      "kind": "2d",
-      "source_pages": ["IMG_0252", "IMG_0253", "IMG_0254", "IMG_0255"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "exponents",
-      "topic": "exponents",
-      "title": "Exponents — get everything onto a common base",
-      "blurb": "Common bases, equating indices, splitting a²ˣ⁺¹, and the disguised quadratic y = 3ˣ.",
-      "path": "viz/exponents/",
-      "kind": "2d",
-      "source_pages": ["IMG_0260", "IMG_0261", "IMG_0262", "IMG_0263", "IMG_0264"],
-      "status": "coming-soon"
-    },
-    {
-      "id": "logarithms",
-      "topic": "logarithms",
-      "title": "Logarithms — index form, splitting, change of base",
-      "blurb": "log₄32 = x as 4ˣ = 32, splitting log(100x⁴/y⁶), change of base, and rejecting invalid solutions.",
-      "path": "viz/logarithms/",
-      "kind": "2d",
-      "source_pages": ["IMG_0265", "IMG_0266"],
-      "status": "coming-soon"
+  "library": {
+    "doubt_book": {
+      "path": "library/doubt-book/The_Doubt_Book.pdf",
+      "bytes": 427443,
+      "pages": 94,
+      "sheets": [
+        {
+          "id": "T01",
+          "number": 1,
+          "strand": "Trigonometry",
+          "title": "Right-angled triangles — choosing a ratio",
+          "page": 3
+        },
+        {
+          "id": "T02",
+          "number": 2,
+          "strand": "Trigonometry",
+          "title": "The area of any triangle — A = ½ab sin C",
+          "page": 6
+        },
+        {
+          "id": "T03",
+          "number": 3,
+          "strand": "Trigonometry",
+          "title": "The sine rule — finding a side",
+          "page": 9
+        },
+        {
+          "id": "T04",
+          "number": 4,
+          "strand": "Trigonometry",
+          "title": "The sine rule — two possible angles",
+          "page": 12
+        },
+        {
+          "id": "T05",
+          "number": 5,
+          "strand": "Trigonometry",
+          "title": "How many triangles? The height test",
+          "page": 16
+        },
+        {
+          "id": "T06",
+          "number": 6,
+          "strand": "Trigonometry",
+          "title": "The cosine rule — finding a side",
+          "page": 19
+        },
+        {
+          "id": "T07",
+          "number": 7,
+          "strand": "Trigonometry",
+          "title": "The cosine rule — finding an angle, including obtuse",
+          "page": 22
+        },
+        {
+          "id": "T08",
+          "number": 8,
+          "strand": "Trigonometry",
+          "title": "Bearings",
+          "page": 25
+        },
+        {
+          "id": "T09",
+          "number": 9,
+          "strand": "Trigonometry",
+          "title": "3D trigonometry — finding the right triangle inside a solid",
+          "page": 28
+        },
+        {
+          "id": "T10",
+          "number": 10,
+          "strand": "Trigonometry",
+          "title": "The angle between a line and a plane",
+          "page": 31
+        },
+        {
+          "id": "P11",
+          "number": 11,
+          "strand": "Proof",
+          "title": "What makes an argument a proof",
+          "page": 34
+        },
+        {
+          "id": "P12",
+          "number": 12,
+          "strand": "Proof",
+          "title": "One letter, or two?",
+          "page": 37
+        },
+        {
+          "id": "P13",
+          "number": 13,
+          "strand": "Proof",
+          "title": "Difference of two squares as a proof tool",
+          "page": 40
+        },
+        {
+          "id": "P14",
+          "number": 14,
+          "strand": "Proof",
+          "title": "Place value — two-digit numbers and their reverse",
+          "page": 43
+        },
+        {
+          "id": "P15",
+          "number": 15,
+          "strand": "Proof",
+          "title": "Visual proof — dissecting a square",
+          "page": 46
+        },
+        {
+          "id": "P16",
+          "number": 16,
+          "strand": "Proof",
+          "title": "Visual proof — a² − b² = (a + b)(a − b)",
+          "page": 50
+        },
+        {
+          "id": "P17",
+          "number": 17,
+          "strand": "Proof",
+          "title": "Visual proof — Pythagoras",
+          "page": 53
+        },
+        {
+          "id": "E18",
+          "number": 18,
+          "strand": "Exponents",
+          "title": "Index laws, and zero, negative and fractional indices",
+          "page": 56
+        },
+        {
+          "id": "E19",
+          "number": 19,
+          "strand": "Exponents",
+          "title": "Common base, then equate indices",
+          "page": 59
+        },
+        {
+          "id": "E20",
+          "number": 20,
+          "strand": "Exponents",
+          "title": "When the question wants an expression, not x",
+          "page": 62
+        },
+        {
+          "id": "E21",
+          "number": 21,
+          "strand": "Exponents",
+          "title": "Quadratics in disguise",
+          "page": 65
+        },
+        {
+          "id": "E22",
+          "number": 22,
+          "strand": "Exponents",
+          "title": "Simultaneous exponential equations",
+          "page": 68
+        },
+        {
+          "id": "E23",
+          "number": 23,
+          "strand": "Exponents",
+          "title": "Substituting one index relation into another",
+          "page": 71
+        },
+        {
+          "id": "E24",
+          "number": 24,
+          "strand": "Exponents",
+          "title": "When the bases will not match — take logarithms",
+          "page": 74
+        },
+        {
+          "id": "L25",
+          "number": 25,
+          "strand": "Logarithms",
+          "title": "What a logarithm means, and exact values",
+          "page": 77
+        },
+        {
+          "id": "L26",
+          "number": 26,
+          "strand": "Logarithms",
+          "title": "The laws — splitting",
+          "page": 80
+        },
+        {
+          "id": "L27",
+          "number": 27,
+          "strand": "Logarithms",
+          "title": "Solving log equations, and rejecting roots",
+          "page": 83
+        },
+        {
+          "id": "L28",
+          "number": 28,
+          "strand": "Logarithms",
+          "title": "Change of base",
+          "page": 86
+        },
+        {
+          "id": "L29",
+          "number": 29,
+          "strand": "Logarithms",
+          "title": "Equations with mixed bases",
+          "page": 89
+        },
+        {
+          "id": "L30",
+          "number": 30,
+          "strand": "Logarithms",
+          "title": "Substitution — quadratics in logs and in eˣ",
+          "page": 92
+        }
+      ]
     }
-  ]
+  }
 }

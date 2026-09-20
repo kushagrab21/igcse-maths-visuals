@@ -1,0 +1,182 @@
+[
+ {
+  "id": "T01",
+  "sheet": 1,
+  "strand": "Trigonometry",
+  "title": "Right-angled triangles — choosing a ratio"
+ },
+ {
+  "id": "T02",
+  "sheet": 2,
+  "strand": "Trigonometry",
+  "title": "The area of any triangle — A = ½ab sin C"
+ },
+ {
+  "id": "T03",
+  "sheet": 3,
+  "strand": "Trigonometry",
+  "title": "The sine rule — finding a side"
+ },
+ {
+  "id": "T04",
+  "sheet": 4,
+  "strand": "Trigonometry",
+  "title": "The sine rule — two possible angles"
+ },
+ {
+  "id": "T05",
+  "sheet": 5,
+  "strand": "Trigonometry",
+  "title": "How many triangles? The height test"
+ },
+ {
+  "id": "T06",
+  "sheet": 6,
+  "strand": "Trigonometry",
+  "title": "The cosine rule — finding a side"
+ },
+ {
+  "id": "T07",
+  "sheet": 7,
+  "strand": "Trigonometry",
+  "title": "The cosine rule — finding an angle, including obtuse"
+ },
+ {
+  "id": "T08",
+  "sheet": 8,
+  "strand": "Trigonometry",
+  "title": "Bearings"
+ },
+ {
+  "id": "T09",
+  "sheet": 9,
+  "strand": "Trigonometry",
+  "title": "3D trigonometry — finding the right triangle inside a solid"
+ },
+ {
+  "id": "T10",
+  "sheet": 10,
+  "strand": "Trigonometry",
+  "title": "The angle between a line and a plane"
+ },
+ {
+  "id": "P11",
+  "sheet": 11,
+  "strand": "Proof",
+  "title": "What makes an argument a proof"
+ },
+ {
+  "id": "P12",
+  "sheet": 12,
+  "strand": "Proof",
+  "title": "One letter, or two?"
+ },
+ {
+  "id": "P13",
+  "sheet": 13,
+  "strand": "Proof",
+  "title": "Difference of two squares as a proof tool"
+ },
+ {
+  "id": "P14",
+  "sheet": 14,
+  "strand": "Proof",
+  "title": "Place value — two-digit numbers and their reverse"
+ },
+ {
+  "id": "P15",
+  "sheet": 15,
+  "strand": "Proof",
+  "title": "Visual proof — dissecting a square"
+ },
+ {
+  "id": "P16",
+  "sheet": 16,
+  "strand": "Proof",
+  "title": "Visual proof — a² − b² = (a + b)(a − b)"
+ },
+ {
+  "id": "P17",
+  "sheet": 17,
+  "strand": "Proof",
+  "title": "Visual proof — Pythagoras"
+ },
+ {
+  "id": "E18",
+  "sheet": 18,
+  "strand": "Exponents",
+  "title": "Index laws, and zero, negative and fractional indices"
+ },
+ {
+  "id": "E19",
+  "sheet": 19,
+  "strand": "Exponents",
+  "title": "Common base, then equate indices"
+ },
+ {
+  "id": "E20",
+  "sheet": 20,
+  "strand": "Exponents",
+  "title": "When the question wants an expression, not x"
+ },
+ {
+  "id": "E21",
+  "sheet": 21,
+  "strand": "Exponents",
+  "title": "Quadratics in disguise"
+ },
+ {
+  "id": "E22",
+  "sheet": 22,
+  "strand": "Exponents",
+  "title": "Simultaneous exponential equations"
+ },
+ {
+  "id": "E23",
+  "sheet": 23,
+  "strand": "Exponents",
+  "title": "Substituting one index relation into another"
+ },
+ {
+  "id": "E24",
+  "sheet": 24,
+  "strand": "Exponents",
+  "title": "When the bases will not match — take logarithms"
+ },
+ {
+  "id": "L25",
+  "sheet": 25,
+  "strand": "Logarithms",
+  "title": "What a logarithm means, and exact values"
+ },
+ {
+  "id": "L26",
+  "sheet": 26,
+  "strand": "Logarithms",
+  "title": "The laws — splitting"
+ },
+ {
+  "id": "L27",
+  "sheet": 27,
+  "strand": "Logarithms",
+  "title": "Solving log equations, and rejecting roots"
+ },
+ {
+  "id": "L28",
+  "sheet": 28,
+  "strand": "Logarithms",
+  "title": "Change of base"
+ },
+ {
+  "id": "L29",
+  "sheet": 29,
+  "strand": "Logarithms",
+  "title": "Equations with mixed bases"
+ },
+ {
+  "id": "L30",
+  "sheet": 30,
+  "strand": "Logarithms",
+  "title": "Substitution — quadratics in logs and in eˣ"
+ }
+]
