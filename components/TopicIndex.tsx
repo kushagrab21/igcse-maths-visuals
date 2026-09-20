@@ -12,7 +12,6 @@
  */
 
 import { ArrowRight, Search } from "lucide-react";
-import Link from "next/link";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 
@@ -49,12 +48,15 @@ function KindPill({ kind }: { kind: Visualisation["kind"] }) {
 
 /**
  * A ready row links to the standalone page under public/ — a plain <a>, since
- * it is a file rather than a Next route, so the base path is added by hand. A
- * coming-soon row links to the /viz/<id>/ route, which explains what is coming.
+ * it is a file rather than a Next route, so the base path is added by hand.
+ *
+ * A coming-soon row is not a link: there is nothing to open yet, and a row
+ * that looks clickable and then explains itself is worse than a row that says
+ * "coming soon" and sits quietly. /viz/<id>/ still resolves for anyone who
+ * types or shares it, so nothing 404s.
  */
 function VizRow({ viz }: { viz: Visualisation }) {
   const ready = viz.status === "ready";
-  const href = ready ? asset(viz.path) : `/viz/${viz.id}/`;
   const inner = (
     <>
       <div className="min-w-0 flex-1">
@@ -65,29 +67,29 @@ function VizRow({ viz }: { viz: Visualisation }) {
         </div>
         <p className="mt-0.5 text-xs text-ink-3">{viz.blurb}</p>
       </div>
-      <ArrowRight
-        className="mt-0.5 h-4 w-4 shrink-0 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-accent"
-        strokeWidth={2}
-        aria-hidden
-      />
+      {ready && (
+        <ArrowRight
+          className="mt-0.5 h-4 w-4 shrink-0 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-accent"
+          strokeWidth={2}
+          aria-hidden
+        />
+      )}
     </>
   );
 
-  const className =
-    "group flex items-start gap-3 px-5 py-3.5 transition hover:bg-muted hover:text-ink-1" +
-    (ready ? "" : " opacity-60");
-
+  if (!ready) {
+    return (
+      <li className="flex items-start gap-3 px-5 py-3.5 opacity-60">{inner}</li>
+    );
+  }
   return (
     <li>
-      {ready ? (
-        <a href={href} className={className}>
-          {inner}
-        </a>
-      ) : (
-        <Link href={href} className={className}>
-          {inner}
-        </Link>
-      )}
+      <a
+        href={asset(viz.path)}
+        className="group flex items-start gap-3 px-5 py-3.5 transition hover:bg-muted hover:text-ink-1"
+      >
+        {inner}
+      </a>
     </li>
   );
 }
