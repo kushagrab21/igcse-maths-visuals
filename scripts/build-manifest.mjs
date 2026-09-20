@@ -58,13 +58,13 @@ const PRACTICE_LABELS = {
 /** Which topics have a built visualisation. Flip one to "ready" when it lands. */
 const VIZ_STATUS = {
   "visual-proof": "ready",
-  "ambiguous-case": "coming-soon",
-  "3d-trigonometry": "coming-soon",
-  bearings: "coming-soon",
-  "triangle-area-and-rules": "coming-soon",
-  "algebraic-proof": "coming-soon",
-  exponents: "coming-soon",
-  logarithms: "coming-soon",
+  "ambiguous-case": "ready",
+  "3d-trigonometry": "ready",
+  bearings: "ready",
+  "triangle-area-and-rules": "ready",
+  "algebraic-proof": "ready",
+  exponents: "ready",
+  logarithms: "ready",
 };
 
 const KIND = { "3d-trigonometry": "3d" };

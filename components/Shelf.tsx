@@ -57,7 +57,7 @@ export function Shelf() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder={home.searchPlaceholder}
               aria-label={home.searchPlaceholder}
-              className="w-full rounded-lg border border-line bg-surface py-1.5 pl-9 pr-3 text-sm text-ink-1 transition-all duration-300 placeholder:text-ink-4 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-ring/60"
+              className="touch-target w-full rounded-lg border border-line bg-surface py-1.5 pl-9 pr-3 text-sm text-ink-1 transition-all duration-300 placeholder:text-ink-4 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-ring/60"
             />
           </div>
         )}

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Visual proofs</title>
+<title>Algebraic proof</title>
 <meta name="viz-topic" content="Proof">
-<meta name="viz-title" content="Visual proofs">
+<meta name="viz-title" content="Algebraic proof">
 <link rel="stylesheet" href="../../tokens.css">
 <script src="../../chrome.js"></script>
 <style>
@@ -360,52 +360,67 @@ footer{
 
 <div class="topbar">
   <div class="topbar-in">
-    <h1>Visual proofs</h1>
+    <h1>Algebraic proof</h1>
     <div class="sliders">
       <div class="ctl">
-        <label for="sa">a</label>
-        <input id="sa" type="range" min="3" max="10" step="1" value="5" aria-label="value of a">
-        <output id="oa" for="sa">5</output>
+        <span style="font-size:.8125rem;font-weight:500">Claim</span>
+        <span class="seg" id="pickClaim" role="group" aria-label="choose the claim">
+          <button type="button" data-s="1" aria-pressed="true">sum is even</button>
+          <button type="button" data-s="2" aria-pressed="false">product is odd</button>
+          <button type="button" data-s="3" aria-pressed="false">difference is 8×</button>
+        </span>
       </div>
-      <div class="ctl">
-        <label for="sb">b</label>
-        <input id="sb" type="range" min="1" max="4" step="1" value="2" aria-label="value of b">
-        <output id="ob" for="sb">2</output>
-      </div>
+      <div class="ctl"><label for="iN">n</label>
+        <input id="iN" type="number" min="1" max="6" step="1" value="3"></div>
+      <div class="ctl" id="ctlK" style="opacity:.4"><label for="iK">k</label>
+        <input id="iK" type="number" min="1" max="6" step="1" value="5" disabled
+               title="k only appears in the claim about two independent odd numbers"></div>
+      <div class="ctl"><label for="iX">x</label>
+        <input id="iX" type="number" min="1" max="9" step="1" value="7"></div>
+      <div class="ctl"><label for="iY">y</label>
+        <input id="iY" type="number" min="0" max="9" step="1" value="2"></div>
     </div>
   </div>
 </div>
 
 <div class="wrap">
 <main>
-<p class="section-label">Pictures that prove an identity</p>
+<p class="section-label">Proving it for every case at once</p>
 
 <!-- ============================ CARD 1 ============================ -->
 <section class="card" id="card1">
   <header><div>
-    <h2>(a+b)² = a² + 2ab + b²</h2>
-    <p class="lead">A square of side a + b, cut into four pieces whose areas add up to the
-    whole.</p>
+    <h2 id="claimTitle">Prove that the sum of two consecutive positive odd numbers is even</h2>
+    <p class="lead" id="claimLead">One letter stands for every whole number at once, which
+    is what lifts the argument above checking examples.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg1" viewBox="0 0 400 380" role="img" aria-label="A square of side a plus b divided into a squared, ab, ab and b squared"></svg>
-      <p class="howto">Hover a piece to light up the term it contributes.</p>
+      <svg class="diagram" id="svg1" viewBox="0 0 400 196" role="img" aria-label="The two numbers drawn as blocks"></svg>
+      <p class="howto" id="howto1">Change n at the top and the picture follows.</p>
     </div>
     <div class="right">
       <div class="alg">
-        <div class="ln pop on" id="c1l1">
-          <span class="t c-sky"    data-keys="a2"  tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="ab1" tabindex="0">ab</span> +
-          <span class="t c-butter" data-keys="ab2" tabindex="0">ab</span> +
-          <span class="t c-mint"   data-keys="b2"  tabindex="0">b²</span>
-        </div>
-        <div class="ln pop" id="c1l2">
-          = <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="ab1 ab2" tabindex="0">2ab</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
+        <div class="ln pop" id="p0"></div>
+        <div class="ln pop" id="p1"></div>
+        <div class="ln pop" id="p2"></div>
+        <div class="ln pop" id="p3"></div>
+        <div class="ln pop" id="p4"></div>
+        <div class="ln pop dim" id="p5"></div>
+      </div>
+      <div id="askLetters" class="alg hidden">
+        <p class="howto" style="margin:0 0 8px">The two odd numbers do not have to be equal.
+        How do you write them?</p>
+        <div class="picks" id="letterPicks">
+          <button type="button" data-v="same">2n + 1 and 2n + 1</button>
+          <button type="button" data-v="two">2n + 1 and 2k + 1</button>
         </div>
       </div>
+      <div id="askFactor" class="alg hidden">
+        <p class="howto" style="margin:0 0 8px">Click the factor to pull out.</p>
+        <div class="picks" id="factorPicks"></div>
+      </div>
+      <p class="say" id="say1"></p>
       <div class="verify" id="v1"></div>
       <button id="b1">Next step</button>
     </div>
@@ -415,119 +430,33 @@ footer{
 <!-- ============================ CARD 2 ============================ -->
 <section class="card" id="card2">
   <header><div>
-    <h2>(a−b)² = a² − 2ab + b²</h2>
-    <p class="lead">A square of side a, cut at a − b across and down, giving regions A, B,
-    C and D.</p>
+    <h2>Borrow ten from the tens column</h2>
+    <p class="lead">Take a two-digit number with the bigger digit in front, subtract its
+    reverse, then add the answer to its own reverse. You always get 99 — as long as the
+    middle line keeps both digits legal.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg2" viewBox="0 0 400 380" role="img" aria-label="A square of side a divided into regions A, B, C and D"></svg>
-      <p class="howto">Hover a region to light up the term it contributes.</p>
-    </div>
-    <div class="right">
-      <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">Region A is whatever is left once B, C and D are taken off the whole
-        square.</p>
-        <div class="ln pop on" id="c2l1">
-          <span class="t c-sky" data-keys="A" tabindex="0">A</span> =
-          <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> −
-          <span class="t c-butter" data-keys="C" tabindex="0">C</span> −
-          <span class="t c-mint" data-keys="D" tabindex="0">D</span>
-        </div>
-        <div class="ln pop" id="c2l2">
-          = <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-butter" data-keys="B" tabindex="0">b(a−b)</span> −
-          <span class="t c-butter" data-keys="C" tabindex="0">b(a−b)</span> −
-          <span class="t c-mint" data-keys="D" tabindex="0">b²</span>
-        </div>
-        <div class="ln pop" id="c2l3">= a² − 2ab + b²</div>
-      </div>
-      <div class="verify" id="v2"></div>
-      <button id="b2">Next step</button>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ CARD 3 ============================ -->
-<section class="card" id="card3">
-  <header><div>
-    <h2>a² − b² = (a+b)(a−b)</h2>
-    <p class="lead">A square of side a, with a bottom strip of height b split into B and A.</p>
-  </div></header>
-  <div class="body">
-    <div class="left">
-      <svg class="diagram" id="svg3" viewBox="0 0 400 380" role="img" aria-label="A square of side a with a bottom strip split into regions B and A, and region C above"></svg>
-      <p class="howto">Drag A off the square, then drag C so it sits above B.</p>
-    </div>
-    <div class="right">
-      <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">Moving the pieces turns what is left into a single rectangle, and you
-        can read its two sides straight off.</p>
-        <div class="ln step" id="c3l1">
-          <span class="t c-mint" data-keys="A" tabindex="0">A</span> =
-          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c3l2">
-          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> =
-          <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c3l3">
-          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> → (a+b) × (a−b)
-        </div>
-      </div>
-      <div class="verify" id="v3"></div>
-      <button id="b3" data-go="Move C above B" data-undo="Start again">Move C above B</button>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ CARD 4 ============================ -->
-<section class="card" id="card4">
-  <header><div>
-    <h2>a² + b² = c²</h2>
-    <p class="lead">A square of side a + b holding a tilted square of side c and four
-    right-angled triangles.</p>
-  </div></header>
-  <div class="body">
-    <div class="left">
-      <svg class="diagram" id="svg4" viewBox="0 0 400 380" role="img" aria-label="A square of side a plus b containing a tilted square of side c and four right-angled triangles"></svg>
-      <p class="howto">Drag each triangle into a corner.</p>
+      <svg class="diagram" id="svg2" viewBox="0 0 400 240" role="img" aria-label="Tens and ones blocks for the number, its reverse, and the difference"></svg>
+      <p class="howto" id="howto2">Type x and y at the top. x has to be bigger than y.</p>
     </div>
     <div class="right">
       <div class="alg">
-        <div class="ln">
-          <span class="t c-butter" data-keys="tri" tabindex="0">4 × ½ × a × b</span> +
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span>
-        </div>
-        <div class="ln">
-          = <span class="t" data-keys="outer" tabindex="0">(a+b)²</span>
-        </div>
+        <div class="ln pop on" id="q0"></div>
+        <div class="ln pop" id="q1"></div>
+        <div class="ln pop" id="q2"></div>
+        <div class="ln pop" id="q3"></div>
+        <div class="ln pop" id="q4"></div>
+        <div class="ln pop" id="q5"></div>
       </div>
       <div class="alg added">
         <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">The same four triangles, moved into the corners, leave two squares
-        where there was one.</p>
-        <div class="ln step" id="c4l1">
-          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
-          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c4l2">
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
-          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
-        </div>
+        <p class="why">Keeping the line as a tens part and a ones part is what makes it
+        reversible — tidy it to 9(x − y) and there are no digits left to turn round.</p>
       </div>
-      <div class="verify" id="v4"></div>
-      <button id="b4" data-go="Slide the triangles out" data-undo="Start again">Slide the triangles out</button>
+      <p class="say" id="say2"></p>
+      <div class="verify" id="v2"></div>
+      <button id="b2">Next step</button>
     </div>
   </div>
 </section>
@@ -1074,481 +1003,376 @@ window.__declutterStats = function(){ return _declutterStats; };
 
 
 
-/* ---------- helpers this page's geometry still needs ---------- */
-function fit(extW, extH, box){
-  var u = Math.min(box.w/extW, box.h/extH);
-  return { u:u, ox: box.x + (box.w - extW*u)/2, oy: box.y + (box.h - extH*u)/2 };
-}
-function reg(x,y,w,h,cls,keys,label,extra){
-  extra = extra || {};
-  return '<g class="grp '+cls+(extra.drag?' drag':'')+'" data-keys="'+keys+'"'
-       + ' tabindex="0" role="button" aria-label="'+(extra.aria||('region '+label))+'"'
-       + (extra.id?' id="'+extra.id+'"':'') + '>'
-       + '<rect class="reg" x="'+n(x)+'" y="'+n(y)+'" width="'+n(w)+'" height="'+n(h)+'"/>'
-       + '<text class="rlab"'+(extra.tid?' id="'+extra.tid+'"':'')
-       + ' x="'+n(x+w/2)+'" y="'+n(y+h/2)+'">'+label+'</text>'
-       + '</g>';
-}
-function arrow(x1,y1,x2,y2,cls){
-  var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L===0) return '';
-  var ux=dx/L, uy=dy/L, px=-uy, py=ux, h=5, w=3.2;
-  function head(x,y,sx,sy){
-    return '<path class="'+cls+'" d="M'+n(x)+' '+n(y)+' L'+n(x+sx*h+px*w)+' '+n(y+sy*h+py*w)
-         + ' M'+n(x)+' '+n(y)+' L'+n(x+sx*h-px*w)+' '+n(y+sy*h-py*w)+'"/>';
+var CLAIMS = {
+  1: {
+    title: 'Prove that the sum of two consecutive positive odd numbers is even',
+    lead: '"Positive" narrows what is being claimed, but the algebra never needed it — put n = −3 and the sum is still even.',
+    letters: false,
+    open: 'Let the two consecutive odd numbers be 2n + 1 and 2n + 3.',
+    lines: ['= 2n + 1 + 2n + 3', '= 4n + 4'],
+    factors: ['2','3','4','n'],
+    right: '2',
+    end: '= 2(2n + 2)',
+    note: 'Two times a whole number, so it is even.',
+    replies: {
+      '4': '4 does come out, and 4(n + 1) is true — but "even" means two times a whole number, so pulling out 2 says it straight away.',
+      '3': '3 goes into neither 4n nor 4.',
+      'n': 'n goes into 4n but not into the 4.'
+    }
+  },
+  2: {
+    title: 'Prove that the product of two odd numbers is odd',
+    lead: 'The two numbers are independent, so they need two different letters. Write n twice and you have written one number down twice.',
+    letters: true,
+    open: 'Let the two odd numbers be 2n + 1 and 2k + 1.',
+    lines: ['(2n + 1)(2k + 1)', '= 4nk + 2n + 2k + 1'],
+    factors: ['2','4','n','k'],
+    right: '2',
+    end: '= 2(2nk + n + k) + 1',
+    note: 'Two times a whole number, plus one, so it is odd.',
+    replies: {
+      '4': '4 goes into 4nk but not into 2n or 2k.',
+      'n': 'n goes into 4nk and 2n, but not into 2k or the 1.',
+      'k': 'k goes into 4nk and 2k, but not into 2n or the 1.'
+    }
+  },
+  3: {
+    title: 'Prove that the difference between the squares of two consecutive odd numbers is a multiple of 8',
+    lead: 'Square the larger one first, so the answer comes out positive.',
+    letters: false,
+    open: 'Let the two consecutive odd numbers be 2n + 1 and 2n + 3.',
+    lines: ['= (2n + 3)² − (2n + 1)²', '= 4n² + 12n + 9 − (4n² + 4n + 1)', '= 8n + 8'],
+    factors: ['2','4','8','n'],
+    right: '8',
+    end: '= 8(n + 1)',
+    note: 'Eight times a whole number, so it is a multiple of 8.',
+    replies: {
+      '2': '2 does come out, and 2(4n + 4) is true — but the claim is a multiple of 8, so pull out 8.',
+      '4': '4 does come out, and 4(2n + 2) is true — but the claim is a multiple of 8, so pull out 8.',
+      'n': 'n goes into 8n but not into the 8.'
+    }
   }
-  return '<path class="'+cls+'" d="M'+n(x1)+' '+n(y1)+' L'+n(x2)+' '+n(y2)+'"/>'
-       + head(x1,y1,ux,uy) + head(x2,y2,-ux,-uy);
-}
-var GRAB_REACH = 22;
-function scaleOf(svg){ return 400 / svg.getBoundingClientRect().width; }
-function pickDraggable(svg, e){
-  var direct = e.target.closest('.grp.drag');
-  if(direct) return direct;
-  if(e.target.closest('[data-keys]')) return null;
-  var best = null, bd = Infinity;
-  svg.querySelectorAll('.grp.drag').forEach(function(el){
-    var r = el.getBoundingClientRect();
-    var dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
-    var dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
-    var d = Math.hypot(dx, dy);
-    if(d < bd){ bd = d; best = el; }
-  });
-  return bd <= GRAB_REACH ? best : null;
-}
-function setBtn(id, undo){
-  var el = document.getElementById(id);
-  el.textContent = undo ? el.dataset.undo : el.dataset.go;
-  el.classList.toggle('undo', !!undo);
-}
+};
+var claim = 1, N = 3, K = 5;
+/* phase 0 nothing · 1 opening · 2..  one expansion line each · then the gate */
+var ph = 0, lettersOK = false;
 
-var A = 5, B = 2;
-var G = {};
+function nLines(){ return CLAIMS[claim].lines.length; }
+function gatePhase(){ return 1 + nLines(); }      /* factor picks appear here */
+function donePhase(){ return gatePhase() + 1; }
 
 function drawCard1(){
-  var box = {x:58,y:46,w:284,h:284};
-  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var wa = A*u, wb = B*u, S = wa+wb;
   var s = '';
-  s += reg(ox,    oy,    wa, wa, 'c-sky',    'a2',  'a²', {aria:'region a squared'});
-  s += reg(ox+wa, oy,    wb, wa, 'c-butter', 'ab1', 'ab', {aria:'top right region a b'});
-  s += reg(ox,    oy+wa, wa, wb, 'c-butter', 'ab2', 'ab', {aria:'bottom left region a b'});
-  s += reg(ox+wa, oy+wa, wb, wb, 'c-mint',   'b2',  'b²', {aria:'region b squared'});
-  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* edges labelled on all four sides, as on the photo */
-  s += lab(ox+wa/2,    oy-16,   'a','middle','elab',[0,-1]);
-  s += lab(ox+wa+wb/2, oy-16,   'b','middle','elab',[0,-1]);
-  s += lab(ox+wa/2,    oy+S+20, 'a','middle','elab',[0,1]);
-  s += lab(ox+wa+wb/2, oy+S+20, 'b','middle','elab',[0,1]);
-  s += lab(ox-18,      oy+wa/2,    'a','middle','elab',[-1,0]);
-  s += lab(ox-18,      oy+wa+wb/2, 'b','middle','elab',[-1,0]);
-  s += lab(ox+S+18,    oy+wa/2,    'a','middle','elab',[1,0]);
-  s += lab(ox+S+18,    oy+wa+wb/2, 'b','middle','elab',[1,0]);
+  if(claim === 1){
+    var u = 17, gap = 6;
+    function row(y, pairs){
+      var out = '', x = 30;
+      for(var i=0;i<pairs;i++){
+        out += '<rect class="reg c-sky" x="'+n(x)+'" y="'+n(y)+'" width="'+n(2*u)+'" height="'+n(u)+'" rx="3"/>';
+        out += '<path class="ray soft" d="M'+n(x+u)+' '+n(y)+' L'+n(x+u)+' '+n(y+u)+'"/>';
+        x += 2*u + gap;
+      }
+      out += '<rect class="reg c-butter" x="'+n(x)+'" y="'+n(y)+'" width="'+n(u)+'" height="'+n(u)+'" rx="3"/>';
+      return out;
+    }
+    if(ph < donePhase()){
+      s += lab(30, 26, '2n + 1 = '+(2*N+1), 'start', 'dlab', [0,-1]);
+      s += row(38, N);
+      s += lab(30, 92, '2n + 3 = '+(2*N+3), 'start', 'dlab', [0,-1]);
+      s += row(104, N+1);
+    } else {
+      s += lab(30, 26, 'the same blocks in two equal rows of '+(2*N+2), 'start', 'dlab', [0,-1]);
+      s += row(38, N+1);
+      s += row(104, N+1);
+      s += lab(30, 178, '2 × '+(2*N+2)+' = '+(4*N+4), 'start', 'dlab', [0,1]);
+    }
+  } else if(claim === 2){
+    var W = 2*N+1, H = 2*K+1, sc = Math.min(286/W, 168/H);
+    var ox = 62, oy = 28;
+    function reg(x,y,w,h,cls,txt){
+      return '<g class="grp '+cls+'"><rect class="reg" x="'+n(ox+x*sc)+'" y="'+n(oy+y*sc)
+           + '" width="'+n(w*sc)+'" height="'+n(h*sc)+'"/>'
+           + lab(ox+(x+w/2)*sc, oy+(y+h/2)*sc, txt, 'middle', 'rlab')+'</g>';
+    }
+    s += reg(0,0,2*N,2*K,'c-sky','4nk');
+    s += reg(2*N,0,1,2*K,'c-butter','2k');
+    s += reg(0,2*K,2*N,1,'c-butter','2n');
+    s += reg(2*N,2*K,1,1,'c-mint','1');
+    s += lab(ox + W*sc/2, oy - 13, '2n + 1 = '+(2*N+1), 'middle', 'dlab', [0,-1]);
+    s += '<text class="dlab" x="'+n(ox-16)+'" y="'+n(oy+H*sc/2)+'" data-dir="-1,0"'
+       + ' transform="rotate(-90 '+n(ox-16)+' '+n(oy+H*sc/2)+')">2k + 1 = '+(2*K+1)+'</text>';
+  } else {
+    var big = 2*N+3, sml = 2*N+1, sc2 = 176/big, bx = 78, by = 26;
+    s += '<rect class="reg c-sky" x="'+n(bx)+'" y="'+n(by)
+       + '" width="'+n(big*sc2)+'" height="'+n(big*sc2)+'"/>';
+    s += '<rect class="reg c-mint" style="fill:rgb(var(--bg-surface))" x="'+n(bx)+'" y="'+n(by)
+       + '" width="'+n(sml*sc2)+'" height="'+n(sml*sc2)+'"/>';
+    s += lab(bx + sml*sc2/2, by + sml*sc2/2, '(2n + 1)²', 'middle', 'rlab');
+    s += lab(bx + big*sc2 - 30, by + big*sc2 - 20, '8n + 8', 'middle', 'rlab');
+    s += lab(bx + big*sc2/2, by - 13, '2n + 3 = '+big, 'middle', 'dlab', [0,-1]);
+    s += lab(bx - 12, by + big*sc2/2, '2n + 1 = '+sml, 'end', 'dlab', [-1,0]);
+    s += lab(bx, by + big*sc2 + 26, 'the L that is left has area '+(8*N+8)+' = 8 × '+(N+1),
+             'start', 'dlab', [0,1]);
+  }
+  document.getElementById('svg1').setAttribute('viewBox',
+    claim === 1 ? '0 0 400 196' : claim === 2 ? '0 0 400 216' : '0 0 400 244');
   document.getElementById('svg1').innerHTML = s;
   scheduleDeclutter();
-  G.c1 = {u:u, wa:wa, wb:wb, S:S};
 }
+function factorButtons(){
+  document.getElementById('factorPicks').innerHTML = CLAIMS[claim].factors.map(function(f){
+    return '<button type="button" data-f="'+f+'">'+f+'</button>';
+  }).join('');
+}
+function render1(){
+  var C = CLAIMS[claim], L = C.lines;
+  document.getElementById('claimTitle').textContent = C.title;
+  document.getElementById('claimLead').textContent = C.lead;
+  document.getElementById('howto1').textContent = claim === 2
+    ? 'Change n and k at the top; the rectangle follows.'
+    : 'Change n at the top and the picture follows.';
+  document.getElementById('p0').textContent = C.open;
+  document.getElementById('p0').classList.toggle('on', ph >= 1);
+  ['p1','p2','p3'].forEach(function(id,i){
+    var el = document.getElementById(id);
+    el.textContent = L[i] || '';
+    el.classList.toggle('on', !!L[i] && ph >= 2 + i);
+  });
+  document.getElementById('p4').textContent = C.end;
+  document.getElementById('p4').classList.toggle('on', ph >= donePhase());
+  document.getElementById('p5').textContent = C.note;
+  document.getElementById('p5').classList.toggle('on', ph >= donePhase());
+
+  var needLetters = C.letters && !lettersOK;
+  document.getElementById('askLetters').classList.toggle('hidden', !(ph === 1 && needLetters));
+  document.getElementById('askFactor').classList.toggle('hidden', !(ph === gatePhase()));
+  var b = document.getElementById('b1');
+  b.textContent = ph >= donePhase() ? 'Start again'
+                : ph === 1 && needLetters ? 'Choose the letters'
+                : ph === gatePhase() ? 'Pick the factor'
+                : 'Next step';
+  b.classList.toggle('undo', ph >= donePhase());
+  b.disabled = (ph === 1 && needLetters) || ph === gatePhase();
+  drawCard1();
+  verify1();
+}
+function verify1(){
+  var lhs, rhs, ok, txt;
+  if(claim === 1){
+    lhs = (2*N+1) + (2*N+3); rhs = 2*(2*N+2); ok = lhs % 2 === 0;
+    txt = 'n = '+N+': '+(2*N+1)+' + '+(2*N+3)+' = '+lhs+' = 2 × '+(2*N+2);
+  } else if(claim === 2){
+    lhs = (2*N+1)*(2*K+1); rhs = 2*(2*N*K + N + K) + 1; ok = lhs % 2 === 1;
+    txt = 'n = '+N+', k = '+K+': '+(2*N+1)+' × '+(2*K+1)+' = '+lhs+' = 2 × '+(2*N*K+N+K)+' + 1';
+  } else {
+    lhs = (2*N+3)*(2*N+3) - (2*N+1)*(2*N+1); rhs = 8*(N+1); ok = lhs % 8 === 0;
+    txt = 'n = '+N+': '+(2*N+3)+'² − '+(2*N+1)+'² = '+lhs+' = 8 × '+(N+1);
+  }
+  strip('v1', txt, lhs === rhs && ok);
+}
+document.getElementById('b1').addEventListener('click', function(){
+  var C = CLAIMS[claim];
+  if(ph >= donePhase()){ ph = 0; lettersOK = false; }
+  else if(ph === 1 && C.letters && !lettersOK){ /* gated */ }
+  else if(ph === gatePhase()){ /* gated */ }
+  else { ph += 1; if(ph === gatePhase()) factorButtons(); }
+  document.getElementById('say1').textContent = '';
+  document.getElementById('say1').className = 'say';
+  render1();
+});
+document.getElementById('letterPicks').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-v]'); if(!b) return;
+  var say = document.getElementById('say1');
+  if(b.dataset.v === 'same'){
+    b.classList.add('wrong');
+    say.className = 'say bad';
+    say.textContent = 'n cannot hold two values at once, so that is one number written twice. '
+      + 'It would prove that the square of an odd number is odd — true, but not this claim.';
+  } else {
+    lettersOK = true;
+    say.className = 'say ok';
+    say.textContent = 'Two letters, because the two numbers are allowed to differ.';
+    document.getElementById('letterPicks').querySelectorAll('button')
+      .forEach(function(x){ x.classList.remove('wrong'); });
+    render1();
+  }
+});
+document.getElementById('factorPicks').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-f]'); if(!b) return;
+  var C = CLAIMS[claim], say = document.getElementById('say1');
+  if(b.dataset.f === C.right){
+    ph = donePhase();
+    say.className = 'say ok'; say.textContent = '';
+    render1();
+  } else {
+    b.classList.add('wrong');
+    say.className = 'say bad';
+    say.textContent = C.replies[b.dataset.f] || 'That one does not go into every term.';
+  }
+});
+document.getElementById('pickClaim').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-s]'); if(!b) return;
+  claim = +b.dataset.s;
+  this.querySelectorAll('button').forEach(function(x){
+    x.setAttribute('aria-pressed', String(+x.dataset.s === claim));
+  });
+  ph = 0; lettersOK = false;
+  document.getElementById('iK').disabled = (claim !== 2);
+  document.getElementById('ctlK').style.opacity = (claim === 2) ? '' : '.4';
+  document.getElementById('say1').textContent = '';
+  document.getElementById('letterPicks').querySelectorAll('button')
+    .forEach(function(x){ x.classList.remove('wrong'); });
+  render1(); applyTextScale();
+});
 
 /* =================================================================
-   CARD 2 — (a−b)² = a² − 2ab + b²
+   CARD 2 — borrow ten
    ================================================================= */
+var Xd = 7, Yd = 2, st2 = 0, borrowT = 1;
 function drawCard2(){
-  var box = {x:66,y:46,w:280,h:280};
-  var f = fit(A, A, box), u = f.u, ox = f.ox, oy = f.oy;
-  var m = (A-B)*u, k = B*u, S = m+k;
-  var s = '';
-  s += reg(ox,   oy,   m, m, 'c-sky',    'A', 'A', {aria:'region A'});
-  s += reg(ox+m, oy,   k, m, 'c-butter', 'B', 'B', {aria:'region B'});
-  s += reg(ox,   oy+m, m, k, 'c-butter', 'C', 'C', {aria:'region C'});
-  s += reg(ox+m, oy+m, k, k, 'c-mint',   'D', 'D', {aria:'region D'});
-  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  s += '<rect class="sqhl" data-keys="sq" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* a−b and b on top and left only, as on the photo */
-  s += lab(ox+m/2,   oy-16, 'a−b','middle','elab',[0,-1]);
-  s += lab(ox+m+k/2, oy-16, 'b','middle','elab',[0,-1]);
-  s += lab(ox-20,    oy+m/2,   'a−b','middle','elab',[-1,0]);
-  s += lab(ox-20,    oy+m+k/2, 'b','middle','elab',[-1,0]);
+  var s = '', bad = Xd <= Yd;
+  var tens = Xd - Yd, ones = Yd - Xd;
+  var colT = {x:24,  y:56,  w:172, h:88};
+  var colO = {x:212, y:56,  w:164, h:88};
+  s += '<rect class="ghost" x="'+colT.x+'" y="'+colT.y+'" width="'+colT.w+'" height="'+colT.h+'" rx="10"/>';
+  s += '<rect class="ghost" x="'+colO.x+'" y="'+colO.y+'" width="'+colO.w+'" height="'+colO.h+'" rx="10"/>';
+  s += lab(colT.x + colT.w/2, colT.y - 15, 'tens', 'middle', 'dlab', [0,-1]);
+  s += lab(colO.x + colO.w/2, colO.y - 15, 'ones', 'middle', 'dlab', [0,-1]);
+  if(bad){
+    s += lab(200, 110, 'x has to be bigger than y.', 'middle');
+    document.getElementById('svg2').innerHTML = s;
+    scheduleDeclutter();
+    return;
+  }
+  function bars(count, box){
+    var out = '', bw = 14, bh = 62, per = Math.max(1, Math.floor((box.w-16)/(bw+5)));
+    for(var i=0;i<count;i++){
+      var r = Math.floor(i/per), c = i % per;
+      out += '<rect class="reg c-sky" x="'+n(box.x+10+c*(bw+5))+'" y="'+n(box.y+12+r*(bh+8))
+           + '" width="'+bw+'" height="'+bh+'" rx="3"/>';
+    }
+    return out;
+  }
+  function units(count, box, cls){
+    var out = '', uw = 15, per = Math.max(1, Math.floor((box.w-16)/(uw+5)));
+    for(var i=0;i<count;i++){
+      var r = Math.floor(i/per), c = i % per;
+      out += '<rect class="reg '+cls+'" x="'+n(box.x+10+c*(uw+5))+'" y="'+n(box.y+12+r*(uw+5))
+           + '" width="'+uw+'" height="'+uw+'" rx="3"/>';
+    }
+    return out;
+  }
+  if(st2 === 0){
+    s += bars(Xd, colT) + units(Yd, colO, 'c-butter');
+    s += lab(colT.x+colT.w/2, colT.y+colT.h+24, '10x = '+(10*Xd), 'middle', 'dlab', [0,1]);
+    s += lab(colO.x+colO.w/2, colO.y+colO.h+24, 'y = '+Yd, 'middle', 'dlab', [0,1]);
+    s += lab(200, 200, 'the number is '+(10*Xd+Yd)+', its reverse is '+(10*Yd+Xd), 'middle', 'dlab', [0,1]);
+  } else if(st2 === 1){
+    s += bars(tens, colT);
+    s += '<rect class="reg" style="fill:rgb(var(--danger-soft));stroke:rgb(var(--danger))" x="'+(colO.x+20)
+       + '" y="'+(colO.y+18)+'" width="104" height="52" rx="8"/>';
+    s += lab(colO.x+72, colO.y+44, sg(Yd-Xd), 'middle', 'rlab');
+    s += lab(colT.x+colT.w/2, colT.y+colT.h+24, '10(x − y) = '+(10*tens), 'middle', 'dlab', [0,1]);
+    s += lab(colO.x+colO.w/2, colO.y+colO.h+24, '1(y − x) = '+sg(ones), 'middle', 'dlab add', [0,1]);
+    s += lab(200, 200, 'a ones part of '+sg(ones)+' is not a digit', 'middle', 'badlab dlab', [0,1]);
+  } else {
+    var t = borrowT;
+    s += bars(tens-1, colT);
+    var fromX = colT.x+10+(tens-1)%Math.max(1,Math.floor((colT.w-16)/19))*19;
+    var toX   = colO.x+18;
+    if(t < 0.999){
+      s += '<rect class="reg c-butter" x="'+n(fromX + (toX-fromX)*t)+'" y="'+n(colT.y+12)
+         + '" width="14" height="62" rx="3"/>';
+    } else {
+      s += units(Yd-Xd+10, colO, 'c-butter');
+    }
+    s += '<path class="dimadd" d="M'+(colT.x+colT.w-6)+' 44 Q 200 26 '+(colO.x+10)+' 44"/>';
+    s += '<path class="dimadd" d="M'+(colO.x+10)+' 44 L'+(colO.x+2)+' 36 M'
+       + (colO.x+10)+' 44 L'+(colO.x+4)+' 52"/>';
+    s += lab(200, 16, 'borrow ten and put it here', 'middle', 'dlab add', [0,-1]);
+    s += lab(colT.x+colT.w/2, colT.y+colT.h+24, '10(x − y − 1) = '+(10*(tens-1)), 'middle', 'dlab', [0,1]);
+    s += lab(colO.x+colO.w/2, colO.y+colO.h+24, '1(y − x + 10) = '+(ones+10), 'middle', 'dlab', [0,1]);
+    s += lab(200, 200, 'both digits legal now: '+(tens-1)+' and '+(ones+10), 'middle', 'dlab', [0,1]);
+  }
   document.getElementById('svg2').innerHTML = s;
   scheduleDeclutter();
-  G.c2 = {u:u, m:m, k:k, S:S};
+}
+function render2(){
+  var bad = Xd <= Yd;
+  var tens = Xd - Yd, ones = Yd - Xd;
+  var diff = (10*Xd + Yd) - (10*Yd + Xd);
+  var dT = Math.floor(diff/10), dO = diff % 10;
+  var revDiff = 10*dO + dT;
+  document.getElementById('q0').textContent = bad ? 'Pick x bigger than y to start.'
+    : '(10x + y) − (10y + x) = ' + (10*Xd+Yd) + ' − ' + (10*Yd+Xd);
+  document.getElementById('q1').textContent = '= 10x − 10y + y − x';
+  document.getElementById('q2').textContent = '= 10(x − y) + 1(y − x) = 10 × '+tens+' + 1 × '+br(ones);
+  document.getElementById('q3').textContent = 'borrow ten from the tens and put it in the ones';
+  document.getElementById('q4').textContent =
+    '= 10(x − y − 1) + 1(y − x + 10) = 10 × '+(tens-1)+' + 1 × '+(ones+10)+' = '+diff;
+  document.getElementById('q5').textContent =
+    '['+revDiff+'] + ['+diff+'] = ' + (revDiff + diff);
+  document.getElementById('say2').textContent = bad
+    ? 'With x equal to y or smaller the subtraction gives nothing left to reverse, which is why the question says x > y.'
+    : '';
+  document.getElementById('say2').className = 'say' + (bad ? ' bad' : '');
+  drawCard2();
+  strip('v2',
+        bad ? 'x = '+Xd+' and y = '+Yd+', so there is no two-digit answer to reverse'
+        : (10*Xd+Yd)+' − '+(10*Yd+Xd)+' = '+diff+', written '+dT+' and '+dO
+          +'; '+diff+' + '+revDiff+' = '+(revDiff+diff),
+        !bad && (revDiff + diff) === 99);
 }
 
-/* =================================================================
-   CARD 3 — a² − b² = (a+b)(a−b)
-   ================================================================= */
-function drawCard3(){
-  var box = {x:76,y:34,w:272,h:292};
-  var f = fit(A, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var S  = A*u;            /* side of the square          */
-  var hb = B*u;            /* height of the bottom strip  */
-  var hc = (A-B)*u;        /* height of C                 */
-  var wB = (A-B)*u;        /* width of B                  */
-  var sqx = ox, sqy = oy + hb;   /* top-left of the square */
-  var s = '';
-  s += '<rect class="ghost" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  s += '<rect class="sqhl" data-keys="sq" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* target outline for C, shown while dragging */
-  s += '<rect class="target" id="c3target" x="'+n(sqx)+'" y="'+n(oy)+'" width="'+n(hc)+'" height="'+n(S)+'"/>';
-  s += reg(sqx,    sqy,    S,  hc, 'c-sky',    'C', 'C', {drag:true, id:'c3C', tid:'c3Ct', aria:'region C, draggable'});
-  s += reg(sqx,    sqy+hc, wB, hb, 'c-butter', 'B', 'B', {aria:'region B'});
-  s += reg(sqx+wB, sqy+hc, hb, hb, 'c-mint',   'A', 'A', {drag:true, id:'c3A', aria:'region A, draggable'});
-  s += '<rect class="frame" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
-  /* the photo's own markers — they describe the square as drawn, so they
-     recede once the pieces are moved */
-  s += '<g id="c3marks">';
-  s += arrow(sqx, sqy-22, sqx+S, sqy-22, 'dim');
-  s += lab(sqx+S/2, sqy-33, 'a','middle','elab',[0,-1]);
-  s += arrow(sqx-26, sqy, sqx-26, sqy+S, 'dim');
-  s += lab(sqx-38, sqy+S/2, 'a','middle','elab',[-1,0]);
-  s += arrow(sqx+wB, sqy+S+16, sqx+S, sqy+S+16, 'dim');
-  s += lab(sqx+wB+hb/2, sqy+S+30, 'b','middle','elab',[0,1]);
-  s += arrow(sqx+S+15, sqy+hc, sqx+S+15, sqy+S, 'dim');
-  s += lab(sqx+S+27, sqy+hc+hb/2, 'b','middle','elab',[1,0]);
-  s += '</g>';
-  /* ⊕ dimensions of the assembled rectangle — revealed only after the snap */
-  s += '<g id="c3dims" class="hidden">';
-  s +=   arrow(sqx-54, oy, sqx-54, sqy+S, 'dimadd');
-  s +=   '<text class="dlab add" x="'+n(sqx-66)+'" y="'+n((oy+sqy+S)/2)
-       + '" transform="rotate(-90 '+n(sqx-66)+' '+n((oy+sqy+S)/2)+')">(a+b)</text>';
-  s +=   arrow(sqx, sqy+S+16, sqx+wB, sqy+S+16, 'dimadd');
-  s +=   '<text class="dlab add" x="'+n(sqx+wB/2)+'" y="'+n(sqy+S+30)+'">(a−b)</text>';
-  s += '</g>';
-  document.getElementById('svg3').innerHTML = s;
-  scheduleDeclutter();
-  G.c3 = {u:u,S:S,hb:hb,hc:hc,wB:wB,sqx:sqx,sqy:sqy,oy:oy};
+wireCards(['card1','card2']);
+var step2 = new Stepper('card2','b2',
+  [{show:['q1','q2']},{show:['q3','q4']},{show:'q5'}],
+  { always:'q0', onChange: function(i){
+      var was = st2;
+      st2 = Math.min(2, i);
+      if(i === 2 && was < 2){ borrowT = 0; anim(620, function(t){ borrowT = t; drawCard2(); }); }
+      else { borrowT = 1; }
+      render2();
+    } });
+
+function readInputs(){
+  function get(id, lo, hi, dflt){
+    var el = document.getElementById(id), v = Math.round(+el.value);
+    if(!isFinite(v)) v = dflt;
+    v = Math.max(lo, Math.min(hi, v));
+    el.value = String(v);
+    return v;
+  }
+  N = get('iN',1,6,3); K = get('iK',1,6,5);
+  Xd = get('iX',1,9,7); Yd = get('iY',0,9,2);
+  render1(); render2(); applyTextScale();
 }
-
-/* =================================================================
-   CARD 4 — a² + b² = c²
-   ================================================================= */
-function drawCard4(){
-  var box = {x:58,y:46,w:284,h:284};
-  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var wa = A*u, wb = B*u, S = wa+wb;
-  /* vertices of the tilted square, exactly as drawn on the photo:
-     top edge a then b, right edge a then b, bottom edge b then a, left edge b then a */
-  var P1 = [ox+wa, oy], P2 = [ox+S, oy+wa], P3 = [ox+wb, oy+S], P4 = [ox, oy+wb];
-  var tris = [
-    [[ox,oy],        P1,          P4        ],   /* T1 top-left     */
-    [P1,             [ox+S,oy],   P2        ],   /* T2 top-right    */
-    [P2,             [ox+S,oy+S], P3        ],   /* T3 bottom-right */
-    [P4,             P3,          [ox,oy+S] ]    /* T4 bottom-left  */
-  ];
-  var s = '';
-  /* the two squares revealed by arrangement 2 (⊕) — hidden to start */
-  s += '<g id="c4sq" class="hidden">';
-  s +=   '<g class="grp c-sky" data-keys="a2" tabindex="0" role="button" aria-label="region a squared">'
-       + '<rect class="reg" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(wa)+'" height="'+n(wa)+'"/>'
-       + '<text class="rlab" x="'+n(ox+wa/2)+'" y="'+n(oy+wa/2)+'">a²</text></g>';
-  s +=   '<g class="grp c-mint" data-keys="b2" tabindex="0" role="button" aria-label="region b squared">'
-       + '<rect class="reg" x="'+n(ox+wa)+'" y="'+n(oy+wa)+'" width="'+n(wb)+'" height="'+n(wb)+'"/>'
-       + '<text class="rlab" x="'+n(ox+wa+wb/2)+'" y="'+n(oy+wa+wb/2)+'">b²</text></g>';
-  s += '</g>';
-  /* the tilted square of side c */
-  var pts = [P1,P2,P3,P4].map(function(p){ return n(p[0])+','+n(p[1]); }).join(' ');
-  var cx = (P1[0]+P2[0]+P3[0]+P4[0])/4, cy = (P1[1]+P2[1]+P3[1]+P4[1])/4;
-  s += '<g id="c4inner" class="grp c-peach" data-keys="c2" tabindex="0" role="button" aria-label="tilted square of side c">';
-  s +=   '<polygon class="reg" points="'+pts+'"/>';
-  [[P1,P2],[P2,P3],[P3,P4],[P4,P1]].forEach(function(e){
-    var mx=(e[0][0]+e[1][0])/2, my=(e[0][1]+e[1][1])/2;
-    var dx=cx-mx, dy=cy-my, L=Math.hypot(dx,dy)||1, off=Math.min(16, L*0.42);
-    s += '<text class="rlab" x="'+n(mx+dx/L*off)+'" y="'+n(my+dy/L*off)+'">c</text>';
-  });
-  s += '</g>';
-  /* the four right triangles */
-  tris.forEach(function(t,i){
-    var p = t.map(function(v){ return n(v[0])+','+n(v[1]); }).join(' ');
-    s += '<g class="grp drag c-butter" data-keys="tri" id="c4t'+i+'" tabindex="0" role="button"'
-       + ' aria-label="right-angled triangle with legs a and b, draggable">'
-       + '<polygon class="reg" points="'+p+'"/></g>';
-  });
-  s += '<rect class="frame" data-keys="outer" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
-  /* a and b alternating round the edge, as drawn — these mark where the
-     triangles' vertices sit, so they recede once the triangles are moved */
-  s += '<g id="c4edges">';
-  s += lab(ox+wa/2,    oy-16,   'a','middle','elab',[0,-1]);
-  s += lab(ox+wa+wb/2, oy-16,   'b','middle','elab',[0,-1]);
-  s += lab(ox+S+18,    oy+wa/2,    'a','middle','elab',[1,0]);
-  s += lab(ox+S+18,    oy+wa+wb/2, 'b','middle','elab',[1,0]);
-  s += lab(ox+wb/2,    oy+S+20, 'b','middle','elab',[0,1]);
-  s += lab(ox+wb+wa/2, oy+S+20, 'a','middle','elab',[0,1]);
-  s += lab(ox-18,      oy+wb/2,    'b','middle','elab',[-1,0]);
-  s += lab(ox-18,      oy+wb+wa/2, 'a','middle','elab',[-1,0]);
-  s += '</g>';
-  document.getElementById('svg4').innerHTML = s;
-  scheduleDeclutter();
-  /* arrangement 2 is reached by four pure translations */
-  G.c4 = {
-    u:u, wa:wa, wb:wb, S:S,
-    away: [ [0, wa], [0, 0], [-wb, 0], [wa, -wb] ],
-    off:  [ [0,0], [0,0], [0,0], [0,0] ]
-  };
-}
-
-
-/* =================================================================
-   verification strips
-   ================================================================= */
-function updateVerify(){
-  var a = A, b = B;
-  var s1 = a*a + a*b + a*b + b*b, r1 = (a+b)*(a+b);
-  var g1 = G.c1 ? Math.abs(G.c1.wa*G.c1.wa + G.c1.wb*G.c1.wa + G.c1.wa*G.c1.wb
-                         + G.c1.wb*G.c1.wb - G.c1.S*G.c1.S) < 1e-6*G.c1.S*G.c1.S+1e-6 : false;
-  strip('v1', (a*a)+' + '+(a*b)+' + '+(a*b)+' + '+(b*b)+' = '+r1+' = '+(a+b)+'²', s1===r1 && g1);
-
-  var s2 = a*a - b*(a-b) - b*(a-b) - b*b, r2 = (a-b)*(a-b);
-  var g2 = G.c2 ? Math.abs(G.c2.m*G.c2.m + G.c2.k*G.c2.m + G.c2.m*G.c2.k
-                         + G.c2.k*G.c2.k - G.c2.S*G.c2.S) < 1e-6*G.c2.S*G.c2.S+1e-6 : false;
-  strip('v2', a*a+' − '+(b*(a-b))+' − '+(b*(a-b))+' − '+(b*b)+' = '+r2+' = '+(a-b)+'²', s2===r2 && g2);
-
-  var s3 = a*a - b*b, r3 = (a+b)*(a-b);
-  var g3 = G.c3 ? Math.abs(G.c3.S*G.c3.hc + G.c3.wB*G.c3.hb + G.c3.hb*G.c3.hb
-                         - G.c3.S*G.c3.S) < 1e-6*G.c3.S*G.c3.S+1e-6 : false;
-  strip('v3', a*a+' − '+(b*b)+' = '+s3+' = '+(a+b)+' × '+(a-b), s3===r3 && g3);
-
-  var outer = (a+b)*(a+b);
-  var c2    = outer - 4*0.5*a*b;
-  var pyth  = a*a + b*b;
-  var g4 = G.c4 ? Math.abs(4*0.5*G.c4.wa*G.c4.wb + (G.c4.wa*G.c4.wa + G.c4.wb*G.c4.wb)
-                         - G.c4.S*G.c4.S) < 1e-6*G.c4.S*G.c4.S+1e-6 : false;
-  strip('v4', '4 × ½ × '+a+' × '+b+' + c² = '+outer+', so c² = '+c2+' = '+(a*a)+' + '+(b*b),
-        c2===pyth && g4);
-}
-
-var c3 = { aGone:false, cSnapped:false, aOff:[0,0] };
-
-function c3applyA(off, opacity){
-  var el = document.getElementById('c3A');
-  if(!el) return;
-  el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
-  el.style.opacity = opacity;
-  el.classList.toggle('removed', opacity < 0.9);
-}
-function c3applyC(t, dragOff){
-  var g = G.c3, el = document.getElementById('c3C'), tx = document.getElementById('c3Ct');
-  if(!el) return;
-  var d = dragOff || [0,0];
-  var mx = d[0]*(1-t), my = d[1]*(1-t) + g.hc*t;
-  el.setAttribute('transform','translate('+n(mx)+','+n(my)+') rotate('+n(-90*t)+' '+n(g.sqx)+' '+n(g.sqy)+')');
-  /* keep the letter C upright while its region turns */
-  tx.setAttribute('transform','rotate('+n(90*t)+' '+tx.getAttribute('x')+' '+tx.getAttribute('y')+')');
-}
-function c3refresh(){
-  document.getElementById('c3l1').classList.toggle('on', c3.aGone);
-  document.getElementById('c3l2').classList.toggle('on', c3.aGone);
-  document.getElementById('c3l3').classList.toggle('on', c3.cSnapped);
-  document.getElementById('c3dims').classList.toggle('hidden', !c3.cSnapped);
-  var marks = document.getElementById('c3marks');
-  if(marks) marks.classList.toggle('receded', c3.aGone || c3.cSnapped);
-  setBtn('b3', c3.aGone || c3.cSnapped);
-}
-function c3reset(){
-  c3.aGone = false; c3.cSnapped = false; c3.aOff = [0,0];
-  c3applyA([0,0],1);
-  c3applyC(0,[0,0]);
-  document.getElementById('c3target').classList.remove('on');
-  c3refresh();
-}
-document.getElementById('b3').addEventListener('click', function(){
-  clearTimers();
-  if(c3.aGone || c3.cSnapped){ c3reset(); return; }
-  /* 1 — A is removed */
-  anim(380, function(t){ c3applyA([0, 18*t], 1 - 0.88*t); }, function(){
-    c3.aGone = true; c3.aOff = [0,18]; c3refresh();
-  });
-  /* 2 — C rotates and lands on top of B */
-  later(function(){
-    anim(780, function(t){ c3applyC(t,[0,0]); }, function(){
-      c3.cSnapped = true; c3refresh();
-    });
-  }, 330);
+['iN','iK','iX','iY'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', readInputs);
+  document.getElementById(id).addEventListener('change', readInputs);
 });
 
-/* --- dragging on card 3 --- */
-(function(){
-  var svg = document.getElementById('svg3');
-  var mode = null, start = null, base = null;
-  svg.addEventListener('pointerdown', function(e){
-    var el = pickDraggable(svg, e);
-    if(!el) return;
-    if(el.id === 'c3C' && c3.cSnapped) return;
-    mode = (el.id === 'c3A') ? 'A' : 'C';
-    start = [e.clientX, e.clientY];
-    base = (mode === 'A') ? c3.aOff.slice() : [0,0];
-    try{ el.setPointerCapture(e.pointerId); }catch(err){}
-    if(mode === 'C') document.getElementById('c3target').classList.add('on');
-    e.preventDefault();
-  });
-  svg.addEventListener('pointermove', function(e){
-    if(!mode) return;
-    var k = scaleOf(svg);
-    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
-    if(mode === 'A'){
-      c3applyA([dx,dy], Math.hypot(dx,dy) > G.c3.hb*0.5 ? 0.12 : 1);
-    } else {
-      document.getElementById('c3C').setAttribute('transform','translate('+n(dx)+','+n(dy)+')');
-    }
-  });
-  svg.addEventListener('pointerup', function(e){
-    if(!mode) return;
-    var k = scaleOf(svg), g = G.c3;
-    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
-    if(mode === 'A'){
-      if(Math.hypot(dx,dy) > g.hb*0.5){ c3.aGone = true; c3.aOff = [dx,dy]; c3applyA([dx,dy],0.12); }
-      else { c3.aGone = false; c3.aOff = [0,0]; c3applyA([0,0],1); }
-    } else {
-      document.getElementById('c3target').classList.remove('on');
-      /* centre of C where it was dropped, vs centre of the snapped position */
-      var nowC = [g.sqx + g.S/2 + dx, g.sqy + g.hc/2 + dy];
-      var tgtC = [g.sqx + g.hc/2,     g.oy  + g.S/2];
-      if(Math.hypot(nowC[0]-tgtC[0], nowC[1]-tgtC[1]) < Math.max(g.S,g.hc)*0.45){
-        anim(400, function(t){ c3applyC(t,[dx,dy]); }, function(){ c3.cSnapped = true; c3refresh(); });
-      } else {
-        anim(200, function(t){
-          document.getElementById('c3C').setAttribute('transform','translate('+n(dx*(1-t))+','+n(dy*(1-t))+')');
-        });
-      }
-    }
-    mode = null;
-    c3refresh();
-  });
-  svg.addEventListener('pointercancel', function(){ mode = null; });
-})();
+render1(); render2(); watchTextScale();
 
-function c4apply(i, off){
-  var el = document.getElementById('c4t'+i);
-  if(el) el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
-}
-function near(p,q,tol){ return Math.hypot(p[0]-q[0], p[1]-q[1]) <= tol; }
-function c4refresh(){
-  var g = G.c4, tol = Math.max(g.S*0.015, 0.5);
-  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
-  var allAway = g.off.every(function(o,i){ return near(o, g.away[i], tol); });
-  document.getElementById('c4inner').classList.toggle('hidden', !allHome);
-  document.getElementById('c4sq').classList.toggle('hidden', !allAway);
-  document.getElementById('c4l1').classList.toggle('on', allAway);
-  document.getElementById('c4l2').classList.toggle('on', allAway);
-  var edges = document.getElementById('c4edges');
-  if(edges) edges.classList.toggle('receded', !allHome);
-  setBtn('b4', !allHome);
-}
-function c4reset(){
-  var g = G.c4;
-  g.off = [[0,0],[0,0],[0,0],[0,0]];
-  for(var i=0;i<4;i++) c4apply(i,[0,0]);
-  c4refresh();
-}
-document.getElementById('b4').addEventListener('click', function(){
-  clearTimers();
-  var g = G.c4;
-  var tol = Math.max(g.S*0.015, 0.5);
-  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
-  var from = g.off.map(function(o){ return o.slice(); });
-  var to   = allHome ? g.away.map(function(o){ return o.slice(); }) : [[0,0],[0,0],[0,0],[0,0]];
-  document.getElementById('c4inner').classList.add('hidden');
-  document.getElementById('c4sq').classList.add('hidden');
-  document.getElementById('c4l1').classList.remove('on');
-  document.getElementById('c4l2').classList.remove('on');
-  anim(1100, function(t){
-    for(var i=0;i<4;i++){
-      c4apply(i, [from[i][0] + (to[i][0]-from[i][0])*t, from[i][1] + (to[i][1]-from[i][1])*t]);
-    }
-  }, function(){
-    g.off = to.map(function(o){ return o.slice(); });
-    for(var i=0;i<4;i++) c4apply(i, g.off[i]);
-    c4refresh();
-  });
-});
-
-/* --- dragging on card 4 --- */
-(function(){
-  var svg = document.getElementById('svg4');
-  var idx = null, start = null, base = null;
-  svg.addEventListener('pointerdown', function(e){
-    var el = pickDraggable(svg, e);
-    if(!el || !/^c4t(\d)$/.test(el.id)) return;
-    idx = +el.id.slice(3);
-    start = [e.clientX, e.clientY];
-    base = G.c4.off[idx].slice();
-    try{ el.setPointerCapture(e.pointerId); }catch(err){}
-    document.getElementById('c4inner').classList.add('hidden');
-    document.getElementById('c4sq').classList.add('hidden');
-    e.preventDefault();
-  });
-  svg.addEventListener('pointermove', function(e){
-    if(idx === null) return;
-    var k = scaleOf(svg);
-    c4apply(idx, [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]]);
-  });
-  svg.addEventListener('pointerup', function(e){
-    if(idx === null) return;
-    var g = G.c4, k = scaleOf(svg);
-    var cur = [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]];
-    var snap = Math.max(g.S*0.30, 24);
-    var dHome = Math.hypot(cur[0], cur[1]);
-    var dAway = Math.hypot(cur[0]-g.away[idx][0], cur[1]-g.away[idx][1]);
-    var to;
-    if(dAway <= dHome && dAway < snap)      to = g.away[idx].slice();
-    else if(dHome < snap)                   to = [0,0];
-    else                                    to = base.slice();
-    var i = idx, from = cur;
-    anim(200, function(t){
-      c4apply(i, [from[0]+(to[0]-from[0])*t, from[1]+(to[1]-from[1])*t]);
-    }, function(){
-      g.off[i] = to.slice(); c4apply(i,to); c4refresh();
-    });
-    idx = null;
-  });
-  svg.addEventListener('pointercancel', function(){ idx = null; });
-})();
-
-
-/* =================================================================
-   redraw, controls and the two step-throughs
-   ================================================================= */
-wireCards(['card1','card2','card3','card4']);
-var st1 = null, st2 = null;
-
-function redraw(){
-  clearTimers();
-  drawCard1(); drawCard2(); drawCard3(); drawCard4();
-  c3reset(); c4reset();
-  if(st1) st1.reset();
-  if(st2) st2.reset();
-  updateVerify();
-  applyTextScale();
-  scheduleDeclutter();
-}
-
-var sa = document.getElementById('sa'), sb = document.getElementById('sb');
-var oa = document.getElementById('oa'), ob = document.getElementById('ob');
-function readSliders(){
-  A = +sa.value;
-  sb.max = String(A-1);
-  if(+sb.value > A-1) sb.value = String(A-1);
-  if(+sb.value < 1)   sb.value = '1';
-  B = +sb.value;
-  oa.textContent = A; ob.textContent = B;
-  redraw();
-}
-sa.addEventListener('input', readSliders);
-sb.addEventListener('input', readSliders);
-readSliders();
-
-st1 = new Stepper('card1','b1', [{ show:'c1l2', hl:'ab1 ab2' }], { always:'c1l1' });
-st2 = new Stepper('card2','b2',
-  [{ show:'c2l2', hl:'B C D' },{ show:'c2l3', hl:'A' }], { always:'c2l1' });
-watchTextScale();
-
-window.__extraStates = {
-  wideB:  function(){ window.__page.setAB(10, 9); },
-  tightA: function(){ window.__page.setAB(3, 2); },
-  __home: function(){ window.__page.setAB(5, 2); }
-};
 window.__page = {
-  setAB: function(a,b){ sa.value=String(a); sb.max=String(a-1); sb.value=String(b); readSliders(); },
+  setClaim: function(c){ document.querySelector('#pickClaim button[data-s="'+c+'"]').click(); },
   step: function(k){ document.getElementById('b'+k).click(); },
-  ticks: function(){ return ['v1','v2','v3','v4'].map(function(id){
+  pickLetters: function(v){ document.querySelector('#letterPicks button[data-v="'+v+'"]').click(); },
+  pickFactor: function(f){ var b = document.querySelector('#factorPicks button[data-f="'+f+'"]'); if(b) b.click(); },
+  say: function(){ return document.getElementById('say1').textContent; },
+  setDigits: function(x,y){ document.getElementById('iX').value = x;
+                            document.getElementById('iY').value = y; readInputs(); },
+  setNK: function(a,b){ document.getElementById('iN').value = a;
+                        document.getElementById('iK').value = b; readInputs(); },
+  ticks: function(){ return ['v1','v2'].map(function(id){
            return document.getElementById(id).querySelector('.tick').textContent; }); }
+};
+window.__extraStates = {
+  claim2: function(){ window.__page.setClaim(2); },
+  claim3: function(){ window.__page.setClaim(3); },
+  bigN:   function(){ window.__page.setNK(6,6); },
+  badXY:  function(){ window.__page.setDigits(3,5); },
+  __home: function(){ window.__page.setClaim(1); window.__page.setNK(3,5); window.__page.setDigits(7,2); }
 };
 </script>
 </body>

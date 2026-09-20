@@ -47,7 +47,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "How many triangles close?",
         "kind": "2d",
         "path": "viz/ambiguous-case/"
@@ -93,7 +93,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "The triangle inside the cuboid",
         "kind": "3d",
         "path": "viz/3d-trigonometry/"
@@ -132,7 +132,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "Drawing the bearing",
         "kind": "2d",
         "path": "viz/bearings/"
@@ -192,7 +192,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "One perpendicular, three rules",
         "kind": "2d",
         "path": "viz/triangle-area-and-rules/"
@@ -252,7 +252,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "From 2n+1 to the form you want",
         "kind": "2d",
         "path": "viz/algebraic-proof/"
@@ -386,7 +386,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "Onto a common base",
         "kind": "2d",
         "path": "viz/exponents/"
@@ -460,7 +460,7 @@
         }
       ],
       "viz": {
-        "status": "coming-soon",
+        "status": "ready",
         "title": "Index form, splitting, change of base",
         "kind": "2d",
         "path": "viz/logarithms/"

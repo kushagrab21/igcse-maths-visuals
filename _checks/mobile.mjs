@@ -9,7 +9,7 @@
  * viewport, a tap target under 44 px, and text under 12 px.
  */
 import puppeteer from "puppeteer-core";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 
 const BASE = process.argv[2].replace(/\/$/, "");
 const DIR = process.argv[3];
@@ -23,12 +23,19 @@ const DEVICES = [
   { name: "iPad mini",     width: 768, height: 1024, dpr: 2 },
 ];
 
+/* The app's own pages, plus every visualisation the manifest says is ready —
+   so a page that lands later cannot skip this check. */
+const manifest = JSON.parse(
+  await readFile(new URL("../manifest.json", import.meta.url), "utf8"),
+);
 const PAGES = [
   { name: "home", url: "/" },
   { name: "topic", url: "/topic/visual-proof/" },
   { name: "doubt-book", url: "/doubt-book/" },
   { name: "reference", url: "/reference/" },
-  { name: "viz", url: "/viz/visual-proof/" },
+  ...manifest.topics
+    .filter((t) => t.viz.status === "ready")
+    .map((t) => ({ name: `viz-${t.slug}`, url: `/${t.viz.path}` })),
 ];
 
 const UA =
@@ -116,6 +123,11 @@ for (const d of DEVICES) {
         if (r.width === 0 || r.height === 0) continue;
         if (getComputedStyle(el).display === "contents") continue;
         if (inSentence(el)) continue;
+        /* A draggable piece inside a diagram sets its own grab radius in
+           JavaScript — the visual-proof page reaches 22 px outside each piece
+           so the smallest one still spans 44 px. A bounding box cannot see
+           that, so SVG content is left to the page that drew it. */
+        if (el.ownerSVGElement || el.tagName === "svg") continue;
         if (r.height < MIN || r.width < MIN) {
           small.push(`${el.tagName.toLowerCase()} ${Math.round(r.width)}×${Math.round(r.height)} "${(el.textContent || "").trim().slice(0, 24)}"`);
         }

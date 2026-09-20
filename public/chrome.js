@@ -151,6 +151,19 @@
     "@media (pointer: coarse){" +
     ".site-brand,.site-link,.site-theme{min-height:44px;min-width:44px}" +
     ".site-link,.site-theme{justify-content:center}" +
+    /* A visualisation's own controls, whatever page they are on: its buttons,
+       its sliders and its numeric fields. Sized for a cursor in the source,
+       raised to a thumb here; a mouse keeps the original geometry.
+
+       `!important` is deliberate. A page styles its slider as
+       `.ctl input[type=range]`, which outranks anything this file can write
+       without it, and this is a floor rather than a preference: a control
+       nobody can hit is broken however the page meant it to look. Keeping the
+       floor here rather than in each page also means a page rewritten later
+       cannot quietly lose it. */
+    "body button{min-height:44px!important}" +
+    "body input[type=range]{height:44px!important}" +
+    "body input[type=number],body input[type=text]{min-height:44px!important}" +
     "}";
 
   /* ── 2 + 3. inject nav and progress bar ────────────────────────── */

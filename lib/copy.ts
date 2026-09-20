@@ -19,7 +19,7 @@ export const home = {
   pill: "Eight topics",
   heading: "Eight topics. Know which move to make.",
   subtitle:
-    "Open any topic for the method, questions with answers, and a fifteen-minute sheet. Some come with a diagram you can pull apart.",
+    "Open any topic for the method, questions with answers, and a fifteen-minute sheet. Every one comes with a diagram you can pull apart.",
   primaryCta: "Start with Visual Proof",
   secondaryCta: "Open the Doubt Book",
   sectionLabel: "Topics",

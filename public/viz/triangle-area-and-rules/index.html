@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Visual proofs</title>
-<meta name="viz-topic" content="Proof">
-<meta name="viz-title" content="Visual proofs">
+<title>Area, sine rule, cosine rule</title>
+<meta name="viz-topic" content="Trigonometry">
+<meta name="viz-title" content="Area, sine rule, cosine rule">
 <link rel="stylesheet" href="../../tokens.css">
 <script src="../../chrome.js"></script>
 <style>
@@ -360,17 +360,15 @@ footer{
 
 <div class="topbar">
   <div class="topbar-in">
-    <h1>Visual proofs</h1>
+    <h1>Area, sine rule, cosine rule</h1>
     <div class="sliders">
       <div class="ctl">
-        <label for="sa">a</label>
-        <input id="sa" type="range" min="3" max="10" step="1" value="5" aria-label="value of a">
-        <output id="oa" for="sa">5</output>
+        <span style="font-size:.8125rem">Drag the corner <strong>C</strong> on any picture</span>
+        <output id="apexOut">C (4.2, 5.2)</output>
       </div>
       <div class="ctl">
-        <label for="sb">b</label>
-        <input id="sb" type="range" min="1" max="4" step="1" value="2" aria-label="value of b">
-        <output id="ob" for="sb">2</output>
+        <button type="button" class="ghostbtn" id="obtuse">Obtuse example</button>
+        <button type="button" class="ghostbtn" id="reset">Reset</button>
       </div>
     </div>
   </div>
@@ -378,33 +376,36 @@ footer{
 
 <div class="wrap">
 <main>
-<p class="section-label">Pictures that prove an identity</p>
+<p class="section-label">One triangle, three rules</p>
 
 <!-- ============================ CARD 1 ============================ -->
 <section class="card" id="card1">
   <header><div>
-    <h2>(a+b)² = a² + 2ab + b²</h2>
-    <p class="lead">A square of side a + b, cut into four pieces whose areas add up to the
-    whole.</p>
+    <h2>Area = ½ab sin C</h2>
+    <p class="lead">Half the base times the height, with the height built out of a side and
+    an angle. One triangle runs the whole page: A and B on the base, C the corner you drag,
+    and each side named after the angle facing it.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg1" viewBox="0 0 400 380" role="img" aria-label="A square of side a plus b divided into a squared, ab, ab and b squared"></svg>
-      <p class="howto">Hover a piece to light up the term it contributes.</p>
+      <svg class="diagram" id="svg1" viewBox="0 0 400 300" role="img" aria-label="Triangle ABC with the height dropped from C onto AB"></svg>
+      <p class="howto">Drag C. The height follows it.</p>
     </div>
     <div class="right">
       <div class="alg">
-        <div class="ln pop on" id="c1l1">
-          <span class="t c-sky"    data-keys="a2"  tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="ab1" tabindex="0">ab</span> +
-          <span class="t c-butter" data-keys="ab2" tabindex="0">ab</span> +
-          <span class="t c-mint"   data-keys="b2"  tabindex="0">b²</span>
-        </div>
-        <div class="ln pop" id="c1l2">
-          = <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="ab1 ab2" tabindex="0">2ab</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
-        </div>
+        <div class="ln pop on" id="a0">Area = ½ × <span class="t" data-keys="c" tabindex="0">c</span>
+          × <span class="t" data-keys="h" tabindex="0">h</span></div>
+        <div class="ln pop" id="a1">sin <span class="t" data-keys="angA" tabindex="0">A</span> =
+          <span class="t" data-keys="h" tabindex="0">h</span> ÷
+          <span class="t" data-keys="b" tabindex="0">b</span>, so
+          <span class="t" data-keys="h" tabindex="0">h</span> =
+          <span class="t" data-keys="b" tabindex="0">b</span> sin
+          <span class="t" data-keys="angA" tabindex="0">A</span></div>
+        <div class="ln pop" id="a2">Area = ½ ×
+          <span class="t" data-keys="b" tabindex="0">b</span> ×
+          <span class="t" data-keys="c" tabindex="0">c</span> × sin
+          <span class="t" data-keys="angA" tabindex="0">A</span></div>
+        <div class="ln pop dim" id="a3"></div>
       </div>
       <div class="verify" id="v1"></div>
       <button id="b1">Next step</button>
@@ -415,34 +416,35 @@ footer{
 <!-- ============================ CARD 2 ============================ -->
 <section class="card" id="card2">
   <header><div>
-    <h2>(a−b)² = a² − 2ab + b²</h2>
-    <p class="lead">A square of side a, cut at a − b across and down, giving regions A, B,
-    C and D.</p>
+    <h2>sin A = h/b &nbsp; sin B = h/a</h2>
+    <p class="lead">One perpendicular splits the triangle into two right-angled halves, and
+    the same h is in both. That is the whole of the sine rule.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg2" viewBox="0 0 400 380" role="img" aria-label="A square of side a divided into regions A, B, C and D"></svg>
-      <p class="howto">Hover a region to light up the term it contributes.</p>
+      <svg class="diagram" id="svg2" viewBox="0 0 400 300" role="img" aria-label="The perpendicular from C splitting triangle ABC into two right-angled triangles"></svg>
+      <p class="howto">Hover either half to light up its line.</p>
     </div>
     <div class="right">
+      <div class="alg">
+        <div class="ln pop on" id="q0">sin <span class="t" data-keys="angA" tabindex="0">A</span> =
+          <span class="t" data-keys="h triL" tabindex="0">h</span> ÷
+          <span class="t" data-keys="b triL" tabindex="0">b</span> &nbsp;and&nbsp;
+          sin <span class="t" data-keys="angB" tabindex="0">B</span> =
+          <span class="t" data-keys="h triR" tabindex="0">h</span> ÷
+          <span class="t" data-keys="a triR" tabindex="0">a</span></div>
+      </div>
       <div class="alg added">
         <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">Region A is whatever is left once B, C and D are taken off the whole
-        square.</p>
-        <div class="ln pop on" id="c2l1">
-          <span class="t c-sky" data-keys="A" tabindex="0">A</span> =
-          <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> −
-          <span class="t c-butter" data-keys="C" tabindex="0">C</span> −
-          <span class="t c-mint" data-keys="D" tabindex="0">D</span>
-        </div>
-        <div class="ln pop" id="c2l2">
-          = <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-butter" data-keys="B" tabindex="0">b(a−b)</span> −
-          <span class="t c-butter" data-keys="C" tabindex="0">b(a−b)</span> −
-          <span class="t c-mint" data-keys="D" tabindex="0">b²</span>
-        </div>
-        <div class="ln pop" id="c2l3">= a² − 2ab + b²</div>
+        <p class="why">Both lines describe the same height, so they can be set equal to each
+        other.</p>
+        <div class="ln pop" id="s1"><span class="t" data-keys="b triL" tabindex="0">b</span> sin
+          <span class="t" data-keys="angA" tabindex="0">A</span> =
+          <span class="t" data-keys="h" tabindex="0">h</span> =
+          <span class="t" data-keys="a triR" tabindex="0">a</span> sin
+          <span class="t" data-keys="angB" tabindex="0">B</span></div>
+        <div class="ln pop" id="s2">a ÷ sin A = b ÷ sin B</div>
+        <div class="ln pop dim" id="s3"></div>
       </div>
       <div class="verify" id="v2"></div>
       <button id="b2">Next step</button>
@@ -453,36 +455,40 @@ footer{
 <!-- ============================ CARD 3 ============================ -->
 <section class="card" id="card3">
   <header><div>
-    <h2>a² − b² = (a+b)(a−b)</h2>
-    <p class="lead">A square of side a, with a bottom strip of height b split into B and A.</p>
+    <h2>a² = b² + c² − 2bc cos A</h2>
+    <p class="lead">The perpendicular cuts the base into x and c − x. Pythagoras in each
+    half, then h is removed. Hold x = b cos A back until the very last line — put it in
+    early and you drag a squared cosine through the whole derivation for nothing.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg3" viewBox="0 0 400 380" role="img" aria-label="A square of side a with a bottom strip split into regions B and A, and region C above"></svg>
-      <p class="howto">Drag A off the square, then drag C so it sits above B.</p>
+      <svg class="diagram" id="svg3" viewBox="0 0 400 300" role="img" aria-label="Triangle ABC with the base split into x and c minus x by the perpendicular from C"></svg>
+      <p class="howto">Drag C past B and x grows larger than c.</p>
     </div>
     <div class="right">
-      <div class="alg added">
-        <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">Moving the pieces turns what is left into a single rectangle, and you
-        can read its two sides straight off.</p>
-        <div class="ln step" id="c3l1">
-          <span class="t c-mint" data-keys="A" tabindex="0">A</span> =
-          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c3l2">
-          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> =
-          <span class="t" data-keys="sq" tabindex="0">a²</span> −
-          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c3l3">
-          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
-          <span class="t c-butter" data-keys="B" tabindex="0">B</span> → (a+b) × (a−b)
-        </div>
+      <div class="alg">
+        <div class="ln pop on" id="k0">cos <span class="t" data-keys="angA" tabindex="0">A</span> =
+          <span class="t" data-keys="x" tabindex="0">x</span> ÷
+          <span class="t" data-keys="b" tabindex="0">b</span>, so
+          <span class="t" data-keys="x" tabindex="0">x</span> =
+          <span class="t" data-keys="b" tabindex="0">b</span> cos
+          <span class="t" data-keys="angA" tabindex="0">A</span>
+          <span class="tagok">hold this back</span></div>
+        <div class="ln pop" id="k1"><span class="t" data-keys="x triL" tabindex="0">x</span>² +
+          <span class="t" data-keys="h triL" tabindex="0">h</span>² =
+          <span class="t" data-keys="b triL" tabindex="0">b</span>², so h² = b² − x²</div>
+        <div class="ln pop" id="k2">(<span class="t" data-keys="cx triR" tabindex="0">c − x</span>)² +
+          <span class="t" data-keys="h triR" tabindex="0">h</span>² =
+          <span class="t" data-keys="a triR" tabindex="0">a</span>²</div>
+        <div class="ln pop" id="k3">(c − x)² + b² − x² = a²</div>
+        <div class="ln pop" id="k4">c² − 2cx + x² + b² − x² = a²</div>
+        <div class="ln pop" id="k5">a² = b² + c² − 2cx</div>
+        <div class="ln pop" id="k6" style="color:rgb(var(--accent-1));font-weight:600">
+          now put x = b cos A: &nbsp; a² = b² + c² − 2bc cos A</div>
+        <div class="ln pop dim" id="k7"></div>
       </div>
       <div class="verify" id="v3"></div>
-      <button id="b3" data-go="Move C above B" data-undo="Start again">Move C above B</button>
+      <button id="b3">Next step</button>
     </div>
   </div>
 </section>
@@ -490,44 +496,34 @@ footer{
 <!-- ============================ CARD 4 ============================ -->
 <section class="card" id="card4">
   <header><div>
-    <h2>a² + b² = c²</h2>
-    <p class="lead">A square of side a + b holding a tilted square of side c and four
-    right-angled triangles.</p>
+    <h2>cos B = −11/24</h2>
+    <p class="lead">Rearranged for an angle, the cosine rule can hand back a negative
+    number. That is not a mistake — cosine goes negative exactly when the angle is obtuse.</p>
   </div></header>
   <div class="body">
     <div class="left">
-      <svg class="diagram" id="svg4" viewBox="0 0 400 380" role="img" aria-label="A square of side a plus b containing a tilted square of side c and four right-angled triangles"></svg>
-      <p class="howto">Drag each triangle into a corner.</p>
+      <svg class="diagram" id="svg4" viewBox="0 0 400 300" role="img" aria-label="Triangle ABC with the angle at B marked"></svg>
+      <p class="howto">Drag C to the right of B and the cosine turns negative.</p>
     </div>
     <div class="right">
       <div class="alg">
-        <div class="ln">
-          <span class="t c-butter" data-keys="tri" tabindex="0">4 × ½ × a × b</span> +
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span>
-        </div>
-        <div class="ln">
-          = <span class="t" data-keys="outer" tabindex="0">(a+b)²</span>
-        </div>
+        <div class="ln pop on" id="m0">cos <span class="t" data-keys="angB" tabindex="0">B</span> =
+          (<span class="t" data-keys="a" tabindex="0">a</span>² +
+          <span class="t" data-keys="c" tabindex="0">c</span>² −
+          <span class="t" data-keys="b" tabindex="0">b</span>²) ÷ (2
+          <span class="t" data-keys="a" tabindex="0">a</span>
+          <span class="t" data-keys="c" tabindex="0">c</span>)</div>
+        <div class="ln pop" id="m1"></div>
+        <div class="ln pop" id="m2"></div>
+        <div class="ln pop" id="m3"></div>
       </div>
       <div class="alg added">
         <div class="badge"><span class="sym">⊕</span> extra working</div>
-        <p class="why">The same four triangles, moved into the corners, leave two squares
-        where there was one.</p>
-        <div class="ln step" id="c4l1">
-          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
-          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
-        </div>
-        <div class="ln step" id="c4l2">
-          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
-          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
-          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
-        </div>
+        <p class="why">Between 0° and 180° a cosine takes every value exactly once, so there
+        is never a second angle to test — which is not true of a sine.</p>
       </div>
       <div class="verify" id="v4"></div>
-      <button id="b4" data-go="Slide the triangles out" data-undo="Start again">Slide the triangles out</button>
+      <button id="b4">Next step</button>
     </div>
   </div>
 </section>
@@ -1074,22 +1070,28 @@ window.__declutterStats = function(){ return _declutterStats; };
 
 
 
-/* ---------- helpers this page's geometry still needs ---------- */
-function fit(extW, extH, box){
-  var u = Math.min(box.w/extW, box.h/extH);
-  return { u:u, ox: box.x + (box.w - extW*u)/2, oy: box.y + (box.h - extH*u)/2 };
+var IDS = ['svg1','svg2','svg3','svg4'], CARDS = ['card1','card2','card3','card4'];
+var CBASE = 6;
+var HOME  = [4.2, 5.2];
+var OBTUSE = [29/3, Math.sqrt(144 - (29/3)*(29/3))];
+var apex  = HOME.slice();
+var prevApex = null;
+
+var u = 23;
+function X(w){ return 22 + (w+4.7)*u; }
+function Y(w){ return 228 - w*u; }
+function invX(px){ return (px-22)/u - 4.7; }
+function invY(py){ return (228-py)/u; }
+
+function geom(){
+  var cx = apex[0], cy = apex[1], c = CBASE;
+  var b = Math.hypot(cx, cy);
+  var a = Math.hypot(cx-c, cy);
+  var A = Math.atan2(cy, cx)/RAD;
+  var B = Math.atan2(cy, c-cx)/RAD;
+  return { cx:cx, cy:cy, c:c, a:a, b:b, h:cy, x:cx, A:A, B:B, C:180-A-B, area:0.5*c*cy };
 }
-function reg(x,y,w,h,cls,keys,label,extra){
-  extra = extra || {};
-  return '<g class="grp '+cls+(extra.drag?' drag':'')+'" data-keys="'+keys+'"'
-       + ' tabindex="0" role="button" aria-label="'+(extra.aria||('region '+label))+'"'
-       + (extra.id?' id="'+extra.id+'"':'') + '>'
-       + '<rect class="reg" x="'+n(x)+'" y="'+n(y)+'" width="'+n(w)+'" height="'+n(h)+'"/>'
-       + '<text class="rlab"'+(extra.tid?' id="'+extra.tid+'"':'')
-       + ' x="'+n(x+w/2)+'" y="'+n(y+h/2)+'">'+label+'</text>'
-       + '</g>';
-}
-function arrow(x1,y1,x2,y2,cls){
+function arrow2(x1,y1,x2,y2,cls){
   var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L===0) return '';
   var ux=dx/L, uy=dy/L, px=-uy, py=ux, h=5, w=3.2;
   function head(x,y,sx,sy){
@@ -1099,453 +1101,220 @@ function arrow(x1,y1,x2,y2,cls){
   return '<path class="'+cls+'" d="M'+n(x1)+' '+n(y1)+' L'+n(x2)+' '+n(y2)+'"/>'
        + head(x1,y1,ux,uy) + head(x2,y2,-ux,-uy);
 }
-var GRAB_REACH = 22;
-function scaleOf(svg){ return 400 / svg.getBoundingClientRect().width; }
-function pickDraggable(svg, e){
-  var direct = e.target.closest('.grp.drag');
-  if(direct) return direct;
-  if(e.target.closest('[data-keys]')) return null;
-  var best = null, bd = Infinity;
-  svg.querySelectorAll('.grp.drag').forEach(function(el){
-    var r = el.getBoundingClientRect();
-    var dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
-    var dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
-    var d = Math.hypot(dx, dy);
-    if(d < bd){ bd = d; best = el; }
-  });
-  return bd <= GRAB_REACH ? best : null;
-}
-function setBtn(id, undo){
-  var el = document.getElementById(id);
-  el.textContent = undo ? el.dataset.undo : el.dataset.go;
-  el.classList.toggle('undo', !!undo);
+function angleArc(vx,vy,d1,d2,r,cls){
+  var p1 = [X(vx)+d1[0]*r, Y(vy)-d1[1]*r], p2 = [X(vx)+d2[0]*r, Y(vy)-d2[1]*r];
+  var cross = d1[0]*d2[1] - d1[1]*d2[0];
+  return '<path class="'+cls+'" d="M'+n(p1[0])+' '+n(p1[1])+' A '+r+' '+r+' 0 0 '
+       + (cross>0?'0':'1')+' '+n(p2[0])+' '+n(p2[1])+'"/>';
 }
 
-var A = 5, B = 2;
-var G = {};
-
-function drawCard1(){
-  var box = {x:58,y:46,w:284,h:284};
-  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var wa = A*u, wb = B*u, S = wa+wb;
+function base(g, opts){
+  opts = opts || {};
+  var A = [X(0), Y(0)], B = [X(g.c), Y(0)], C = [X(g.cx), Y(g.cy)];
+  var mid = [(A[0]+B[0]+C[0])/3, (A[1]+B[1]+C[1])/3];
   var s = '';
-  s += reg(ox,    oy,    wa, wa, 'c-sky',    'a2',  'a²', {aria:'region a squared'});
-  s += reg(ox+wa, oy,    wb, wa, 'c-butter', 'ab1', 'ab', {aria:'top right region a b'});
-  s += reg(ox,    oy+wa, wa, wb, 'c-butter', 'ab2', 'ab', {aria:'bottom left region a b'});
-  s += reg(ox+wa, oy+wa, wb, wb, 'c-mint',   'b2',  'b²', {aria:'region b squared'});
-  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* edges labelled on all four sides, as on the photo */
-  s += lab(ox+wa/2,    oy-16,   'a','middle','elab',[0,-1]);
-  s += lab(ox+wa+wb/2, oy-16,   'b','middle','elab',[0,-1]);
-  s += lab(ox+wa/2,    oy+S+20, 'a','middle','elab',[0,1]);
-  s += lab(ox+wa+wb/2, oy+S+20, 'b','middle','elab',[0,1]);
-  s += lab(ox-18,      oy+wa/2,    'a','middle','elab',[-1,0]);
-  s += lab(ox-18,      oy+wa+wb/2, 'b','middle','elab',[-1,0]);
-  s += lab(ox+S+18,    oy+wa/2,    'a','middle','elab',[1,0]);
-  s += lab(ox+S+18,    oy+wa+wb/2, 'b','middle','elab',[1,0]);
+  s += '<polygon class="tri c-sky" points="'
+     + n(A[0])+','+n(A[1])+' '+n(B[0])+','+n(B[1])+' '+n(C[0])+','+n(C[1])+'"/>';
+  function side(p,q,key,txt){
+    return '<g class="grp" data-keys="'+key+'" tabindex="0" role="button" aria-label="side '+txt+'">'
+         + '<path class="ray" style="stroke-width:2.2" d="M'+n(p[0])+' '+n(p[1])+' L'+n(q[0])+' '+n(q[1])+'"/>'
+         + edgeLabel(p, q, mid, 17, txt, 'dlab') + '</g>';
+  }
+  s += side(A,B,'c','c') + side(A,C,'b','b') + side(B,C,'a','a');
+  if(opts.h !== false){
+    var F = [X(g.cx), Y(0)];
+    var footIn = g.cx >= -0.001 && g.cx <= g.c + 0.001;
+    s += '<g class="grp" data-keys="h" tabindex="0" role="button" aria-label="the height h">'
+       + (footIn ? '' : '<path class="ray soft" style="stroke-dasharray:4 4" d="M'+n(X(Math.min(0,g.cx)))
+          + ' '+n(Y(0))+' L'+n(X(Math.max(g.c,g.cx)))+' '+n(Y(0))+'"/>')
+       + '<path class="dash" d="M'+n(C[0])+' '+n(C[1])+' L'+n(F[0])+' '+n(F[1])+'"/>'
+       + '<path class="dash" d="M'+n(F[0]-8)+' '+n(F[1])+' L'+n(F[0]-8)+' '+n(F[1]-8)
+       + ' L'+n(F[0])+' '+n(F[1]-8)+'"/>'
+       + lab(F[0]+13, (C[1]+F[1])/2, 'h', 'middle', 'dlab', [1,0]) + '</g>';
+  }
+  return { s:s, A:A, B:B, C:C, mid:mid };
+}
+function vertices(g, p){
+  var dAB = unit([p.B[0]-p.A[0], p.B[1]-p.A[1]]), dAC = unit([p.C[0]-p.A[0], p.C[1]-p.A[1]]);
+  var dBA = [-dAB[0],-dAB[1]], dBC = unit([p.C[0]-p.B[0], p.C[1]-p.B[1]]);
+  var dCA = unit([p.A[0]-p.C[0], p.A[1]-p.C[1]]), dCB = unit([p.B[0]-p.C[0], p.B[1]-p.C[1]]);
+  var lA = bisectOut(p.A[0], p.A[1], dAB, dAC, 18);
+  var lB = bisectOut(p.B[0], p.B[1], dBA, dBC, 18);
+  var lC = bisectOut(p.C[0], p.C[1], dCA, dCB, 22);
+  return '<circle class="node on" cx="'+n(p.A[0])+'" cy="'+n(p.A[1])+'" r="5"/>'
+       + lab(lA[0], lA[1], 'A', 'middle', 'elab', lA.dir)
+       + '<circle class="node on" cx="'+n(p.B[0])+'" cy="'+n(p.B[1])+'" r="5"/>'
+       + lab(lB[0], lB[1], 'B', 'middle', 'elab', lB.dir)
+       + '<g class="grp drag"><circle class="node on" cx="'+n(p.C[0])+'" cy="'+n(p.C[1])
+       + '" r="9" style="fill:rgb(var(--live-1));stroke:rgb(var(--bg-surface));stroke-width:2.5"/></g>'
+       + lab(lC[0], lC[1], 'C', 'middle', 'elab', lC.dir);
+}
+
+function drawAll(){
+  var g = geom();
+  var dAB = [1,0], dAC = unit([g.cx, g.cy]);
+  var dBA = [-1,0], dBC = unit([g.cx-g.c, g.cy]);
+
+  /* card 1 — area */
+  var p = base(g); var s = p.s;
+  s += angleArc(0,0,dAB,dAC,30,'ang');
+  s += angleValue(p.A[0], p.A[1], [1,0], unit([p.C[0]-p.A[0], p.C[1]-p.A[1]]), 30, 'A');
+  s += vertices(g, p);
   document.getElementById('svg1').innerHTML = s;
-  scheduleDeclutter();
-  G.c1 = {u:u, wa:wa, wb:wb, S:S};
-}
 
-/* =================================================================
-   CARD 2 — (a−b)² = a² − 2ab + b²
-   ================================================================= */
-function drawCard2(){
-  var box = {x:66,y:46,w:280,h:280};
-  var f = fit(A, A, box), u = f.u, ox = f.ox, oy = f.oy;
-  var m = (A-B)*u, k = B*u, S = m+k;
-  var s = '';
-  s += reg(ox,   oy,   m, m, 'c-sky',    'A', 'A', {aria:'region A'});
-  s += reg(ox+m, oy,   k, m, 'c-butter', 'B', 'B', {aria:'region B'});
-  s += reg(ox,   oy+m, m, k, 'c-butter', 'C', 'C', {aria:'region C'});
-  s += reg(ox+m, oy+m, k, k, 'c-mint',   'D', 'D', {aria:'region D'});
-  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  s += '<rect class="sqhl" data-keys="sq" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* a−b and b on top and left only, as on the photo */
-  s += lab(ox+m/2,   oy-16, 'a−b','middle','elab',[0,-1]);
-  s += lab(ox+m+k/2, oy-16, 'b','middle','elab',[0,-1]);
-  s += lab(ox-20,    oy+m/2,   'a−b','middle','elab',[-1,0]);
-  s += lab(ox-20,    oy+m+k/2, 'b','middle','elab',[-1,0]);
+  /* card 2 — two right-angled halves */
+  p = base(g);
+  s = '<g class="grp c-two1" data-keys="triL" tabindex="0" role="button" aria-label="the left half">'
+    + '<polygon class="tri" points="'+n(p.A[0])+','+n(p.A[1])+' '+n(X(g.cx))+','+n(Y(0))+' '
+    + n(p.C[0])+','+n(p.C[1])+'"/></g>'
+    + '<g class="grp c-two2" data-keys="triR" tabindex="0" role="button" aria-label="the right half">'
+    + '<polygon class="tri" points="'+n(p.B[0])+','+n(p.B[1])+' '+n(X(g.cx))+','+n(Y(0))+' '
+    + n(p.C[0])+','+n(p.C[1])+'"/></g>'
+    + p.s;
+  s += angleArc(0,0,dAB,dAC,30,'ang');
+  s += angleValue(p.A[0], p.A[1], [1,0], unit([p.C[0]-p.A[0], p.C[1]-p.A[1]]), 30, 'A');
+  s += angleArc(g.c,0,dBC,dBA,30,'ang');
+  s += angleValue(p.B[0], p.B[1], [-1,0], unit([p.C[0]-p.B[0], p.C[1]-p.B[1]]), 30, 'B');
+  s += vertices(g, p);
   document.getElementById('svg2').innerHTML = s;
-  scheduleDeclutter();
-  G.c2 = {u:u, m:m, k:k, S:S};
-}
 
-/* =================================================================
-   CARD 3 — a² − b² = (a+b)(a−b)
-   ================================================================= */
-function drawCard3(){
-  var box = {x:76,y:34,w:272,h:292};
-  var f = fit(A, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var S  = A*u;            /* side of the square          */
-  var hb = B*u;            /* height of the bottom strip  */
-  var hc = (A-B)*u;        /* height of C                 */
-  var wB = (A-B)*u;        /* width of B                  */
-  var sqx = ox, sqy = oy + hb;   /* top-left of the square */
-  var s = '';
-  s += '<rect class="ghost" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  s += '<rect class="sqhl" data-keys="sq" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
-  /* target outline for C, shown while dragging */
-  s += '<rect class="target" id="c3target" x="'+n(sqx)+'" y="'+n(oy)+'" width="'+n(hc)+'" height="'+n(S)+'"/>';
-  s += reg(sqx,    sqy,    S,  hc, 'c-sky',    'C', 'C', {drag:true, id:'c3C', tid:'c3Ct', aria:'region C, draggable'});
-  s += reg(sqx,    sqy+hc, wB, hb, 'c-butter', 'B', 'B', {aria:'region B'});
-  s += reg(sqx+wB, sqy+hc, hb, hb, 'c-mint',   'A', 'A', {drag:true, id:'c3A', aria:'region A, draggable'});
-  s += '<rect class="frame" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
-  /* the photo's own markers — they describe the square as drawn, so they
-     recede once the pieces are moved */
-  s += '<g id="c3marks">';
-  s += arrow(sqx, sqy-22, sqx+S, sqy-22, 'dim');
-  s += lab(sqx+S/2, sqy-33, 'a','middle','elab',[0,-1]);
-  s += arrow(sqx-26, sqy, sqx-26, sqy+S, 'dim');
-  s += lab(sqx-38, sqy+S/2, 'a','middle','elab',[-1,0]);
-  s += arrow(sqx+wB, sqy+S+16, sqx+S, sqy+S+16, 'dim');
-  s += lab(sqx+wB+hb/2, sqy+S+30, 'b','middle','elab',[0,1]);
-  s += arrow(sqx+S+15, sqy+hc, sqx+S+15, sqy+S, 'dim');
-  s += lab(sqx+S+27, sqy+hc+hb/2, 'b','middle','elab',[1,0]);
-  s += '</g>';
-  /* ⊕ dimensions of the assembled rectangle — revealed only after the snap */
-  s += '<g id="c3dims" class="hidden">';
-  s +=   arrow(sqx-54, oy, sqx-54, sqy+S, 'dimadd');
-  s +=   '<text class="dlab add" x="'+n(sqx-66)+'" y="'+n((oy+sqy+S)/2)
-       + '" transform="rotate(-90 '+n(sqx-66)+' '+n((oy+sqy+S)/2)+')">(a+b)</text>';
-  s +=   arrow(sqx, sqy+S+16, sqx+wB, sqy+S+16, 'dimadd');
-  s +=   '<text class="dlab add" x="'+n(sqx+wB/2)+'" y="'+n(sqy+S+30)+'">(a−b)</text>';
-  s += '</g>';
+  /* card 3 — the base split */
+  p = base(g); s = p.s;
+  s += angleArc(0,0,dAB,dAC,30,'ang');
+  s += angleValue(p.A[0], p.A[1], [1,0], unit([p.C[0]-p.A[0], p.C[1]-p.A[1]]), 30, 'A');
+  s += '<g class="grp" data-keys="x" tabindex="0" role="button" aria-label="the piece x">'
+     + arrow2(X(0), Y(0)+34, X(g.cx), Y(0)+34, 'dim')
+     + lab((X(0)+X(g.cx))/2, Y(0)+48, 'x', 'middle', 'dlab', [0,1]) + '</g>';
+  s += '<g class="grp" data-keys="cx" tabindex="0" role="button" aria-label="the piece c minus x">'
+     + arrow2(X(g.cx), Y(0)+34, X(g.c), Y(0)+34, 'dimadd')
+     + lab((X(g.cx)+X(g.c))/2, Y(0)+48, 'c − x', 'middle', 'dlab add', [0,1]) + '</g>';
+  s += vertices(g, p);
   document.getElementById('svg3').innerHTML = s;
-  scheduleDeclutter();
-  G.c3 = {u:u,S:S,hb:hb,hc:hc,wB:wB,sqx:sqx,sqy:sqy,oy:oy};
-}
 
-/* =================================================================
-   CARD 4 — a² + b² = c²
-   ================================================================= */
-function drawCard4(){
-  var box = {x:58,y:46,w:284,h:284};
-  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
-  var wa = A*u, wb = B*u, S = wa+wb;
-  /* vertices of the tilted square, exactly as drawn on the photo:
-     top edge a then b, right edge a then b, bottom edge b then a, left edge b then a */
-  var P1 = [ox+wa, oy], P2 = [ox+S, oy+wa], P3 = [ox+wb, oy+S], P4 = [ox, oy+wb];
-  var tris = [
-    [[ox,oy],        P1,          P4        ],   /* T1 top-left     */
-    [P1,             [ox+S,oy],   P2        ],   /* T2 top-right    */
-    [P2,             [ox+S,oy+S], P3        ],   /* T3 bottom-right */
-    [P4,             P3,          [ox,oy+S] ]    /* T4 bottom-left  */
-  ];
-  var s = '';
-  /* the two squares revealed by arrangement 2 (⊕) — hidden to start */
-  s += '<g id="c4sq" class="hidden">';
-  s +=   '<g class="grp c-sky" data-keys="a2" tabindex="0" role="button" aria-label="region a squared">'
-       + '<rect class="reg" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(wa)+'" height="'+n(wa)+'"/>'
-       + '<text class="rlab" x="'+n(ox+wa/2)+'" y="'+n(oy+wa/2)+'">a²</text></g>';
-  s +=   '<g class="grp c-mint" data-keys="b2" tabindex="0" role="button" aria-label="region b squared">'
-       + '<rect class="reg" x="'+n(ox+wa)+'" y="'+n(oy+wa)+'" width="'+n(wb)+'" height="'+n(wb)+'"/>'
-       + '<text class="rlab" x="'+n(ox+wa+wb/2)+'" y="'+n(oy+wa+wb/2)+'">b²</text></g>';
-  s += '</g>';
-  /* the tilted square of side c */
-  var pts = [P1,P2,P3,P4].map(function(p){ return n(p[0])+','+n(p[1]); }).join(' ');
-  var cx = (P1[0]+P2[0]+P3[0]+P4[0])/4, cy = (P1[1]+P2[1]+P3[1]+P4[1])/4;
-  s += '<g id="c4inner" class="grp c-peach" data-keys="c2" tabindex="0" role="button" aria-label="tilted square of side c">';
-  s +=   '<polygon class="reg" points="'+pts+'"/>';
-  [[P1,P2],[P2,P3],[P3,P4],[P4,P1]].forEach(function(e){
-    var mx=(e[0][0]+e[1][0])/2, my=(e[0][1]+e[1][1])/2;
-    var dx=cx-mx, dy=cy-my, L=Math.hypot(dx,dy)||1, off=Math.min(16, L*0.42);
-    s += '<text class="rlab" x="'+n(mx+dx/L*off)+'" y="'+n(my+dy/L*off)+'">c</text>';
-  });
-  s += '</g>';
-  /* the four right triangles */
-  tris.forEach(function(t,i){
-    var p = t.map(function(v){ return n(v[0])+','+n(v[1]); }).join(' ');
-    s += '<g class="grp drag c-butter" data-keys="tri" id="c4t'+i+'" tabindex="0" role="button"'
-       + ' aria-label="right-angled triangle with legs a and b, draggable">'
-       + '<polygon class="reg" points="'+p+'"/></g>';
-  });
-  s += '<rect class="frame" data-keys="outer" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
-  /* a and b alternating round the edge, as drawn — these mark where the
-     triangles' vertices sit, so they recede once the triangles are moved */
-  s += '<g id="c4edges">';
-  s += lab(ox+wa/2,    oy-16,   'a','middle','elab',[0,-1]);
-  s += lab(ox+wa+wb/2, oy-16,   'b','middle','elab',[0,-1]);
-  s += lab(ox+S+18,    oy+wa/2,    'a','middle','elab',[1,0]);
-  s += lab(ox+S+18,    oy+wa+wb/2, 'b','middle','elab',[1,0]);
-  s += lab(ox+wb/2,    oy+S+20, 'b','middle','elab',[0,1]);
-  s += lab(ox+wb+wa/2, oy+S+20, 'a','middle','elab',[0,1]);
-  s += lab(ox-18,      oy+wb/2,    'b','middle','elab',[-1,0]);
-  s += lab(ox-18,      oy+wb+wa/2, 'a','middle','elab',[-1,0]);
-  s += '</g>';
+  /* card 4 — the angle at B */
+  p = base(g, {h:false}); s = p.s;
+  s += angleArc(g.c,0,dBC,dBA,34,'ang');
+  s += angleValue(p.B[0], p.B[1], [-1,0], unit([p.C[0]-p.B[0], p.C[1]-p.B[1]]), 34, deg(g.B));
+  s += vertices(g, p);
   document.getElementById('svg4').innerHTML = s;
   scheduleDeclutter();
-  /* arrangement 2 is reached by four pure translations */
-  G.c4 = {
-    u:u, wa:wa, wb:wb, S:S,
-    away: [ [0, wa], [0, 0], [-wb, 0], [wa, -wb] ],
-    off:  [ [0,0], [0,0], [0,0], [0,0] ]
-  };
+  return g;
 }
 
+function updateAll(){
+  var g = drawAll();
+  document.getElementById('apexOut').textContent = 'C (' + num(g.cx,1) + ', ' + num(g.cy,1) + ')';
 
-/* =================================================================
-   verification strips
-   ================================================================= */
-function updateVerify(){
-  var a = A, b = B;
-  var s1 = a*a + a*b + a*b + b*b, r1 = (a+b)*(a+b);
-  var g1 = G.c1 ? Math.abs(G.c1.wa*G.c1.wa + G.c1.wb*G.c1.wa + G.c1.wa*G.c1.wb
-                         + G.c1.wb*G.c1.wb - G.c1.S*G.c1.S) < 1e-6*G.c1.S*G.c1.S+1e-6 : false;
-  strip('v1', (a*a)+' + '+(a*b)+' + '+(a*b)+' + '+(b*b)+' = '+r1+' = '+(a+b)+'²', s1===r1 && g1);
+  var areaHalfBase = 0.5*g.c*g.h;
+  var areaFormula  = 0.5*g.b*g.c*Math.sin(g.A*RAD);
+  document.getElementById('a3').textContent =
+    '= ½ × '+len(g.b)+' × '+len(g.c)+' × sin '+deg(g.A)+' = '+len(areaFormula);
+  strip('v1',
+        '½ × c × h = ½ × '+len(g.c)+' × '+len(g.h)+' = '+len(areaHalfBase)
+        +' — ½bc sin A = '+len(areaFormula),
+        Math.abs(areaHalfBase - areaFormula) < 1e-9);
 
-  var s2 = a*a - b*(a-b) - b*(a-b) - b*b, r2 = (a-b)*(a-b);
-  var g2 = G.c2 ? Math.abs(G.c2.m*G.c2.m + G.c2.k*G.c2.m + G.c2.m*G.c2.k
-                         + G.c2.k*G.c2.k - G.c2.S*G.c2.S) < 1e-6*G.c2.S*G.c2.S+1e-6 : false;
-  strip('v2', a*a+' − '+(b*(a-b))+' − '+(b*(a-b))+' − '+(b*b)+' = '+r2+' = '+(a-b)+'²', s2===r2 && g2);
+  var hL = g.b*Math.sin(g.A*RAD), hR = g.a*Math.sin(g.B*RAD);
+  var lhs = g.a/Math.sin(g.A*RAD), rhs = g.b/Math.sin(g.B*RAD);
+  document.getElementById('s3').textContent =
+    len(g.a)+' ÷ sin '+deg(g.A)+' = '+len(lhs)+' and '+len(g.b)+' ÷ sin '+deg(g.B)+' = '+len(rhs);
+  strip('v2',
+        'b sin A = '+len(hL)+' — a sin B = '+len(hR)+' — a ÷ sin A = '+len(lhs)
+        +' — b ÷ sin B = '+len(rhs),
+        Math.abs(hL-hR) < 1e-9 && Math.abs(lhs-rhs) < 1e-9);
 
-  var s3 = a*a - b*b, r3 = (a+b)*(a-b);
-  var g3 = G.c3 ? Math.abs(G.c3.S*G.c3.hc + G.c3.wB*G.c3.hb + G.c3.hb*G.c3.hb
-                         - G.c3.S*G.c3.S) < 1e-6*G.c3.S*G.c3.S+1e-6 : false;
-  strip('v3', a*a+' − '+(b*b)+' = '+s3+' = '+(a+b)+' × '+(a-b), s3===r3 && g3);
+  var aDirect = g.a*g.a;
+  var aRule   = g.b*g.b + g.c*g.c - 2*g.b*g.c*Math.cos(g.A*RAD);
+  document.getElementById('k7').textContent =
+    'x = '+len(g.x)+', c − x = '+len(g.c-g.x)+', b cos A = '+len(g.b*Math.cos(g.A*RAD));
+  strip('v3',
+        'a² off the drawing = '+len(aDirect)+' — b² + c² − 2bc cos A = '+len(aRule),
+        Math.abs(aDirect - aRule) < 1e-9);
 
-  var outer = (a+b)*(a+b);
-  var c2    = outer - 4*0.5*a*b;
-  var pyth  = a*a + b*b;
-  var g4 = G.c4 ? Math.abs(4*0.5*G.c4.wa*G.c4.wb + (G.c4.wa*G.c4.wa + G.c4.wb*G.c4.wb)
-                         - G.c4.S*G.c4.S) < 1e-6*G.c4.S*G.c4.S+1e-6 : false;
-  strip('v4', '4 × ½ × '+a+' × '+b+' + c² = '+outer+', so c² = '+c2+' = '+(a*a)+' + '+(b*b),
-        c2===pyth && g4);
+  var cosRule = (g.a*g.a + g.c*g.c - g.b*g.b)/(2*g.a*g.c);
+  var vBA = [-g.c, 0], vBC = [g.cx-g.c, g.cy];
+  var cosDrawn = (vBA[0]*vBC[0]+vBA[1]*vBC[1])
+               / (Math.hypot(vBA[0],vBA[1])*Math.hypot(vBC[0],vBC[1]));
+  document.getElementById('m1').textContent =
+    'cos B = ('+len(g.a*g.a)+' + '+len(g.c*g.c)+' − '+len(g.b*g.b)+') ÷ '+len(2*g.a*g.c);
+  document.getElementById('m2').innerHTML =
+    'cos B = ' + len(cosRule) + (cosRule < 0
+      ? ' &nbsp;<span class="tagbad">negative, so B is obtuse</span>'
+      : ' &nbsp;<span class="tagok">positive, so B is acute</span>');
+  document.getElementById('m3').textContent = 'B = ' + deg(g.B);
+  strip('v4',
+        'cos B from the rule = '+len(cosRule)+' — cosine of the angle drawn at B = '+len(cosDrawn)
+        +(Math.abs(cosRule + 11/24) < 1e-9 ? ' — that is exactly −11/24' : ''),
+        Math.abs(cosRule - cosDrawn) < 1e-9);
 }
 
-var c3 = { aGone:false, cSnapped:false, aOff:[0,0] };
+wireCards(CARDS);
+var st1 = new Stepper('card1','b1',[{show:'a1',hl:'h b angA'},{show:'a2',hl:'b c'},{show:'a3'}],{always:'a0'});
+var st2 = new Stepper('card2','b2',[{show:'s1',hl:'triL triR'},{show:'s2'},{show:'s3'}],{always:'q0'});
+var st3 = new Stepper('card3','b3',
+  [{show:'k1',hl:'triL'},{show:'k2',hl:'triR'},{show:'k3'},{show:'k4'},{show:'k5'},
+   {show:'k6',hl:'x b angA'},{show:'k7'}],{always:'k0'});
+var st4 = new Stepper('card4','b4',[{show:'m1'},{show:'m2',hl:'angB'},{show:'m3',hl:'angB'}],{always:'m0'});
 
-function c3applyA(off, opacity){
-  var el = document.getElementById('c3A');
-  if(!el) return;
-  el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
-  el.style.opacity = opacity;
-  el.classList.toggle('removed', opacity < 0.9);
-}
-function c3applyC(t, dragOff){
-  var g = G.c3, el = document.getElementById('c3C'), tx = document.getElementById('c3Ct');
-  if(!el) return;
-  var d = dragOff || [0,0];
-  var mx = d[0]*(1-t), my = d[1]*(1-t) + g.hc*t;
-  el.setAttribute('transform','translate('+n(mx)+','+n(my)+') rotate('+n(-90*t)+' '+n(g.sqx)+' '+n(g.sqy)+')');
-  /* keep the letter C upright while its region turns */
-  tx.setAttribute('transform','rotate('+n(90*t)+' '+tx.getAttribute('x')+' '+tx.getAttribute('y')+')');
-}
-function c3refresh(){
-  document.getElementById('c3l1').classList.toggle('on', c3.aGone);
-  document.getElementById('c3l2').classList.toggle('on', c3.aGone);
-  document.getElementById('c3l3').classList.toggle('on', c3.cSnapped);
-  document.getElementById('c3dims').classList.toggle('hidden', !c3.cSnapped);
-  var marks = document.getElementById('c3marks');
-  if(marks) marks.classList.toggle('receded', c3.aGone || c3.cSnapped);
-  setBtn('b3', c3.aGone || c3.cSnapped);
-}
-function c3reset(){
-  c3.aGone = false; c3.cSnapped = false; c3.aOff = [0,0];
-  c3applyA([0,0],1);
-  c3applyC(0,[0,0]);
-  document.getElementById('c3target').classList.remove('on');
-  c3refresh();
-}
-document.getElementById('b3').addEventListener('click', function(){
-  clearTimers();
-  if(c3.aGone || c3.cSnapped){ c3reset(); return; }
-  /* 1 — A is removed */
-  anim(380, function(t){ c3applyA([0, 18*t], 1 - 0.88*t); }, function(){
-    c3.aGone = true; c3.aOff = [0,18]; c3refresh();
+/* dragging the corner, on any of the four pictures */
+IDS.forEach(function(id){
+  var svg = document.getElementById(id);
+  var live = false;
+  function near(e){
+    var r = svg.getBoundingClientRect(), k = 400 / r.width;
+    var px = (e.clientX - r.left)*k, py = (e.clientY - r.top)*k;
+    return Math.hypot(px - X(apex[0]), py - Y(apex[1])) <= 26;
+  }
+  function move(e){
+    var r = svg.getBoundingClientRect(), k = 400 / r.width;
+    var wx = invX((e.clientX - r.left)*k), wy = invY((e.clientY - r.top)*k);
+    apex = [Math.max(-4.4, Math.min(10.6, wx)), Math.max(0.6, Math.min(8.4, wy))];
+    updateAll();
+  }
+  svg.addEventListener('pointerdown', function(e){
+    if(!near(e)) return;
+    live = true;
+    try{ svg.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault(); move(e);
   });
-  /* 2 — C rotates and lands on top of B */
-  later(function(){
-    anim(780, function(t){ c3applyC(t,[0,0]); }, function(){
-      c3.cSnapped = true; c3refresh();
-    });
-  }, 330);
+  svg.addEventListener('pointermove', function(e){ if(live) move(e); });
+  svg.addEventListener('pointerup',   function(){ live = false; });
+  svg.addEventListener('pointercancel', function(){ live = false; });
 });
 
-/* --- dragging on card 3 --- */
-(function(){
-  var svg = document.getElementById('svg3');
-  var mode = null, start = null, base = null;
-  svg.addEventListener('pointerdown', function(e){
-    var el = pickDraggable(svg, e);
-    if(!el) return;
-    if(el.id === 'c3C' && c3.cSnapped) return;
-    mode = (el.id === 'c3A') ? 'A' : 'C';
-    start = [e.clientX, e.clientY];
-    base = (mode === 'A') ? c3.aOff.slice() : [0,0];
-    try{ el.setPointerCapture(e.pointerId); }catch(err){}
-    if(mode === 'C') document.getElementById('c3target').classList.add('on');
-    e.preventDefault();
-  });
-  svg.addEventListener('pointermove', function(e){
-    if(!mode) return;
-    var k = scaleOf(svg);
-    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
-    if(mode === 'A'){
-      c3applyA([dx,dy], Math.hypot(dx,dy) > G.c3.hb*0.5 ? 0.12 : 1);
-    } else {
-      document.getElementById('c3C').setAttribute('transform','translate('+n(dx)+','+n(dy)+')');
-    }
-  });
-  svg.addEventListener('pointerup', function(e){
-    if(!mode) return;
-    var k = scaleOf(svg), g = G.c3;
-    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
-    if(mode === 'A'){
-      if(Math.hypot(dx,dy) > g.hb*0.5){ c3.aGone = true; c3.aOff = [dx,dy]; c3applyA([dx,dy],0.12); }
-      else { c3.aGone = false; c3.aOff = [0,0]; c3applyA([0,0],1); }
-    } else {
-      document.getElementById('c3target').classList.remove('on');
-      /* centre of C where it was dropped, vs centre of the snapped position */
-      var nowC = [g.sqx + g.S/2 + dx, g.sqy + g.hc/2 + dy];
-      var tgtC = [g.sqx + g.hc/2,     g.oy  + g.S/2];
-      if(Math.hypot(nowC[0]-tgtC[0], nowC[1]-tgtC[1]) < Math.max(g.S,g.hc)*0.45){
-        anim(400, function(t){ c3applyC(t,[dx,dy]); }, function(){ c3.cSnapped = true; c3refresh(); });
-      } else {
-        anim(200, function(t){
-          document.getElementById('c3C').setAttribute('transform','translate('+n(dx*(1-t))+','+n(dy*(1-t))+')');
-        });
-      }
-    }
-    mode = null;
-    c3refresh();
-  });
-  svg.addEventListener('pointercancel', function(){ mode = null; });
-})();
-
-function c4apply(i, off){
-  var el = document.getElementById('c4t'+i);
-  if(el) el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
-}
-function near(p,q,tol){ return Math.hypot(p[0]-q[0], p[1]-q[1]) <= tol; }
-function c4refresh(){
-  var g = G.c4, tol = Math.max(g.S*0.015, 0.5);
-  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
-  var allAway = g.off.every(function(o,i){ return near(o, g.away[i], tol); });
-  document.getElementById('c4inner').classList.toggle('hidden', !allHome);
-  document.getElementById('c4sq').classList.toggle('hidden', !allAway);
-  document.getElementById('c4l1').classList.toggle('on', allAway);
-  document.getElementById('c4l2').classList.toggle('on', allAway);
-  var edges = document.getElementById('c4edges');
-  if(edges) edges.classList.toggle('receded', !allHome);
-  setBtn('b4', !allHome);
-}
-function c4reset(){
-  var g = G.c4;
-  g.off = [[0,0],[0,0],[0,0],[0,0]];
-  for(var i=0;i<4;i++) c4apply(i,[0,0]);
-  c4refresh();
-}
-document.getElementById('b4').addEventListener('click', function(){
+document.getElementById('reset').addEventListener('click', function(){
   clearTimers();
-  var g = G.c4;
-  var tol = Math.max(g.S*0.015, 0.5);
-  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
-  var from = g.off.map(function(o){ return o.slice(); });
-  var to   = allHome ? g.away.map(function(o){ return o.slice(); }) : [[0,0],[0,0],[0,0],[0,0]];
-  document.getElementById('c4inner').classList.add('hidden');
-  document.getElementById('c4sq').classList.add('hidden');
-  document.getElementById('c4l1').classList.remove('on');
-  document.getElementById('c4l2').classList.remove('on');
-  anim(1100, function(t){
-    for(var i=0;i<4;i++){
-      c4apply(i, [from[i][0] + (to[i][0]-from[i][0])*t, from[i][1] + (to[i][1]-from[i][1])*t]);
-    }
-  }, function(){
-    g.off = to.map(function(o){ return o.slice(); });
-    for(var i=0;i<4;i++) c4apply(i, g.off[i]);
-    c4refresh();
-  });
+  apex = HOME.slice(); prevApex = null;
+  st1.reset(); st2.reset(); st3.reset(); st4.reset();
+  updateAll(); applyTextScale();
+});
+document.getElementById('obtuse').addEventListener('click', function(){
+  var atObtuse = Math.abs(apex[0]-OBTUSE[0]) < 1e-6 && Math.abs(apex[1]-OBTUSE[1]) < 1e-6;
+  var from = apex.slice();
+  var to   = atObtuse ? (prevApex || HOME).slice() : OBTUSE.slice();
+  if(!atObtuse) prevApex = from.slice();
+  this.textContent = atObtuse ? 'Obtuse example' : 'Back';
+  anim(600, function(t){
+    apex = [from[0]+(to[0]-from[0])*t, from[1]+(to[1]-from[1])*t];
+    updateAll();
+  }, function(){ apex = to.slice(); updateAll(); });
 });
 
-/* --- dragging on card 4 --- */
-(function(){
-  var svg = document.getElementById('svg4');
-  var idx = null, start = null, base = null;
-  svg.addEventListener('pointerdown', function(e){
-    var el = pickDraggable(svg, e);
-    if(!el || !/^c4t(\d)$/.test(el.id)) return;
-    idx = +el.id.slice(3);
-    start = [e.clientX, e.clientY];
-    base = G.c4.off[idx].slice();
-    try{ el.setPointerCapture(e.pointerId); }catch(err){}
-    document.getElementById('c4inner').classList.add('hidden');
-    document.getElementById('c4sq').classList.add('hidden');
-    e.preventDefault();
-  });
-  svg.addEventListener('pointermove', function(e){
-    if(idx === null) return;
-    var k = scaleOf(svg);
-    c4apply(idx, [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]]);
-  });
-  svg.addEventListener('pointerup', function(e){
-    if(idx === null) return;
-    var g = G.c4, k = scaleOf(svg);
-    var cur = [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]];
-    var snap = Math.max(g.S*0.30, 24);
-    var dHome = Math.hypot(cur[0], cur[1]);
-    var dAway = Math.hypot(cur[0]-g.away[idx][0], cur[1]-g.away[idx][1]);
-    var to;
-    if(dAway <= dHome && dAway < snap)      to = g.away[idx].slice();
-    else if(dHome < snap)                   to = [0,0];
-    else                                    to = base.slice();
-    var i = idx, from = cur;
-    anim(200, function(t){
-      c4apply(i, [from[0]+(to[0]-from[0])*t, from[1]+(to[1]-from[1])*t]);
-    }, function(){
-      g.off[i] = to.slice(); c4apply(i,to); c4refresh();
-    });
-    idx = null;
-  });
-  svg.addEventListener('pointercancel', function(){ idx = null; });
-})();
-
-
-/* =================================================================
-   redraw, controls and the two step-throughs
-   ================================================================= */
-wireCards(['card1','card2','card3','card4']);
-var st1 = null, st2 = null;
-
-function redraw(){
-  clearTimers();
-  drawCard1(); drawCard2(); drawCard3(); drawCard4();
-  c3reset(); c4reset();
-  if(st1) st1.reset();
-  if(st2) st2.reset();
-  updateVerify();
-  applyTextScale();
-  scheduleDeclutter();
-}
-
-var sa = document.getElementById('sa'), sb = document.getElementById('sb');
-var oa = document.getElementById('oa'), ob = document.getElementById('ob');
-function readSliders(){
-  A = +sa.value;
-  sb.max = String(A-1);
-  if(+sb.value > A-1) sb.value = String(A-1);
-  if(+sb.value < 1)   sb.value = '1';
-  B = +sb.value;
-  oa.textContent = A; ob.textContent = B;
-  redraw();
-}
-sa.addEventListener('input', readSliders);
-sb.addEventListener('input', readSliders);
-readSliders();
-
-st1 = new Stepper('card1','b1', [{ show:'c1l2', hl:'ab1 ab2' }], { always:'c1l1' });
-st2 = new Stepper('card2','b2',
-  [{ show:'c2l2', hl:'B C D' },{ show:'c2l3', hl:'A' }], { always:'c2l1' });
+updateAll();
 watchTextScale();
 
 window.__extraStates = {
-  wideB:  function(){ window.__page.setAB(10, 9); },
-  tightA: function(){ window.__page.setAB(3, 2); },
-  __home: function(){ window.__page.setAB(5, 2); }
+  farLeft:  function(){ apex = [-4.4, 2]; updateAll(); },
+  farRight: function(){ apex = [10.6, 1]; updateAll(); },
+  tall:     function(){ apex = [0.6, 8.4]; updateAll(); },
+  flat:     function(){ apex = [3, 0.6]; updateAll(); },
+  obtuseEg: function(){ apex = OBTUSE.slice(); updateAll(); },
+  __home:   function(){ apex = HOME.slice(); updateAll(); }
 };
 window.__page = {
-  setAB: function(a,b){ sa.value=String(a); sb.max=String(a-1); sb.value=String(b); readSliders(); },
+  setApex: function(x,y){ apex = [x,y]; updateAll(); },
+  apex: function(){ return apex.slice(); },
+  obtuse: function(){ document.getElementById('obtuse').click(); },
   step: function(k){ document.getElementById('b'+k).click(); },
   ticks: function(){ return ['v1','v2','v3','v4'].map(function(id){
            return document.getElementById(id).querySelector('.tick').textContent; }); }
