@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D template</title>
+<!-- Starter for a 3D page: the figure the 3d-trigonometry page will be built
+     on. Three.js is vendored in ../../vendor/; nothing is fetched at runtime.
+     Not in the manifest — check.mjs skips _template-*. -->
+<meta name="viz-topic" content="Template">
+<meta name="viz-title" content="3D starter">
+<link rel="stylesheet" href="../../tokens.css">
+<script src="../../chrome.js"></script>
+<style>
+:root{ --nav-h:56px }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}body{overflow-x:hidden}
+.wrap{max-width:1160px;margin:0 auto;padding:24px 16px 56px}
+.card{background:rgb(var(--bg-surface));border:1px solid rgb(var(--border));border-radius:.875rem;
+  box-shadow:0 1px 3px rgba(32,27,20,.08),0 4px 12px rgba(32,27,20,.05);padding:24px}
+h2{font-size:24px;margin:0 0 6px;font-weight:650}
+.lead{margin:0 0 16px;color:rgb(var(--ink-2));max-width:62ch}
+.howto{margin:10px 0 0;font-size:14px;color:rgb(var(--ink-3))}
+#stage{position:relative;width:100%;aspect-ratio:16/10;max-height:62vh;border-radius:10px;
+  overflow:hidden;background:rgb(var(--bg-page) / .5);border:1px solid rgb(var(--border));
+  touch-action:none;cursor:grab}
+#stage:active{cursor:grabbing}#stage canvas{display:block;width:100%;height:100%}
+.fallback{display:none;padding:24px;text-align:center;color:rgb(var(--ink-2))}
+.no-webgl #stage{cursor:default}.no-webgl #stage canvas{display:none}
+.no-webgl .fallback{display:block}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px}
+.key{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:rgb(var(--ink-2));flex:1 1 auto}
+.key i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;font-style:normal}
+/* Tome Button, secondary */
+button{font:inherit;font-size:.875rem;font-weight:500;display:inline-flex;align-items:center;
+  justify-content:center;height:2.5rem;padding:0 1rem;border-radius:.625rem;cursor:pointer;
+  background:rgb(var(--bg-surface));color:rgb(var(--ink-1));border:1px solid rgb(var(--border-strong));
+  transition:border-color .2s cubic-bezier(0.16,1,0.3,1),color .2s cubic-bezier(0.16,1,0.3,1),
+             transform .2s cubic-bezier(0.16,1,0.3,1)}
+button:hover{border-color:rgb(var(--accent-1));color:rgb(var(--accent-1))}
+button:active{transform:scale(.98)}
+</style>
+</head>
+<body>
+<div class="wrap"><section class="card">
+  <h2>Angle between a line and a plane</h2>
+  <p class="lead">A cuboid with one space diagonal and the right-angled triangle it makes
+     with the base: base diagonal, vertical edge, space diagonal.</p>
+  <div id="stage">
+    <p class="fallback">This diagram needs WebGL, which this browser has turned off or does
+       not support. The figure is a cuboid a×b×c: base diagonal √(a²+b²), vertical edge c,
+       space diagonal √(a²+b²+c²).</p>
+  </div>
+  <div class="row">
+    <div class="key">
+      <span><i style="background:rgb(var(--chart-1))"></i>space diagonal</span>
+      <span><i style="background:rgb(var(--chart-2))"></i>base diagonal</span>
+      <span><i style="background:rgb(var(--chart-3))"></i>vertical edge</span>
+    </div>
+    <button id="reset" type="button">Reset view</button>
+  </div>
+  <p class="howto">Drag to orbit · pinch to zoom.</p>
+</section></div>
+
+<script type="module">
+import * as THREE from "../../vendor/three.module.min.js";
+
+const stage = document.getElementById("stage");
+const A = 3, B = 2, C = 2;                          // cuboid a × b × c
+const HOME = { theta: 2.0, phi: 1.12, dist: 6.4 };  // the "Reset view" camera
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+} catch (e) {
+  document.documentElement.classList.add("no-webgl");
+  throw e;                       // the .fallback paragraph takes over
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 16 / 10, 0.1, 100);
+const view = { ...HOME };
+
+/* Colours come from tokens.css, so the figure re-colours with the theme. The
+   tokens are space-separated RGB triples ("232 122 88") so Tailwind can apply
+   alpha; THREE.Color.setStyle only parses the comma form. */
+const rgb = (name, from) => {
+  const raw = (from || getComputedStyle(document.documentElement)).getPropertyValue(name);
+  return new THREE.Color(`rgb(${raw.trim().split(/[\s,]+/).join(",")})`);
+};
+const token = (name) => rgb(name);
+const tinted = [], v = (x, y, z) => new THREE.Vector3(x - A / 2, y, z - B / 2);
+
+/* A member of the triangle, as a thin cylinder: WebGL ignores
+   LineBasicMaterial.linewidth almost everywhere, and a 1 px line cannot carry
+   a colour. */
+function rod(from, to, tokenName, r = 0.035) {
+  const dir = new THREE.Vector3().subVectors(to, from);
+  const mesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(r, r, dir.length(), 12),
+    new THREE.MeshBasicMaterial({ color: token(tokenName) }),
+  );
+  mesh.position.copy(from).addScaledVector(dir, 0.5);
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  mesh.userData.token = tokenName;
+  tinted.push(mesh);
+  scene.add(mesh);
+}
+
+/* the cuboid's twelve edges */
+const box = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(A, C, B)),
+  new THREE.LineBasicMaterial({ color: token("--ink-3") }),
+);
+box.position.y = C / 2;
+box.userData.token = "--ink-3";
+tinted.push(box); scene.add(box);
+
+/* the right triangle: base diagonal, vertical edge, space diagonal */
+rod(v(0, 0, 0), v(A, 0, B), "--chart-2");   // base diagonal, √(a²+b²)
+rod(v(A, 0, B), v(A, C, B), "--chart-3");   // vertical edge, c
+rod(v(0, 0, 0), v(A, C, B), "--chart-1");   // space diagonal, √(a²+b²+c²)
+/* the right angle where the vertical edge meets the base */
+const corner = v(A, 0, B), inward = v(A - 0.3, 0, B - 0.2), up = inward.clone().setY(0.3);
+rod(inward, up, "--ink-4", 0.018);
+rod(up, corner.clone().setY(0.3), "--ink-4", 0.018);
+const base = new THREE.Mesh(
+  new THREE.PlaneGeometry(A, B).rotateX(-Math.PI / 2),
+  new THREE.MeshBasicMaterial({
+    color: token("--chart-2"), transparent: true, opacity: 0.18, side: THREE.DoubleSide,
+  }),
+);
+scene.add(base);
+
+function recolour() {
+  const next = getComputedStyle(document.documentElement);
+  for (const o of tinted) o.material.color = rgb(o.userData.token, next);
+  base.material.color = rgb("--chart-2", next);
+  render();
+}
+new MutationObserver(recolour)
+  .observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+function render() {
+  const r = (view.dist = Math.max(2.5, Math.min(24, view.dist)));
+  const phi = (view.phi = Math.max(0.12, Math.min(Math.PI - 0.12, view.phi)));
+  camera.position.set(
+    r * Math.sin(phi) * Math.sin(view.theta),
+    r * Math.cos(phi),
+    r * Math.sin(phi) * Math.cos(view.theta),
+  );
+  camera.lookAt(0, C / 2, 0);
+  renderer.render(scene, camera);
+}
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  render();
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+
+/* orbit by drag or one finger, pinch to zoom */
+const pointers = new Map();
+let pinch = 0;
+stage.addEventListener("pointerdown", (e) => {
+  stage.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+});
+stage.addEventListener("pointermove", (e) => {
+  const prev = pointers.get(e.pointerId);
+  if (!prev) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1) {
+    view.theta -= (e.clientX - prev.x) * 0.008;
+    view.phi -= (e.clientY - prev.y) * 0.008;
+  } else if (pointers.size === 2) {
+    const [p, q] = [...pointers.values()];
+    const d = Math.hypot(p.x - q.x, p.y - q.y);
+    if (pinch) view.dist *= pinch / d;
+    pinch = d;
+  }
+  render();
+});
+for (const ev of ["pointerup", "pointercancel", "pointerleave"])
+  stage.addEventListener(ev, (e) => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch = 0; });
+stage.addEventListener("wheel",
+  (e) => { e.preventDefault(); view.dist *= e.deltaY > 0 ? 1.08 : 0.93; render(); },
+  { passive: false });
+
+document.getElementById("reset").addEventListener("click", () => { Object.assign(view, HOME); render(); });
+</script>
+</body>
+</html>

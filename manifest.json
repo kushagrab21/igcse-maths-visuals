@@ -1,0 +1,110 @@
+{
+  "site": {
+    "title": "G10 Maths — Visual Revision",
+    "subtitle": "Interactive pages built from the class notes"
+  },
+  "documents": [
+    {
+      "id": "essential-math",
+      "title": "G10 UWCE Essential Math",
+      "topics": [
+        { "slug": "ambiguous-case", "title": "Ambiguous Case" },
+        { "slug": "3d-trigonometry", "title": "3D Trigonometry" },
+        { "slug": "bearings", "title": "Bearings" },
+        { "slug": "triangle-area-and-rules", "title": "Area of a Triangle, Sine Rule, Cosine Rule" }
+      ]
+    },
+    {
+      "id": "math-plus",
+      "title": "Math Plus",
+      "topics": [
+        { "slug": "algebraic-proof", "title": "Algebraic Proof" },
+        { "slug": "visual-proof", "title": "Visual Proof" },
+        { "slug": "exponents", "title": "Exponents" },
+        { "slug": "logarithms", "title": "Logarithms" }
+      ]
+    }
+  ],
+  "visualisations": [
+    {
+      "id": "visual-proof",
+      "topic": "visual-proof",
+      "title": "Visual Proof — four area dissections",
+      "blurb": "(a+b)², (a−b)², a²−b² and Pythagoras, with draggable pieces.",
+      "path": "viz/visual-proof/",
+      "kind": "2d",
+      "source_pages": ["IMG_0256", "IMG_0257"],
+      "status": "ready"
+    },
+    {
+      "id": "ambiguous-case",
+      "topic": "ambiguous-case",
+      "title": "Ambiguous Case — when does the triangle close?",
+      "blurb": "The perpendicular height 12 sin 30° = 6 as the critical value: no triangle, exactly one, or two.",
+      "path": "viz/ambiguous-case/",
+      "kind": "2d",
+      "source_pages": ["IMG_0249", "IMG_0250"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "3d-trigonometry",
+      "topic": "3d-trigonometry",
+      "title": "3D Trigonometry — the angle between a line and a plane",
+      "blurb": "Finding the right-angled triangle hiding inside a cuboid, and the angle a diagonal makes with the base.",
+      "path": "viz/3d-trigonometry/",
+      "kind": "3d",
+      "source_pages": ["IMG_0251"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "bearings",
+      "topic": "bearings",
+      "title": "Bearings — drawing the diagram",
+      "blurb": "North lines at the point you measure from, three-figure bearings including reflex, and a two-leg journey.",
+      "path": "viz/bearings/",
+      "kind": "2d",
+      "source_pages": ["IMG_0251"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "triangle-area-and-rules",
+      "topic": "triangle-area-and-rules",
+      "title": "Area, Sine Rule, Cosine Rule — the shared perpendicular",
+      "blurb": "One dropped height derives ½ab sin C, the sine rule, and a² = b² + c² − 2bc cos A.",
+      "path": "viz/triangle-area-and-rules/",
+      "kind": "2d",
+      "source_pages": ["IMG_0258", "IMG_0259", "IMG_0260"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "algebraic-proof",
+      "topic": "algebraic-proof",
+      "title": "Algebraic Proof — 2n+1 and the forms you aim for",
+      "blurb": "Consecutive odd numbers, two independent letters, place value as 10x + y, and reaching 2(…) or 2(…)+1.",
+      "path": "viz/algebraic-proof/",
+      "kind": "2d",
+      "source_pages": ["IMG_0252", "IMG_0253", "IMG_0254", "IMG_0255"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "exponents",
+      "topic": "exponents",
+      "title": "Exponents — get everything onto a common base",
+      "blurb": "Common bases, equating indices, splitting a²ˣ⁺¹, and the disguised quadratic y = 3ˣ.",
+      "path": "viz/exponents/",
+      "kind": "2d",
+      "source_pages": ["IMG_0260", "IMG_0261", "IMG_0262", "IMG_0263", "IMG_0264"],
+      "status": "coming-soon"
+    },
+    {
+      "id": "logarithms",
+      "topic": "logarithms",
+      "title": "Logarithms — index form, splitting, change of base",
+      "blurb": "log₄32 = x as 4ˣ = 32, splitting log(100x⁴/y⁶), change of base, and rejecting invalid solutions.",
+      "path": "viz/logarithms/",
+      "kind": "2d",
+      "source_pages": ["IMG_0265", "IMG_0266"],
+      "status": "coming-soon"
+    }
+  ]
+}

@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>② Visual Proof</title>
+<!--
+=====================================================================
+② Visual Proof — interactive page
+Source of truth: Notes/images/IMG_0256.jpg, Notes/images/IMG_0257.jpg
+Scope: study_library/01_syllabus/quiz_scope.md §B2 `visual-proof` (4 items)
+One file. Inline CSS + SVG + plain JavaScript. No external requests.
+
+VERIFICATION CHECKLIST — run in Chrome against this file.
+Full detail, palette, type scale and the language rewrite are in
+visual_proofs_README.md.
+
+  [PASS]  1. Diagrams re-checked against both photographs after restyling:
+            no label, edge, region letter or written line moved.
+  [PASS]  2. a=5,b=2 and a=7,b=3 — every card stepped through end to end.
+  [PASS]  3. Regions tile with no gaps or overlaps, all 44 valid (a,b) pairs
+            (a = 3..10, b = 1..a−1).
+  [PASS]  4. Every displayed equality numerically true, all 44 pairs. The ✓
+            is a live === comparison of two independently evaluated sides.
+  [PASS]  5. Headings match the photos character for character.
+  [PASS]  6. Hover / tap / focus linking works on every region, both ways.
+  [PASS]  7. Drag-and-snap works on cards 3 and 4.
+  [PASS]  8. 360 px and 1200 px layouts: no horizontal scroll, labels hold
+            at 15 px rendered.
+  [PASS]  9. prefers-reduced-motion: every move jumps to its end state.
+  [PASS] 10. Text contrast ≥ 4.5:1 everywhere.
+  [PASS] 11. Keyboard: Tab reaches every region and every algebra term;
+            Enter or Space runs that card's move.
+=====================================================================
+-->
+<!-- ── design system ────────────────────────────────────────────────
+     Tokens, self-hosted type, the vellum page, focus rings, the ❧ rule
+     and beat-pulse all come from tokens.css (generated from the Next
+     app's app/globals.css). chrome.js adds the site nav and the reading
+     progress bar. Both are relative, so this file works at any base path
+     and still opens straight off disk.
+     Everything below is diagram-specific CSS only — geometry unchanged
+     from the original, colours moved onto the tokens.
+     ─────────────────────────────────────────────────────────────── -->
+<meta name="viz-topic" content="Visual Proof">
+<meta name="viz-title" content="Four area dissections">
+<link rel="stylesheet" href="../../tokens.css">
+<script src="../../chrome.js"></script>
+<style>
+/* ===================================================================
+   type scale  (unchanged)
+   =================================================================== */
+:root{
+  --fs-title:20px;
+  --fs-identity:24px;
+  --fs-alg:18px;
+  --fs-body:16px;
+  --nav-h:56px;            /* height of the nav chrome.js injects */
+}
+
+/* four region tints — chart-1…chart-4 at 35% with a full-alpha stroke
+   of the same token. Identical pieces share a token, so a piece keeps
+   its colour when it moves between diagrams. Both re-colour with the
+   theme because the tokens do. */
+.c-sky   { --fill:rgb(var(--chart-1) / .35); --line:rgb(var(--chart-1)); }
+.c-mint  { --fill:rgb(var(--chart-2) / .35); --line:rgb(var(--chart-2)); }
+.c-butter{ --fill:rgb(var(--chart-3) / .35); --line:rgb(var(--chart-3)); }
+.c-peach { --fill:rgb(var(--chart-4) / .35); --line:rgb(var(--chart-4)); }
+
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--nav-h) + 86px)}
+html,body{margin:0;padding:0}
+body{
+  font-size:var(--fs-body);
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px 56px}
+
+/* ===================================================================
+   sticky a / b bar — sits directly below the injected nav
+   =================================================================== */
+.topbar{
+  position:sticky;top:var(--nav-h);z-index:30;
+  background:rgb(var(--bg-surface) / .92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgb(var(--border) / .8);
+}
+.topbar-in{
+  max-width:1160px;margin:0 auto;padding:10px 16px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px;
+}
+h1{font-size:var(--fs-title);margin:0;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+.sliders{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center}
+.ctl{display:flex;align-items:center;gap:10px}
+.ctl label{font-size:17px;font-weight:600;font-style:italic;width:13px;text-align:center;color:rgb(var(--ink-1))}
+.ctl input[type=range]{
+  width:180px;max-width:38vw;accent-color:rgb(var(--live-1));
+  height:24px;cursor:pointer;
+}
+.ctl output{
+  font-size:16px;font-weight:650;min-width:1.6em;text-align:center;
+  font-variant-numeric:tabular-nums;
+  background:rgb(var(--live-soft));color:rgb(var(--live-1));
+  border-radius:6px;padding:1px 7px;
+}
+
+/* ===================================================================
+   cards — Tome Card: rounded-xl, border-line, bg-surface, shadow-card.
+   FadeUp on load (the spring Motion.tsx uses, as a CSS curve).
+   =================================================================== */
+.card{
+  background:rgb(var(--bg-surface));
+  border:1px solid rgb(var(--border));
+  border-radius:.875rem;
+  box-shadow:0 1px 3px rgba(32,27,20,.08), 0 4px 12px rgba(32,27,20,.05);
+  padding:24px;
+  margin:32px 0;
+  scroll-margin-top:calc(var(--nav-h) + 86px);
+  animation:fade-up 420ms cubic-bezier(0.16,1,0.3,1) both;
+}
+#card2{animation-delay:60ms}
+#card3{animation-delay:120ms}
+#card4{animation-delay:180ms}
+@keyframes fade-up{
+  from{opacity:0;transform:translateY(8px)}
+  to  {opacity:1;transform:none}
+}
+.card h2{
+  font-size:var(--fs-identity);
+  margin:0 0 6px;
+  font-weight:650;
+  letter-spacing:-.005em;
+}
+.lead{margin:0 0 20px;font-size:var(--fs-body);max-width:62ch;color:rgb(var(--ink-2))}
+.body{display:grid;grid-template-columns:55fr 45fr;gap:28px;align-items:stretch}
+@media (max-width:899px){ .body{grid-template-columns:minmax(0,1fr);gap:20px} }
+.left,.right{min-width:0;display:flex;flex-direction:column;gap:14px}
+svg.diagram{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;touch-action:none}
+.howto{margin:0;font-size:15px;color:rgb(var(--ink-2))}
+
+/* ===================================================================
+   algebra panel
+   =================================================================== */
+.alg{font-size:var(--fs-alg);line-height:2.05;color:rgb(var(--ink-1))}
+/* revealed steps use PopIn timing — the scale+fade of Motion.tsx's PopIn */
+.ln.step{opacity:0;transform:scale(.96);transition:opacity .3s ease,transform .3s cubic-bezier(0.16,1,0.3,1)}
+.ln.step.on{opacity:1;transform:none}
+.t{
+  padding:1px 3px;border-radius:4px;cursor:default;
+  text-decoration:underline 3px solid transparent;
+  text-underline-offset:5px;
+  transition:text-decoration-color .3s ease;
+}
+.t.hl{text-decoration-color:rgb(var(--accent-1))}
+.t.faded{visibility:hidden}
+.t:focus-visible{outline:2px solid rgb(var(--ring));outline-offset:2px}
+
+/* ⊕ block — live-soft wash, live-1 text */
+.added{background:rgb(var(--live-soft));border-radius:12px;padding:12px 16px 14px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:650;letter-spacing:.01em;
+  color:rgb(var(--live-1));
+}
+.badge .sym{font-size:15px;line-height:1}
+.why{margin:4px 0 10px;font-size:15px;color:rgb(var(--ink-1))}
+
+/* ===================================================================
+   verification strip — ✓ success, ✗ danger
+   =================================================================== */
+.verify{
+  background:rgb(var(--success-soft) / .55);
+  border:1px solid rgb(var(--success) / .35);
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:var(--fs-body);
+  font-variant-numeric:tabular-nums;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  color:rgb(var(--ink-1));
+  transition:background-color .3s ease,border-color .3s ease;
+}
+.verify.fail{background:rgb(var(--danger-soft) / .55);border-color:rgb(var(--danger) / .4)}
+.verify .cap{font-size:14px;font-weight:650}
+.verify .sum{flex:1 1 auto}
+.tick{font-weight:800;color:rgb(var(--success))}
+.verify.fail .tick{color:rgb(var(--danger))}
+
+/* ===================================================================
+   buttons — Tome Button, primary (lg) and secondary for undo
+   =================================================================== */
+button{
+  font:inherit;font-size:1rem;font-weight:500;
+  display:inline-flex;align-items:center;justify-content:center;gap:.375rem;
+  height:2.75rem;padding:0 1.25rem;
+  background:rgb(var(--accent-1));color:#fff;
+  border:1px solid transparent;border-radius:.625rem;cursor:pointer;
+  box-shadow:0 1px 2px rgba(32,27,20,.06), 0 1px 1px rgba(32,27,20,.04);
+  align-self:flex-end;margin-top:auto;
+  transition:background-color .2s cubic-bezier(0.16,1,0.3,1),
+             box-shadow .2s cubic-bezier(0.16,1,0.3,1),
+             border-color .2s cubic-bezier(0.16,1,0.3,1),
+             color .2s cubic-bezier(0.16,1,0.3,1),
+             transform .2s cubic-bezier(0.16,1,0.3,1);
+}
+button:hover{
+  background:rgb(var(--accent-2));
+  box-shadow:0 1px 3px rgba(32,27,20,.08), 0 4px 12px rgba(32,27,20,.05);
+}
+button:active{transform:scale(.98)}
+button.undo{
+  background:rgb(var(--bg-surface));color:rgb(var(--ink-1));
+  border-color:rgb(var(--border-strong));box-shadow:none;
+}
+button.undo:hover{
+  background:rgb(var(--bg-surface));
+  border-color:rgb(var(--accent-1));color:rgb(var(--accent-1));box-shadow:none;
+}
+button:focus-visible{outline:2px solid rgb(var(--ring));outline-offset:2px}
+@media (max-width:899px){ button{align-self:flex-start;margin-top:4px} }
+
+/* ===================================================================
+   svg
+   =================================================================== */
+svg text{font-family:inherit;fill:rgb(var(--ink-1))}
+.rlab,.elab{font-size:var(--fs,15px);font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dlab{font-size:var(--fs2,14px);font-weight:650;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.reg{
+  fill:var(--fill);stroke:var(--line);stroke-width:1.5;
+  transition:stroke .3s ease,stroke-width .3s ease;
+}
+.grp{cursor:default}
+.grp:focus{outline:none}
+.grp.hl .reg,.grp:focus-visible .reg{stroke:rgb(var(--ring));stroke-width:3}
+.grp.removed .rlab{visibility:hidden}
+.grp.drag{cursor:grab}
+.grp.drag:active{cursor:grabbing}
+.frame{fill:none;stroke:rgb(var(--ink-1));stroke-width:1.6}
+.frame.hl{stroke:rgb(var(--ring));stroke-width:3}
+.ghost{fill:none;stroke:rgb(var(--ink-4));stroke-width:1.2;stroke-dasharray:5 5}
+.sqhl{fill:none;stroke:none;stroke-width:3;pointer-events:none}
+.sqhl.hl{stroke:rgb(var(--ring))}
+.dim{stroke:rgb(var(--ink-3));stroke-width:1.3;fill:none}
+/* a marker that no longer describes the current arrangement steps back by
+   changing colour, never by fading — faded text would drop below 4.5:1 */
+.receded .elab{fill:rgb(var(--ink-3))}
+.receded .dim{stroke:rgb(var(--ink-4))}
+.dimadd{stroke:rgb(var(--live-1));stroke-width:1.6;fill:none}
+.dlab.add{fill:rgb(var(--live-1))}
+.target{fill:none;stroke:rgb(var(--live-1));stroke-width:1.6;stroke-dasharray:6 5;opacity:0}
+.target.on{opacity:.9}
+.hidden{display:none}
+
+footer{
+  border-top:1px solid rgb(var(--border));
+  margin-top:40px;padding-top:16px;
+  font-size:15px;color:rgb(var(--ink-2));
+}
+
+/* ===================================================================
+   reduced motion — jump to the end state
+   =================================================================== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>② Visual Proof</h1>
+    <div class="sliders">
+      <div class="ctl">
+        <label for="sa">a</label>
+        <input id="sa" type="range" min="3" max="10" step="1" value="5" aria-label="value of a">
+        <output id="oa" for="sa">5</output>
+      </div>
+      <div class="ctl">
+        <label for="sb">b</label>
+        <input id="sb" type="range" min="1" max="4" step="1" value="2" aria-label="value of b">
+        <output id="ob" for="sb">2</output>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<main>
+
+<!-- ============================ CARD 1 ============================ -->
+<section class="card" id="card1">
+  <h2>(a+b)² = a² + 2ab + b²</h2>
+  <p class="lead">A square of side a+b, cut into four pieces whose areas add up to the whole.</p>
+  <div class="body">
+    <div class="left">
+      <svg class="diagram" id="svg1" viewBox="0 0 400 380" role="img" aria-label="Square of side a plus b divided into a squared, ab, ab and b squared"></svg>
+    </div>
+    <div class="right">
+      <div class="alg">
+        <div class="ln" id="c1l1">
+          <span class="t c-sky"    data-keys="a2"  tabindex="0">a²</span> +
+          <span class="t c-butter" data-keys="ab1" tabindex="0">ab</span> +
+          <span class="t c-butter" data-keys="ab2" tabindex="0">ab</span> +
+          <span class="t c-mint"   data-keys="b2"  tabindex="0">b²</span>
+        </div>
+        <div class="ln step" id="c1l2">
+          = <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
+          <span class="t c-butter" data-keys="ab1 ab2" tabindex="0">2ab</span> +
+          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
+        </div>
+      </div>
+      <div class="verify" id="v1"></div>
+      <button id="b1" data-go="Add up the four pieces" data-undo="Start again">Add up the four pieces</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARD 2 ============================ -->
+<section class="card" id="card2">
+  <h2>(a−b)² = a² − 2ab + b²</h2>
+  <p class="lead">A square of side a, cut at a−b across and down, giving regions A, B, C and D.</p>
+  <div class="body">
+    <div class="left">
+      <svg class="diagram" id="svg2" viewBox="0 0 400 380" role="img" aria-label="Square of side a divided into regions A, B, C and D"></svg>
+    </div>
+    <div class="right">
+      <div class="alg added">
+        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
+        <p class="why">The notes draw this square and stop, so here is the algebra the picture is pointing at.</p>
+        <div class="ln" id="c2l1">
+          <span class="t c-sky" data-keys="A" tabindex="0">A</span> =
+          <span class="t" data-keys="sq" tabindex="0">a²</span> −
+          <span class="t c-butter" data-keys="B" tabindex="0">B</span> −
+          <span class="t c-butter" data-keys="C" tabindex="0">C</span> −
+          <span class="t c-mint" data-keys="D" tabindex="0">D</span>
+        </div>
+        <div class="ln step" id="c2l2">
+          = <span class="t faded" data-keys="sq" tabindex="0">a²</span> −
+          <span class="t faded c-butter" data-keys="B" tabindex="0">b(a−b)</span> −
+          <span class="t faded c-butter" data-keys="C" tabindex="0">b(a−b)</span> −
+          <span class="t faded c-mint" data-keys="D" tabindex="0">b²</span>
+        </div>
+        <div class="ln step" id="c2l3">= a² − 2ab + b²</div>
+      </div>
+      <div class="verify" id="v2"></div>
+      <button id="b2" data-go="Take away B, C and D" data-undo="Start again">Take away B, C and D</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARD 3 ============================ -->
+<section class="card" id="card3">
+  <h2>a² − b² = (a+b)(a−b)</h2>
+  <p class="lead">A square of side a, with a bottom strip of height b split into B and A.</p>
+  <div class="body">
+    <div class="left">
+      <svg class="diagram" id="svg3" viewBox="0 0 400 380" role="img" aria-label="Square of side a with a bottom strip split into regions B and A, and region C above"></svg>
+      <p class="howto">Drag A off the square, then drag C so it sits above B.</p>
+    </div>
+    <div class="right">
+      <div class="alg added">
+        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
+        <p class="why">The notes draw this cut and stop, so here is the rearrangement the picture is pointing at.</p>
+        <div class="ln step" id="c3l1">
+          <span class="t c-mint" data-keys="A" tabindex="0">A</span> =
+          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
+        </div>
+        <div class="ln step" id="c3l2">
+          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
+          <span class="t c-butter" data-keys="B" tabindex="0">B</span> =
+          <span class="t" data-keys="sq" tabindex="0">a²</span> −
+          <span class="t c-mint" data-keys="A" tabindex="0">b²</span>
+        </div>
+        <div class="ln step" id="c3l3">
+          <span class="t c-sky" data-keys="C" tabindex="0">C</span> +
+          <span class="t c-butter" data-keys="B" tabindex="0">B</span> → (a+b) × (a−b)
+        </div>
+      </div>
+      <div class="verify" id="v3"></div>
+      <button id="b3" data-go="Move C above B" data-undo="Start again">Move C above B</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARD 4 ============================ -->
+<section class="card" id="card4">
+  <h2>a² + b² = c²</h2>
+  <p class="lead">A square of side a+b holding a tilted square of side c and four right-angled triangles.</p>
+  <div class="body">
+    <div class="left">
+      <svg class="diagram" id="svg4" viewBox="0 0 400 380" role="img" aria-label="Square of side a plus b containing a tilted square of side c and four right-angled triangles"></svg>
+      <p class="howto">Drag each triangle into a corner.</p>
+    </div>
+    <div class="right">
+      <div class="alg">
+        <div class="ln">
+          <span class="t c-butter" data-keys="tri" tabindex="0">4 × ½ × a × b</span> +
+          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span>
+        </div>
+        <div class="ln">
+          = <span class="t" data-keys="outer" tabindex="0">(a+b)²</span>
+        </div>
+      </div>
+      <div class="alg added">
+        <div class="badge"><span class="sym">⊕</span> not written on the page</div>
+        <p class="why">The notes stop after those two lines, so here are the last two steps.</p>
+        <div class="ln step" id="c4l1">
+          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
+          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
+          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
+          <span class="t c-butter" data-keys="tri" tabindex="0">2ab</span> +
+          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
+        </div>
+        <div class="ln step" id="c4l2">
+          <span class="t c-peach" data-keys="c2" tabindex="0">c²</span> =
+          <span class="t c-sky" data-keys="a2" tabindex="0">a²</span> +
+          <span class="t c-mint" data-keys="b2" tabindex="0">b²</span>
+        </div>
+      </div>
+      <div class="verify" id="v4"></div>
+      <button id="b4" data-go="Slide the triangles out" data-undo="Start again">Slide the triangles out</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  These diagrams come from the handwritten notes, pages IMG_0256 and IMG_0257.
+  Steps marked ⊕ are not written on the page.
+</footer>
+
+</div>
+
+<script>
+"use strict";
+/* =================================================================
+   helpers
+   ================================================================= */
+var VBW = 400;
+var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(window.matchMedia){
+  try{
+    window.matchMedia('(prefers-reduced-motion: reduce)')
+      .addEventListener('change', function(e){ REDUCED = e.matches; });
+  }catch(err){}
+}
+
+function fit(extW, extH, box){
+  var u = Math.min(box.w/extW, box.h/extH);
+  return { u:u, ox: box.x + (box.w - extW*u)/2, oy: box.y + (box.h - extH*u)/2 };
+}
+function n(v){ return Math.round(v*1000)/1000; }
+
+function reg(x,y,w,h,cls,keys,label,extra){
+  extra = extra || {};
+  return '<g class="grp '+cls+(extra.drag?' drag':'')+'" data-keys="'+keys+'"'
+       + ' tabindex="0" role="button" aria-label="'+(extra.aria||('region '+label))+'"'
+       + (extra.id?' id="'+extra.id+'"':'') + '>'
+       + '<rect class="reg" x="'+n(x)+'" y="'+n(y)+'" width="'+n(w)+'" height="'+n(h)+'"/>'
+       + '<text class="rlab"'+(extra.tid?' id="'+extra.tid+'"':'')
+       + ' x="'+n(x+w/2)+'" y="'+n(y+h/2)+'">'+label+'</text>'
+       + '</g>';
+}
+function lab(x,y,s,anchor){
+  return '<text class="elab" x="'+n(x)+'" y="'+n(y)+'"'
+       + (anchor?' style="text-anchor:'+anchor+'"':'') + '>'+s+'</text>';
+}
+/* double-headed arrow, as drawn on IMG_0257 */
+function arrow(x1,y1,x2,y2,cls){
+  var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L===0) return '';
+  var ux=dx/L, uy=dy/L, px=-uy, py=ux, h=5, w=3.2;
+  function head(x,y,sx,sy){
+    return '<path class="'+cls+'" d="M'+n(x)+' '+n(y)+' L'+n(x+sx*h+px*w)+' '+n(y+sy*h+py*w)
+         + ' M'+n(x)+' '+n(y)+' L'+n(x+sx*h-px*w)+' '+n(y+sy*h-py*w)+'"/>';
+  }
+  return '<path class="'+cls+'" d="M'+n(x1)+' '+n(y1)+' L'+n(x2)+' '+n(y2)+'"/>'
+       + head(x1,y1,ux,uy) + head(x2,y2,-ux,-uy);
+}
+function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+function anim(dur, step, done){
+  if(REDUCED){ step(1,1); if(done) done(); return; }
+  var t0 = performance.now(), finished = false;
+  function end(){
+    if(finished) return;
+    finished = true;
+    step(1,1);
+    if(done) done();
+  }
+  (function frame(now){
+    if(finished) return;
+    var t = Math.min(1,(now-t0)/dur);
+    step(ease(t), t);
+    if(t<1) requestAnimationFrame(frame); else end();
+  })(performance.now());
+  /* requestAnimationFrame stops in a hidden tab — make sure the move still
+     completes rather than leaving a piece stranded half way */
+  setTimeout(end, dur + 300);
+}
+var timers = [];
+function later(fn, ms){ if(REDUCED){ fn(); return; } timers.push(setTimeout(fn, ms)); }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+/* ---------- hover / tap / focus linking ---------- */
+function keysOf(el){ return (el.getAttribute('data-keys')||'').split(/\s+/).filter(Boolean); }
+function setHL(card, keys){
+  var want = (typeof keys === 'string' ? keys.split(/\s+/) : keys).filter(Boolean);
+  card.querySelectorAll('[data-keys]').forEach(function(el){
+    var hit = keysOf(el).some(function(k){ return want.indexOf(k) !== -1; });
+    el.classList.toggle('hl', hit);
+  });
+}
+function clearHL(card){
+  card.querySelectorAll('[data-keys].hl').forEach(function(el){ el.classList.remove('hl'); });
+}
+['card1','card2','card3','card4'].forEach(function(id){
+  var card = document.getElementById(id);
+  card.addEventListener('pointerover', function(e){
+    var el = e.target.closest('[data-keys]');
+    if(el && card.contains(el)) setHL(card, el.getAttribute('data-keys'));
+  });
+  card.addEventListener('pointerout', function(e){
+    if(e.target.closest('[data-keys]')) clearHL(card);
+  });
+  card.addEventListener('pointerleave', function(){ clearHL(card); });
+  /* keyboard: Tab to a region or a term highlights the pair,
+     Enter or Space runs that card's move */
+  card.addEventListener('focusin', function(e){
+    var el = e.target.closest('[data-keys]');
+    if(el) setHL(card, el.getAttribute('data-keys'));
+  });
+  card.addEventListener('focusout', function(e){
+    if(e.target.closest('[data-keys]')) clearHL(card);
+  });
+  card.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    if(!e.target.closest('[data-keys]')) return;
+    e.preventDefault();
+    card.querySelector('button').click();
+  });
+});
+
+/* ---------- keep diagram text at a constant rendered size ---------- */
+function applyTextScale(){
+  ['svg1','svg2','svg3','svg4'].forEach(function(id){
+    var s = document.getElementById(id);
+    var w = s.getBoundingClientRect().width;
+    if(!w) return;
+    var k = VBW / w;                       /* user units per rendered px */
+    s.style.setProperty('--fs',  (15*k).toFixed(2)+'px');
+    s.style.setProperty('--fs2', (14*k).toFixed(2)+'px');
+  });
+}
+if(window.ResizeObserver){
+  var ro = new ResizeObserver(applyTextScale);
+  ['svg1','svg2','svg3','svg4'].forEach(function(id){ ro.observe(document.getElementById(id)); });
+}
+window.addEventListener('resize', applyTextScale);
+
+/* ---------- pointer helpers ---------- */
+function scaleOf(svg){ return VBW / svg.getBoundingClientRect().width; }
+/* A piece can be grabbed from up to 22 CSS px outside its own edge, so even
+   the smallest piece has a touch target of at least 44 px across. The reach
+   only applies when the pointer landed on blank canvas, so it never steals a
+   tap that was aimed at another region. */
+var GRAB_REACH = 22;
+function pickDraggable(svg, e){
+  var direct = e.target.closest('.grp.drag');
+  if(direct) return direct;
+  if(e.target.closest('[data-keys]')) return null;   /* aimed at another piece */
+  var best = null, bd = Infinity;
+  svg.querySelectorAll('.grp.drag').forEach(function(el){
+    var r = el.getBoundingClientRect();
+    var dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+    var dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+    var d = Math.hypot(dx, dy);
+    if(d < bd){ bd = d; best = el; }
+  });
+  return bd <= GRAB_REACH ? best : null;
+}
+
+/* =================================================================
+   state
+   ================================================================= */
+var A = 5, B = 2;   /* the two sliders */
+var G = {};         /* per-card geometry, rebuilt on every redraw */
+
+/* =================================================================
+   CARD 1 — (a+b)² = a² + 2ab + b²        [IMG_0256, top]
+   ================================================================= */
+function drawCard1(){
+  var box = {x:58,y:46,w:284,h:284};
+  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
+  var wa = A*u, wb = B*u, S = wa+wb;
+  var s = '';
+  s += reg(ox,    oy,    wa, wa, 'c-sky',    'a2',  'a²', {aria:'region a squared'});
+  s += reg(ox+wa, oy,    wb, wa, 'c-butter', 'ab1', 'ab', {aria:'top right region a b'});
+  s += reg(ox,    oy+wa, wa, wb, 'c-butter', 'ab2', 'ab', {aria:'bottom left region a b'});
+  s += reg(ox+wa, oy+wa, wb, wb, 'c-mint',   'b2',  'b²', {aria:'region b squared'});
+  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
+  /* edges labelled on all four sides, as on the photo */
+  s += lab(ox+wa/2,    oy-14,   'a');
+  s += lab(ox+wa+wb/2, oy-14,   'b');
+  s += lab(ox+wa/2,    oy+S+18, 'a');
+  s += lab(ox+wa+wb/2, oy+S+18, 'b');
+  s += lab(ox-16,      oy+wa/2,    'a','end');
+  s += lab(ox-16,      oy+wa+wb/2, 'b','end');
+  s += lab(ox+S+16,    oy+wa/2,    'a','start');
+  s += lab(ox+S+16,    oy+wa+wb/2, 'b','start');
+  document.getElementById('svg1').innerHTML = s;
+  G.c1 = {u:u, wa:wa, wb:wb, S:S};
+}
+
+/* =================================================================
+   CARD 2 — (a−b)² = a² − 2ab + b²        [IMG_0256, bottom]
+   ================================================================= */
+function drawCard2(){
+  var box = {x:66,y:46,w:280,h:280};
+  var f = fit(A, A, box), u = f.u, ox = f.ox, oy = f.oy;
+  var m = (A-B)*u, k = B*u, S = m+k;
+  var s = '';
+  s += reg(ox,   oy,   m, m, 'c-sky',    'A', 'A', {aria:'region A'});
+  s += reg(ox+m, oy,   k, m, 'c-butter', 'B', 'B', {aria:'region B'});
+  s += reg(ox,   oy+m, m, k, 'c-butter', 'C', 'C', {aria:'region C'});
+  s += reg(ox+m, oy+m, k, k, 'c-mint',   'D', 'D', {aria:'region D'});
+  s += '<rect class="frame" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
+  s += '<rect class="sqhl" data-keys="sq" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
+  /* a−b and b on top and left only, as on the photo */
+  s += lab(ox+m/2,   oy-14, 'a−b');
+  s += lab(ox+m+k/2, oy-14, 'b');
+  s += lab(ox-12,    oy+m/2,   'a−b','end');
+  s += lab(ox-12,    oy+m+k/2, 'b','end');
+  document.getElementById('svg2').innerHTML = s;
+  G.c2 = {u:u, m:m, k:k, S:S};
+}
+
+/* =================================================================
+   CARD 3 — a² − b² = (a+b)(a−b)          [IMG_0257, top]
+   ================================================================= */
+function drawCard3(){
+  var box = {x:76,y:34,w:272,h:292};
+  var f = fit(A, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
+  var S  = A*u;            /* side of the square          */
+  var hb = B*u;            /* height of the bottom strip  */
+  var hc = (A-B)*u;        /* height of C                 */
+  var wB = (A-B)*u;        /* width of B                  */
+  var sqx = ox, sqy = oy + hb;   /* top-left of the square */
+  var s = '';
+  s += '<rect class="ghost" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
+  s += '<rect class="sqhl" data-keys="sq" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'"/>';
+  /* target outline for C, shown while dragging */
+  s += '<rect class="target" id="c3target" x="'+n(sqx)+'" y="'+n(oy)+'" width="'+n(hc)+'" height="'+n(S)+'"/>';
+  s += reg(sqx,    sqy,    S,  hc, 'c-sky',    'C', 'C', {drag:true, id:'c3C', tid:'c3Ct', aria:'region C, draggable'});
+  s += reg(sqx,    sqy+hc, wB, hb, 'c-butter', 'B', 'B', {aria:'region B'});
+  s += reg(sqx+wB, sqy+hc, hb, hb, 'c-mint',   'A', 'A', {drag:true, id:'c3A', aria:'region A, draggable'});
+  s += '<rect class="frame" x="'+n(sqx)+'" y="'+n(sqy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
+  /* the photo's own markers — they describe the square as drawn, so they
+     recede once the pieces are moved */
+  s += '<g id="c3marks">';
+  s += arrow(sqx, sqy-22, sqx+S, sqy-22, 'dim');
+  s += lab(sqx+S/2, sqy-33, 'a');
+  s += arrow(sqx-26, sqy, sqx-26, sqy+S, 'dim');
+  s += lab(sqx-34, sqy+S/2, 'a', 'end');
+  s += arrow(sqx+wB, sqy+S+16, sqx+S, sqy+S+16, 'dim');
+  s += lab(sqx+wB+hb/2, sqy+S+30, 'b');
+  s += arrow(sqx+S+15, sqy+hc, sqx+S+15, sqy+S, 'dim');
+  s += lab(sqx+S+23, sqy+hc+hb/2, 'b', 'start');
+  s += '</g>';
+  /* ⊕ dimensions of the assembled rectangle — revealed only after the snap */
+  s += '<g id="c3dims" class="hidden">';
+  s +=   arrow(sqx-54, oy, sqx-54, sqy+S, 'dimadd');
+  s +=   '<text class="dlab add" x="'+n(sqx-66)+'" y="'+n((oy+sqy+S)/2)
+       + '" transform="rotate(-90 '+n(sqx-66)+' '+n((oy+sqy+S)/2)+')">(a+b)</text>';
+  s +=   arrow(sqx, sqy+S+16, sqx+wB, sqy+S+16, 'dimadd');
+  s +=   '<text class="dlab add" x="'+n(sqx+wB/2)+'" y="'+n(sqy+S+30)+'">(a−b)</text>';
+  s += '</g>';
+  document.getElementById('svg3').innerHTML = s;
+  G.c3 = {u:u,S:S,hb:hb,hc:hc,wB:wB,sqx:sqx,sqy:sqy,oy:oy};
+}
+
+/* =================================================================
+   CARD 4 — a² + b² = c²                  [IMG_0257, bottom]
+   ================================================================= */
+function drawCard4(){
+  var box = {x:58,y:46,w:284,h:284};
+  var f = fit(A+B, A+B, box), u = f.u, ox = f.ox, oy = f.oy;
+  var wa = A*u, wb = B*u, S = wa+wb;
+  /* vertices of the tilted square, exactly as drawn on the photo:
+     top edge a then b, right edge a then b, bottom edge b then a, left edge b then a */
+  var P1 = [ox+wa, oy], P2 = [ox+S, oy+wa], P3 = [ox+wb, oy+S], P4 = [ox, oy+wb];
+  var tris = [
+    [[ox,oy],        P1,          P4        ],   /* T1 top-left     */
+    [P1,             [ox+S,oy],   P2        ],   /* T2 top-right    */
+    [P2,             [ox+S,oy+S], P3        ],   /* T3 bottom-right */
+    [P4,             P3,          [ox,oy+S] ]    /* T4 bottom-left  */
+  ];
+  var s = '';
+  /* the two squares revealed by arrangement 2 (⊕) — hidden to start */
+  s += '<g id="c4sq" class="hidden">';
+  s +=   '<g class="grp c-sky" data-keys="a2" tabindex="0" role="button" aria-label="region a squared">'
+       + '<rect class="reg" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(wa)+'" height="'+n(wa)+'"/>'
+       + '<text class="rlab" x="'+n(ox+wa/2)+'" y="'+n(oy+wa/2)+'">a²</text></g>';
+  s +=   '<g class="grp c-mint" data-keys="b2" tabindex="0" role="button" aria-label="region b squared">'
+       + '<rect class="reg" x="'+n(ox+wa)+'" y="'+n(oy+wa)+'" width="'+n(wb)+'" height="'+n(wb)+'"/>'
+       + '<text class="rlab" x="'+n(ox+wa+wb/2)+'" y="'+n(oy+wa+wb/2)+'">b²</text></g>';
+  s += '</g>';
+  /* the tilted square of side c */
+  var pts = [P1,P2,P3,P4].map(function(p){ return n(p[0])+','+n(p[1]); }).join(' ');
+  var cx = (P1[0]+P2[0]+P3[0]+P4[0])/4, cy = (P1[1]+P2[1]+P3[1]+P4[1])/4;
+  s += '<g id="c4inner" class="grp c-peach" data-keys="c2" tabindex="0" role="button" aria-label="tilted square of side c">';
+  s +=   '<polygon class="reg" points="'+pts+'"/>';
+  [[P1,P2],[P2,P3],[P3,P4],[P4,P1]].forEach(function(e){
+    var mx=(e[0][0]+e[1][0])/2, my=(e[0][1]+e[1][1])/2;
+    var dx=cx-mx, dy=cy-my, L=Math.hypot(dx,dy)||1, off=Math.min(16, L*0.42);
+    s += '<text class="rlab" x="'+n(mx+dx/L*off)+'" y="'+n(my+dy/L*off)+'">c</text>';
+  });
+  s += '</g>';
+  /* the four right triangles */
+  tris.forEach(function(t,i){
+    var p = t.map(function(v){ return n(v[0])+','+n(v[1]); }).join(' ');
+    s += '<g class="grp drag c-butter" data-keys="tri" id="c4t'+i+'" tabindex="0" role="button"'
+       + ' aria-label="right-angled triangle with legs a and b, draggable">'
+       + '<polygon class="reg" points="'+p+'"/></g>';
+  });
+  s += '<rect class="frame" data-keys="outer" x="'+n(ox)+'" y="'+n(oy)+'" width="'+n(S)+'" height="'+n(S)+'" style="pointer-events:none"/>';
+  /* a and b alternating round the edge, as drawn — these mark where the
+     triangles' vertices sit, so they recede once the triangles are moved */
+  s += '<g id="c4edges">';
+  s += lab(ox+wa/2,    oy-14,   'a');
+  s += lab(ox+wa+wb/2, oy-14,   'b');
+  s += lab(ox+S+15,    oy+wa/2,    'a','start');
+  s += lab(ox+S+15,    oy+wa+wb/2, 'b','start');
+  s += lab(ox+wb/2,    oy+S+18, 'b');
+  s += lab(ox+wb+wa/2, oy+S+18, 'a');
+  s += lab(ox-15,      oy+wb/2,    'b','end');
+  s += lab(ox-15,      oy+wb+wa/2, 'a','end');
+  s += '</g>';
+  document.getElementById('svg4').innerHTML = s;
+  /* arrangement 2 is reached by four pure translations */
+  G.c4 = {
+    u:u, wa:wa, wb:wb, S:S,
+    away: [ [0, wa], [0, 0], [-wb, 0], [wa, -wb] ],
+    off:  [ [0,0], [0,0], [0,0], [0,0] ]
+  };
+}
+
+/* =================================================================
+   verification strips — every number computed from a and b,
+   every ✓ the result of an actual comparison
+   ================================================================= */
+function strip(el, text, ok){
+  el.classList.toggle('fail', !ok);
+  el.innerHTML = '<span class="cap">Check the numbers:</span>'
+               + '<span class="sum">' + text + '</span>'
+               + '<span class="tick">' + (ok ? '✓' : '✗') + '</span>';
+}
+function updateVerify(){
+  var a = A, b = B;
+
+  /* card 1 : a² + ab + ab + b² = (a+b)² */
+  var s1 = a*a + a*b + a*b + b*b, r1 = (a+b)*(a+b);
+  var g1 = G.c1 ? Math.abs(G.c1.wa*G.c1.wa + G.c1.wb*G.c1.wa + G.c1.wa*G.c1.wb
+                         + G.c1.wb*G.c1.wb - G.c1.S*G.c1.S) < 1e-6*G.c1.S*G.c1.S+1e-6 : false;
+  strip(document.getElementById('v1'),
+        (a*a)+' + '+(a*b)+' + '+(a*b)+' + '+(b*b)+' = '+r1+' = '+(a+b)+'²',
+        s1===r1 && g1);
+
+  /* card 2 : a² − b(a−b) − b(a−b) − b² = (a−b)² */
+  var s2 = a*a - b*(a-b) - b*(a-b) - b*b, r2 = (a-b)*(a-b);
+  var g2 = G.c2 ? Math.abs(G.c2.m*G.c2.m + G.c2.k*G.c2.m + G.c2.m*G.c2.k
+                         + G.c2.k*G.c2.k - G.c2.S*G.c2.S) < 1e-6*G.c2.S*G.c2.S+1e-6 : false;
+  strip(document.getElementById('v2'),
+        a*a+' − '+(b*(a-b))+' − '+(b*(a-b))+' − '+(b*b)+' = '+r2+' = '+(a-b)+'²',
+        s2===r2 && g2);
+
+  /* card 3 : a² − b² = (a+b)(a−b) */
+  var s3 = a*a - b*b, r3 = (a+b)*(a-b);
+  var g3 = G.c3 ? Math.abs(G.c3.S*G.c3.hc + G.c3.wB*G.c3.hb + G.c3.hb*G.c3.hb
+                         - G.c3.S*G.c3.S) < 1e-6*G.c3.S*G.c3.S+1e-6 : false;
+  strip(document.getElementById('v3'),
+        a*a+' − '+(b*b)+' = '+s3+' = '+(a+b)+' × '+(a-b), s3===r3 && g3);
+
+  /* card 4 : 4 × ½ × a × b + c² = (a+b)²  →  c² = a² + b² */
+  var outer = (a+b)*(a+b);
+  var c2    = outer - 4*0.5*a*b;      /* c² read off the identity        */
+  var pyth  = a*a + b*b;              /* c² read off the two squares     */
+  var g4 = G.c4 ? Math.abs(4*0.5*G.c4.wa*G.c4.wb + (G.c4.wa*G.c4.wa + G.c4.wb*G.c4.wb)
+                         - G.c4.S*G.c4.S) < 1e-6*G.c4.S*G.c4.S+1e-6 : false;
+  strip(document.getElementById('v4'),
+        '4 × ½ × '+a+' × '+b+' + c² = '+outer+'  →  c² = '+c2+' = '+(a*a)+' + '+(b*b),
+        c2===pyth && g4);
+}
+
+/* ---------- button labels ---------- */
+function setBtn(id, undo){
+  var el = document.getElementById(id);
+  el.textContent = undo ? el.dataset.undo : el.dataset.go;
+  el.classList.toggle('undo', !!undo);
+}
+
+/* =================================================================
+   CARD 1 interaction
+   ================================================================= */
+var c1open = false;
+function c1reset(){
+  c1open = false;
+  document.getElementById('c1l2').classList.remove('on');
+  clearHL(document.getElementById('card1'));
+  setBtn('b1', false);
+}
+document.getElementById('b1').addEventListener('click', function(){
+  clearTimers();
+  var card = document.getElementById('card1');
+  if(c1open){ c1reset(); return; }
+  c1open = true;
+  setBtn('b1', true);
+  var order = ['a2','ab1','ab2','b2'], step = 220;
+  order.forEach(function(k,i){ later(function(){ setHL(card,k); }, i*step); });
+  later(function(){
+    setHL(card,'ab1 ab2');
+    document.getElementById('c1l2').classList.add('on');
+  }, order.length*step);
+  later(function(){ clearHL(card); }, order.length*step + 300);
+});
+
+/* =================================================================
+   CARD 2 interaction
+   ================================================================= */
+var c2open = false;
+function c2reset(){
+  c2open = false;
+  document.getElementById('c2l2').classList.remove('on');
+  document.getElementById('c2l3').classList.remove('on');
+  document.querySelectorAll('#c2l2 .t').forEach(function(t){ t.classList.add('faded'); });
+  clearHL(document.getElementById('card2'));
+  setBtn('b2', false);
+}
+document.getElementById('b2').addEventListener('click', function(){
+  clearTimers();
+  var card = document.getElementById('card2');
+  if(c2open){ c2reset(); return; }
+  c2open = true;
+  setBtn('b2', true);
+  var terms = Array.prototype.slice.call(document.querySelectorAll('#c2l2 .t'));
+  var keys = ['sq','B','C','D'], step = 220;
+  document.getElementById('c2l2').classList.add('on');
+  keys.forEach(function(k,i){
+    later(function(){ terms[i].classList.remove('faded'); setHL(card,k); }, i*step);
+  });
+  later(function(){ document.getElementById('c2l3').classList.add('on'); }, keys.length*step);
+  later(function(){ clearHL(card); }, keys.length*step + 300);
+});
+
+/* =================================================================
+   CARD 3 interaction — A is removed, C is rotated and stacked on B
+   ================================================================= */
+var c3 = { aGone:false, cSnapped:false, aOff:[0,0] };
+
+function c3applyA(off, opacity){
+  var el = document.getElementById('c3A');
+  if(!el) return;
+  el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
+  el.style.opacity = opacity;
+  el.classList.toggle('removed', opacity < 0.9);
+}
+function c3applyC(t, dragOff){
+  var g = G.c3, el = document.getElementById('c3C'), tx = document.getElementById('c3Ct');
+  if(!el) return;
+  var d = dragOff || [0,0];
+  var mx = d[0]*(1-t), my = d[1]*(1-t) + g.hc*t;
+  el.setAttribute('transform','translate('+n(mx)+','+n(my)+') rotate('+n(-90*t)+' '+n(g.sqx)+' '+n(g.sqy)+')');
+  /* keep the letter C upright while its region turns */
+  tx.setAttribute('transform','rotate('+n(90*t)+' '+tx.getAttribute('x')+' '+tx.getAttribute('y')+')');
+}
+function c3refresh(){
+  document.getElementById('c3l1').classList.toggle('on', c3.aGone);
+  document.getElementById('c3l2').classList.toggle('on', c3.aGone);
+  document.getElementById('c3l3').classList.toggle('on', c3.cSnapped);
+  document.getElementById('c3dims').classList.toggle('hidden', !c3.cSnapped);
+  var marks = document.getElementById('c3marks');
+  if(marks) marks.classList.toggle('receded', c3.aGone || c3.cSnapped);
+  setBtn('b3', c3.aGone || c3.cSnapped);
+}
+function c3reset(){
+  c3.aGone = false; c3.cSnapped = false; c3.aOff = [0,0];
+  c3applyA([0,0],1);
+  c3applyC(0,[0,0]);
+  document.getElementById('c3target').classList.remove('on');
+  c3refresh();
+}
+document.getElementById('b3').addEventListener('click', function(){
+  clearTimers();
+  if(c3.aGone || c3.cSnapped){ c3reset(); return; }
+  /* 1 — A is removed */
+  anim(380, function(t){ c3applyA([0, 18*t], 1 - 0.88*t); }, function(){
+    c3.aGone = true; c3.aOff = [0,18]; c3refresh();
+  });
+  /* 2 — C rotates and lands on top of B */
+  later(function(){
+    anim(780, function(t){ c3applyC(t,[0,0]); }, function(){
+      c3.cSnapped = true; c3refresh();
+    });
+  }, 330);
+});
+
+/* --- dragging on card 3 --- */
+(function(){
+  var svg = document.getElementById('svg3');
+  var mode = null, start = null, base = null;
+  svg.addEventListener('pointerdown', function(e){
+    var el = pickDraggable(svg, e);
+    if(!el) return;
+    if(el.id === 'c3C' && c3.cSnapped) return;
+    mode = (el.id === 'c3A') ? 'A' : 'C';
+    start = [e.clientX, e.clientY];
+    base = (mode === 'A') ? c3.aOff.slice() : [0,0];
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    if(mode === 'C') document.getElementById('c3target').classList.add('on');
+    e.preventDefault();
+  });
+  svg.addEventListener('pointermove', function(e){
+    if(!mode) return;
+    var k = scaleOf(svg);
+    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
+    if(mode === 'A'){
+      c3applyA([dx,dy], Math.hypot(dx,dy) > G.c3.hb*0.5 ? 0.12 : 1);
+    } else {
+      document.getElementById('c3C').setAttribute('transform','translate('+n(dx)+','+n(dy)+')');
+    }
+  });
+  svg.addEventListener('pointerup', function(e){
+    if(!mode) return;
+    var k = scaleOf(svg), g = G.c3;
+    var dx = (e.clientX-start[0])*k + base[0], dy = (e.clientY-start[1])*k + base[1];
+    if(mode === 'A'){
+      if(Math.hypot(dx,dy) > g.hb*0.5){ c3.aGone = true; c3.aOff = [dx,dy]; c3applyA([dx,dy],0.12); }
+      else { c3.aGone = false; c3.aOff = [0,0]; c3applyA([0,0],1); }
+    } else {
+      document.getElementById('c3target').classList.remove('on');
+      /* centre of C where it was dropped, vs centre of the snapped position */
+      var nowC = [g.sqx + g.S/2 + dx, g.sqy + g.hc/2 + dy];
+      var tgtC = [g.sqx + g.hc/2,     g.oy  + g.S/2];
+      if(Math.hypot(nowC[0]-tgtC[0], nowC[1]-tgtC[1]) < Math.max(g.S,g.hc)*0.45){
+        anim(400, function(t){ c3applyC(t,[dx,dy]); }, function(){ c3.cSnapped = true; c3refresh(); });
+      } else {
+        anim(200, function(t){
+          document.getElementById('c3C').setAttribute('transform','translate('+n(dx*(1-t))+','+n(dy*(1-t))+')');
+        });
+      }
+    }
+    mode = null;
+    c3refresh();
+  });
+  svg.addEventListener('pointercancel', function(){ mode = null; });
+})();
+
+/* =================================================================
+   CARD 4 interaction — four triangles, two arrangements
+   ================================================================= */
+function c4apply(i, off){
+  var el = document.getElementById('c4t'+i);
+  if(el) el.setAttribute('transform','translate('+n(off[0])+','+n(off[1])+')');
+}
+function near(p,q,tol){ return Math.hypot(p[0]-q[0], p[1]-q[1]) <= tol; }
+function c4refresh(){
+  var g = G.c4, tol = Math.max(g.S*0.015, 0.5);
+  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
+  var allAway = g.off.every(function(o,i){ return near(o, g.away[i], tol); });
+  document.getElementById('c4inner').classList.toggle('hidden', !allHome);
+  document.getElementById('c4sq').classList.toggle('hidden', !allAway);
+  document.getElementById('c4l1').classList.toggle('on', allAway);
+  document.getElementById('c4l2').classList.toggle('on', allAway);
+  var edges = document.getElementById('c4edges');
+  if(edges) edges.classList.toggle('receded', !allHome);
+  setBtn('b4', !allHome);
+}
+function c4reset(){
+  var g = G.c4;
+  g.off = [[0,0],[0,0],[0,0],[0,0]];
+  for(var i=0;i<4;i++) c4apply(i,[0,0]);
+  c4refresh();
+}
+document.getElementById('b4').addEventListener('click', function(){
+  clearTimers();
+  var g = G.c4;
+  var tol = Math.max(g.S*0.015, 0.5);
+  var allHome = g.off.every(function(o){ return near(o,[0,0],tol); });
+  var from = g.off.map(function(o){ return o.slice(); });
+  var to   = allHome ? g.away.map(function(o){ return o.slice(); }) : [[0,0],[0,0],[0,0],[0,0]];
+  document.getElementById('c4inner').classList.add('hidden');
+  document.getElementById('c4sq').classList.add('hidden');
+  document.getElementById('c4l1').classList.remove('on');
+  document.getElementById('c4l2').classList.remove('on');
+  anim(1100, function(t){
+    for(var i=0;i<4;i++){
+      c4apply(i, [from[i][0] + (to[i][0]-from[i][0])*t, from[i][1] + (to[i][1]-from[i][1])*t]);
+    }
+  }, function(){
+    g.off = to.map(function(o){ return o.slice(); });
+    for(var i=0;i<4;i++) c4apply(i, g.off[i]);
+    c4refresh();
+  });
+});
+
+/* --- dragging on card 4 --- */
+(function(){
+  var svg = document.getElementById('svg4');
+  var idx = null, start = null, base = null;
+  svg.addEventListener('pointerdown', function(e){
+    var el = pickDraggable(svg, e);
+    if(!el || !/^c4t(\d)$/.test(el.id)) return;
+    idx = +el.id.slice(3);
+    start = [e.clientX, e.clientY];
+    base = G.c4.off[idx].slice();
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    document.getElementById('c4inner').classList.add('hidden');
+    document.getElementById('c4sq').classList.add('hidden');
+    e.preventDefault();
+  });
+  svg.addEventListener('pointermove', function(e){
+    if(idx === null) return;
+    var k = scaleOf(svg);
+    c4apply(idx, [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]]);
+  });
+  svg.addEventListener('pointerup', function(e){
+    if(idx === null) return;
+    var g = G.c4, k = scaleOf(svg);
+    var cur = [(e.clientX-start[0])*k + base[0], (e.clientY-start[1])*k + base[1]];
+    var snap = Math.max(g.S*0.30, 24);
+    var dHome = Math.hypot(cur[0], cur[1]);
+    var dAway = Math.hypot(cur[0]-g.away[idx][0], cur[1]-g.away[idx][1]);
+    var to;
+    if(dAway <= dHome && dAway < snap)      to = g.away[idx].slice();
+    else if(dHome < snap)                   to = [0,0];
+    else                                    to = base.slice();
+    var i = idx, from = cur;
+    anim(200, function(t){
+      c4apply(i, [from[0]+(to[0]-from[0])*t, from[1]+(to[1]-from[1])*t]);
+    }, function(){
+      g.off[i] = to.slice(); c4apply(i,to); c4refresh();
+    });
+    idx = null;
+  });
+  svg.addEventListener('pointercancel', function(){ idx = null; });
+})();
+
+/* =================================================================
+   redraw everything
+   ================================================================= */
+function redraw(){
+  clearTimers();
+  drawCard1(); drawCard2(); drawCard3(); drawCard4();
+  c1reset(); c2reset(); c3reset(); c4reset();
+  updateVerify();
+  applyTextScale();
+}
+
+var sa = document.getElementById('sa'), sb = document.getElementById('sb');
+var oa = document.getElementById('oa'), ob = document.getElementById('ob');
+function readSliders(){
+  A = +sa.value;
+  sb.max = String(A-1);
+  if(+sb.value > A-1) sb.value = String(A-1);
+  if(+sb.value < 1)   sb.value = '1';
+  B = +sb.value;
+  oa.textContent = A; ob.textContent = B;
+  redraw();
+}
+sa.addEventListener('input', readSliders);
+sb.addEventListener('input', readSliders);
+readSliders();
+
+/* expose for the verification harness */
+window.__vp = {
+  setAB: function(a,b){ sa.value=String(a); sb.max=String(a-1); sb.value=String(b); readSliders(); },
+  G: function(){ return G; },
+  reduced: function(v){ REDUCED = v; },
+  ticks: function(){
+    return ['v1','v2','v3','v4'].map(function(id){
+      return document.getElementById(id).querySelector('.tick').textContent;
+    });
+  }
+};
+</script>
+</body>
+</html>

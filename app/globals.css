@@ -1,0 +1,429 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Design tokens — light + dark.
+   skill §6 color-semantic, color-dark-mode, color-accessible-pairs.
+   All RGB triples (so Tailwind can apply alpha via `<alpha-value>`).
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* R3 palette — sunny yellow page in light, classical chess-board walnut
+   in dark. The dominants are the page surface itself; everything else is
+   tuned to fit. Light leans buttercream-yellow (clearly yellow, not amber);
+   dark leans deep wooden-walnut (the color of a Staunton chess board's
+   dark squares). Brick + verdigris secondaries are kept because they
+   complement both dominants. */
+:root {
+  /* Surface — sunny yellow paper, pushed a touch more saturated (B
+     channel dropped ~20 across the ramp; R/G unchanged). */
+  --bg-page: 246 226 138;        /* saturated sunny yellow */
+  --bg-surface: 250 236 162;     /* lighter card on yellow */
+  --bg-surface-2: 234 212 124;   /* deeper yellow band — section dividers */
+  --bg-muted: 230 208 118;       /* muted yellow */
+  --bg-accent: 240 218 148;      /* faintly brick-tinted yellow */
+  /* Text — deep ink for AAA on yellow; cool-warm balance */
+  --ink-1: 38 30 16;             /* body ink */
+  --ink-2: 70 58 38;             /* secondary */
+  --ink-3: 108 92 62;             /* meta / captions */
+  --ink-4: 158 142 108;           /* quiet rules / page-number tone */
+  /* Border — gold-on-yellow; strong rule deepened for ornaments */
+  --border: 198 178 122;
+  --border-strong: 178 138 56;   /* gilt — ornaments + dividers */
+  /* Accent — brick red. Red-on-yellow is a strong classical pairing
+     (think old textbook covers, postage stamps). */
+  --accent-1: 138 50 38;         /* brick */
+  --accent-2: 96 32 22;           /* brick deep — hover */
+  --accent-soft: 232 196 176;     /* brick wash for chips / soft fills */
+  --accent-ring: 138 50 38;
+  /* Verdigris — for interactive surfaces. Reads cleanly on yellow. */
+  --live-1: 50 92 78;
+  --live-2: 36 70 60;
+  --live-soft: 210 226 218;
+  /* Semantic — verdigris=success; warn is a deep amber-orange that pops
+     against the yellow page (a gilt warn would vanish). */
+  --success: 50 92 78;
+  --success-soft: 210 226 218;
+  --warn: 168 110 40;             /* deep amber-orange */
+  --warn-soft: 234 210 158;
+  --danger: 170 50 42;
+  --danger-soft: 232 196 188;
+  --ring: 138 50 38;
+  /* Categorical chart palette — tuned for yellow page. */
+  --chart-1: 138 50 38;            /* brick */
+  --chart-2: 50 92 78;             /* verdigris */
+  --chart-3: 140 100 30;            /* deep gold */
+  --chart-4: 70 78 130;             /* slate-blue, deepened */
+  --chart-5: 158 92 42;             /* burnt sienna */
+  --chart-6: 56 100 122;            /* steel-teal */
+  --chart-7: 130 70 100;            /* mulberry */
+  --chart-8: 82 96 60;              /* moss */
+}
+
+/* Dark scheme — classical chess-board walnut. The dominant is the dark
+   square of a wooden Staunton chess board: a rich warm walnut where the
+   red channel dominates, green sits midway, and blue is suppressed
+   (R > G > B with R ≈ 1.6×G). Distinctly brown — not the cool slate of
+   most dark modes, not the neutral warm-brown of the prior walnut, not
+   the amber-yellow of the prior R2 shadow. Cream ink and cinnabar accent
+   sit on top exactly as the dark squares + chess pieces would. */
+.dark {
+  --bg-page: 86 58 34;             /* medium walnut — Staunton chess board */
+  --bg-surface: 102 72 44;
+  --bg-surface-2: 122 88 58;
+  --bg-muted: 142 104 72;
+  --bg-accent: 130 92 60;
+  --ink-1: 248 232 200;            /* warm cream */
+  --ink-2: 224 206 168;
+  --ink-3: 178 160 124;
+  --ink-4: 134 116 86;
+  --border: 130 96 62;
+  --border-strong: 214 176 92;     /* gilt — brass fittings on a chess set */
+  --accent-1: 232 122 88;           /* warmed cinnabar */
+  --accent-2: 240 148 116;
+  --accent-soft: 100 56 36;
+  --accent-ring: 232 122 88;
+  --live-1: 138 184 158;
+  --live-2: 168 208 184;
+  --live-soft: 46 70 56;
+  --success: 138 184 158;
+  --success-soft: 46 70 56;
+  --warn: 230 192 112;
+  --warn-soft: 80 60 28;
+  --danger: 232 130 105;
+  --danger-soft: 100 56 36;
+  --ring: 232 122 88;
+  /* Categorical chart palette — brightened for the walnut backdrop. */
+  --chart-1: 232 122 88;            /* cinnabar */
+  --chart-2: 138 184 158;           /* lit verdigris */
+  --chart-3: 230 192 112;            /* gilt */
+  --chart-4: 152 155 198;           /* slate-blue, lifted */
+  --chart-5: 212 142 88;             /* burnt sienna, lifted */
+  --chart-6: 120 170 190;            /* steel-teal, lifted */
+  --chart-7: 200 140 165;            /* mulberry, lifted */
+  --chart-8: 158 175 130;            /* moss, lifted */
+}
+
+html {
+  color-scheme: light;
+  background: rgb(var(--bg-page));
+  /* Vellum grain — a fractal-noise SVG tile at ~4.5% alpha sits on top
+     of two desaturated radials. The noise gives the amber surface
+     "paper" character that the prior pure-radial fill lacked (radials
+     alone read as soft-gradient AI art). The 200×200 tile is small
+     enough to repeat seamlessly. Retinted gilt/brick radials below the
+     noise add a barely-visible vignette warmth at the corners. */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    radial-gradient(at 18% 8%, rgba(168, 132, 60, 0.05) 0, transparent 55%),
+    radial-gradient(at 82% 92%, rgba(138, 50, 38, 0.03) 0, transparent 55%);
+  background-attachment: fixed;
+}
+
+html.dark {
+  color-scheme: dark;
+  /* Same vellum-grain pattern but at slightly higher alpha (0.07) — the
+     walnut backdrop swallows lighter noise, and a touch more grain
+     reinforces the "wooden chess board" texture (visible wood-grain at
+     close range). Radials retinted to gilt + cinnabar so the corner
+     vignettes carry the R3 palette. */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    radial-gradient(at 18% 8%, rgba(210, 172, 88, 0.07) 0, transparent 55%),
+    radial-gradient(at 82% 92%, rgba(232, 122, 88, 0.06) 0, transparent 55%);
+}
+
+body {
+  color: rgb(var(--ink-2));
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Typography defaults — serif headings everywhere (chrome + reading
+   contexts both); body stays sans by default for the chrome (NavBar,
+   buttons, forms). Reading surfaces opt into serif body via the
+   `.reading` utility class (R1d). */
+h1, h2, h3, h4 {
+  color: rgb(var(--ink-1));
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.01em;
+}
+
+/* R1d — `.reading` opts a container into the tome reading rhythm:
+   serif body, 18px base size with line-height 1.65, configurable column
+   measure (R5b reader-width toggle drives the `--reader-width` variable
+   on the document root), accented drop-cap available via
+   `.reading-drop-cap`. */
+:root {
+  --reader-width: 70ch;
+}
+.reading {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.125rem;          /* 18px */
+  line-height: 1.65;
+  color: rgb(var(--ink-1));
+  max-width: var(--reader-width);
+}
+.reading p {
+  margin-bottom: 1.1em;
+}
+.reading p + p {
+  text-indent: 0;
+}
+/* Tome-style accent on the very first paragraph of a reading section. */
+.reading > p:first-of-type::first-letter,
+.reading-drop-cap::first-letter {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 3.4em;
+  line-height: 0.9;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  color: rgb(var(--accent-1));
+}
+/* Section divider — a thin gold rule with optional ornamental glyph.
+   Use as <hr class="rule-ornament"/> between sections. */
+hr.rule-ornament {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgb(var(--border-strong) / 0.6) 50%,
+    transparent 100%
+  );
+  margin: 3rem auto;
+  max-width: 16rem;
+  overflow: visible;
+}
+hr.rule-ornament::after {
+  content: "❧";
+  display: block;
+  margin: -0.85em auto 0;
+  width: 1.5em;
+  text-align: center;
+  background: rgb(var(--bg-page));
+  color: rgb(var(--border-strong));
+  font-size: 0.9rem;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus rings — accessible, on-brand (skill §1 focus-states) */
+*:focus { outline: none; }
+*:focus-visible {
+  outline: 2px solid rgb(var(--ring));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--ring), 0.25);
+  border-color: rgb(var(--accent-1));
+}
+
+/* Reduced motion (skill §1 reduced-motion + §7 interruptible) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* KaTeX colour pinning */
+.katex { color: rgb(var(--ink-1)); }
+
+/* Markdown prose */
+.prose { color: rgb(var(--ink-2)); }
+.prose code {
+  background: rgb(var(--bg-muted));
+  color: rgb(var(--ink-1));
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+}
+.prose strong { color: rgb(var(--ink-1)); }
+.prose h1, .prose h2, .prose h3, .prose h4 { color: rgb(var(--ink-1)); }
+.prose a { color: rgb(var(--accent-1)); text-decoration: none; }
+.prose a:hover { text-decoration: underline; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   R2 beat-advance pulses.
+
+   When the active beat changes in ScrollPacedSlide, two animations fire:
+   (1) the sticky widget container gets a brick ring that ripples outward
+       and fades — the eye is drawn to the fact that the picture just
+       changed because of the paragraph the reader crossed.
+   (2) the newly-active prose paragraph briefly washes with verdigris-soft
+       and nudges 0.5% larger — a chalk-highlighter pass on the text the
+       reader is now meant to read.
+
+   Both classes are applied for a fixed duration (~600ms) by a useEffect
+   in ScrollPacedSlide that watches activeIdx.
+   ────────────────────────────────────────────────────────────────────────── */
+@keyframes widget-pulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgb(var(--accent-1) / 0.55),
+      0 1px 3px rgba(32, 27, 20, 0.08),
+      0 4px 12px rgba(32, 27, 20, 0.05);
+  }
+  100% {
+    box-shadow:
+      0 0 0 10px rgb(var(--accent-1) / 0),
+      0 1px 3px rgba(32, 27, 20, 0.08),
+      0 4px 12px rgba(32, 27, 20, 0.05);
+  }
+}
+.widget-pulse {
+  animation: widget-pulse 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes beat-pulse {
+  0% {
+    transform: scale(1);
+    background-color: rgb(var(--live-soft) / 0);
+  }
+  30% {
+    transform: scale(1.005);
+    background-color: rgb(var(--live-soft) / 0.55);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(var(--live-soft) / 0);
+  }
+}
+.beat-just-activated {
+  animation: beat-pulse 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 4px;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--bg-muted), 1) 0%,
+    rgba(var(--border), 1) 50%,
+    rgba(var(--bg-muted), 1) 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   R5c — Print stylesheet.
+
+   The lesson is structured like a book — let it print as one. We strip
+   the chrome (NavBar, toggles, progress bar), expand collapsibles,
+   cancel scroll-reveal opacity so all sections appear, drop sticky
+   positioning, and switch to high-contrast ink-on-white. Interactive
+   widgets are kept (some render as static frames at their initial
+   state — close enough to a textbook figure for the print case).
+   ────────────────────────────────────────────────────────────────────────── */
+@media print {
+  /* Paper, black ink, no decorative parchment backgrounds */
+  html, body {
+    background: white !important;
+    background-image: none !important;
+    color: black !important;
+  }
+  html { color-scheme: light !important; }
+
+  /* Chrome — gone */
+  header[class*="sticky"],
+  nav[aria-label="Primary"],
+  [class*="ReadingProgress"],
+  [class*="AudioMuteToggle"],
+  [class*="ReaderWidthToggle"],
+  [class*="ThemeToggle"],
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  /* All RevealSection / FadeUp wrappers — render visible regardless of
+     scroll position. (Framer Motion sets opacity:0 + translateY initially;
+     in print, force the resting state.) */
+  [style*="opacity"], [style*="transform"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Sticky widgets — fall through to normal flow so they print where
+     they sit in the document instead of pinning to top:5rem. */
+  [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* All <details> — expand. The "From the book" rows + transcripts are
+     hidden by default behind <details>; in print we want everything. */
+  details > summary { display: none !important; }
+  details > *:not(summary) { display: block !important; }
+
+  /* Cards — flatten the shadow, keep a thin rule so sections still
+     read as discrete blocks. */
+  [class*="shadow-card"],
+  [class*="shadow-pop"],
+  [class*="shadow-soft"] {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+
+  /* Reading column — single column, generous (75ch) for paper.
+     Reader-width toggle preference is ignored for print. */
+  .reading {
+    max-width: 75ch !important;
+    font-size: 11pt !important;
+    line-height: 1.55 !important;
+  }
+  main {
+    max-width: 75ch !important;
+  }
+
+  /* Ornaments — keep, recolour to black. */
+  hr.rule-ornament {
+    background: black !important;
+    page-break-before: always;
+  }
+  hr.rule-ornament::after {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Links — show URL after the link text for offline reading. Skip for
+     internal /lesson and /library hrefs to keep the printed page clean. */
+  a[href^="http"]:after,
+  a[href^="//"]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #444;
+    word-break: break-all;
+  }
+
+  /* Don't fragment paragraphs across pages */
+  p, li, h1, h2, h3, h4 {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3 { page-break-after: avoid; }
+
+  /* Interactive controls that don't make sense on paper */
+  button[aria-label="Pause"],
+  button[aria-label="Play"],
+  button[aria-label*="beat"],
+  input[type="range"],
+  input[type="text"][placeholder*="expected type"] {
+    display: none !important;
+  }
+
+  /* Hidden audio elements stay hidden — they're already display:none */
+}
