@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="G10 Maths">
+  <!-- The brand mark: Tome's Compass glyph on the vellum page, in brick.
+       Colours are the light-theme --bg-surface and --accent-1 token values;
+       an .ico cannot read CSS variables, so they are written out here. -->
+  <rect width="32" height="32" rx="7" fill="#FAECA2"/>
+  <g fill="none" stroke="#8A3226" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="16" r="10.5"/>
+    <path d="M21.7 10.3l-2.4 7.2a2.7 2.7 0 0 1-1.7 1.7l-7.2 2.4 2.4-7.2a2.7 2.7 0 0 1 1.7-1.7z"/>
+  </g>
+</svg>

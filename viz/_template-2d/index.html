@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2D template</title>
+<!-- Starter for a new 2D page. Copy the folder to public/viz/<id>/, rename
+     it, replace the card, then add or flip the manifest entry. Not in the
+     manifest itself — check.mjs skips _template-*. -->
+<meta name="viz-topic" content="Template">
+<meta name="viz-title" content="2D starter">
+<link rel="stylesheet" href="../../tokens.css">
+<script src="../../chrome.js"></script>
+<style>
+:root{ --nav-h:56px }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{overflow-x:hidden}
+.topbar{position:sticky;top:var(--nav-h);z-index:30;background:rgb(var(--bg-surface) / .92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgb(var(--border) / .8)}
+.topbar-in{max-width:1160px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;
+  align-items:center;gap:10px 28px}
+h1{font-size:20px;margin:0;font-weight:650;white-space:nowrap}
+.ctl{display:flex;align-items:center;gap:10px}
+.ctl label{font-size:17px;font-weight:600;font-style:italic;color:rgb(var(--ink-1))}
+.ctl input[type=range]{width:180px;max-width:38vw;accent-color:rgb(var(--live-1));height:24px}
+@media (pointer: coarse){ .ctl input[type=range]{height:44px} }
+.ctl output{font-variant-numeric:tabular-nums;font-weight:650;background:rgb(var(--live-soft));
+  color:rgb(var(--live-1));border-radius:6px;padding:1px 7px;min-width:1.6em;text-align:center}
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px 56px}
+.card{background:rgb(var(--bg-surface));border:1px solid rgb(var(--border));border-radius:.875rem;
+  box-shadow:0 1px 3px rgba(32,27,20,.08),0 4px 12px rgba(32,27,20,.05);padding:24px;margin:32px 0}
+.card h2{font-size:24px;margin:0 0 6px;font-weight:650}
+.lead{margin:0 0 20px;color:rgb(var(--ink-2));max-width:62ch}
+svg.diagram{display:block;width:100%;max-width:520px;height:auto;margin:0 auto}
+.reg{fill:rgb(var(--chart-1) / .35);stroke:rgb(var(--chart-1));stroke-width:1.5}
+.frame{fill:none;stroke:rgb(var(--ink-1));stroke-width:1.6}
+svg text{fill:rgb(var(--ink-1));font-size:15px;font-weight:600;text-anchor:middle;
+  dominant-baseline:central}
+.verify{margin-top:14px;background:rgb(var(--success-soft) / .55);
+  border:1px solid rgb(var(--success) / .35);border-radius:10px;padding:10px 14px;
+  font-variant-numeric:tabular-nums;color:rgb(var(--ink-1))}
+.tick{font-weight:800;color:rgb(var(--success))}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <h1>2D template</h1>
+  <div class="ctl">
+    <label for="sa">a</label>
+    <input id="sa" type="range" min="2" max="10" step="1" value="6" aria-label="value of a">
+    <output id="oa" for="sa">6</output>
+  </div>
+</div></div>
+<div class="wrap"><main>
+  <section class="card">
+    <h2>Area of a square</h2>
+    <p class="lead">One slider, one diagram, one live check — the shape every page here takes.</p>
+    <svg class="diagram" id="svg" viewBox="0 0 400 300" role="img" aria-label="Square of side a"></svg>
+    <div class="verify" id="v"></div>
+  </section>
+</main></div>
+<script>
+"use strict";
+var svg = document.getElementById("svg"), out = document.getElementById("oa"),
+    slider = document.getElementById("sa"), verify = document.getElementById("v"),
+    NS = "http://www.w3.org/2000/svg";
+function el(name, attrs, text){
+  var n = document.createElementNS(NS, name);
+  for (var k in attrs) n.setAttribute(k, attrs[k]);
+  if (text != null) n.textContent = text;
+  return n;
+}
+function draw(a){
+  var side = 20 * a, x = 200 - side / 2, y = 150 - side / 2;
+  svg.textContent = "";
+  svg.appendChild(el("rect", { x: x, y: y, width: side, height: side, class: "reg" }));
+  svg.appendChild(el("rect", { x: x, y: y, width: side, height: side, class: "frame" }));
+  svg.appendChild(el("text", { x: 200, y: 150 }, "a²"));
+  svg.appendChild(el("text", { x: 200, y: y + side + 18 }, "a = " + a));
+  verify.innerHTML = "<span class='tick'>✓</span> " + a + " × " + a +
+    " = " + a * a + ", and a² = " + a * a + ".";
+  out.textContent = a;
+}
+slider.addEventListener("input", function(){ draw(+slider.value); });
+draw(+slider.value);
+</script>
+</body>
+</html>

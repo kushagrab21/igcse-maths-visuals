@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The angle between a line and a plane</title>
+<meta name="viz-topic" content="Trigonometry">
+<meta name="viz-title" content="The angle between a line and a plane">
+<link rel="stylesheet" href="../../tokens.css">
+<script src="../../chrome.js"></script>
+<style>
+/* ===================================================================
+   Shared skin for the interactive pages.
+   Colour, type and elevation come from ../../tokens.css; nothing here
+   names a colour of its own. Only diagram-specific rules live below.
+   =================================================================== */
+:root{
+  --nav-h:56px;                 /* must match NAV_H in chrome.js */
+  --shadow-soft:0 1px 2px rgba(32,27,20,.06), 0 1px 1px rgba(32,27,20,.04);
+  --shadow-card:0 1px 3px rgba(32,27,20,.08), 0 4px 12px rgba(32,27,20,.05);
+  --r-lg:.625rem;
+  --r-xl:.875rem;
+  /* white on the accent is unreadable once the accent lightens in dark
+     mode, so the label colour flips with the theme */
+  --on-accent:255 255 255;
+}
+.dark{ --on-accent:38 30 16; }
+
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--nav-h) + 76px)}
+html,body{margin:0;padding:0}
+body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+.wrap{max-width:64rem;margin:0 auto;padding:8px 16px 64px}
+.hidden{display:none}
+
+/* ===================================================================
+   control strip — the site nav's twin, docked under it
+   =================================================================== */
+.topbar{
+  position:sticky;top:var(--nav-h);z-index:30;
+  background:rgb(var(--bg-surface) / .8);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgb(var(--border) / .8);
+}
+.topbar-in{
+  max-width:64rem;margin:0 auto;padding:10px 16px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;
+}
+h1{
+  font-family:var(--font-serif),Georgia,serif;
+  font-size:1rem;font-weight:600;letter-spacing:-.01em;
+  color:rgb(var(--ink-1));margin:0;white-space:nowrap;
+}
+.sliders{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.ctl{display:flex;align-items:center;gap:8px}
+.ctl label{
+  font-size:.8125rem;font-weight:500;color:rgb(var(--ink-2));
+  font-style:italic;min-width:12px;text-align:center;
+}
+.ctl .unit{font-size:.75rem;color:rgb(var(--ink-4))}
+.ctl input[type=range]{
+  width:170px;max-width:38vw;height:24px;cursor:pointer;
+  accent-color:rgb(var(--live-1));
+}
+.ctl output{
+  font-size:.8125rem;font-weight:600;min-width:2.2em;text-align:center;
+  font-variant-numeric:tabular-nums;
+  background:rgb(var(--live-soft));color:rgb(var(--live-2));
+  border-radius:999px;padding:2px 9px;
+}
+.ctl input[type=number]{
+  font:inherit;font-size:.875rem;font-weight:600;width:60px;
+  padding:5px 8px;border:1px solid rgb(var(--border-strong));
+  border-radius:var(--r-lg);
+  background:rgb(var(--bg-surface));color:rgb(var(--ink-1));
+  font-variant-numeric:tabular-nums;
+}
+
+/* ===================================================================
+   section label + card
+   =================================================================== */
+.section-label{
+  font-size:.6875rem;font-weight:500;text-transform:uppercase;
+  letter-spacing:.16em;color:rgb(var(--ink-4));
+  margin:28px 0 12px;
+}
+.card{
+  border:1px solid rgb(var(--border));
+  border-radius:var(--r-xl);
+  background:rgb(var(--bg-surface));
+  box-shadow:var(--shadow-soft);
+  margin:0 0 32px;
+  scroll-margin-top:calc(var(--nav-h) + 76px);
+  transition:box-shadow .2s ease,border-color .2s ease;
+}
+.card:hover,.card:focus-within{
+  box-shadow:var(--shadow-card);
+  border-color:rgb(var(--accent-1));
+}
+.card.lit{border-color:rgb(var(--accent-1));box-shadow:0 0 0 2px rgb(var(--ring) / .22),var(--shadow-card)}
+.card > header{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  border-bottom:1px solid rgb(var(--border) / .8);
+  padding:16px 24px;
+}
+.card h2{
+  font-family:var(--font-serif),Georgia,serif;
+  font-size:1.25rem;line-height:1.875rem;font-weight:600;
+  letter-spacing:-.01em;color:rgb(var(--ink-1));margin:0;
+}
+.card .lead{
+  margin:5px 0 0;font-size:.875rem;line-height:1.375rem;
+  color:rgb(var(--ink-3));max-width:62ch;
+}
+.body{
+  display:grid;grid-template-columns:55fr 45fr;gap:28px;
+  align-items:start;padding:24px;
+}
+@media (max-width:899px){ .body{grid-template-columns:minmax(0,1fr);gap:20px} }
+.left,.right{min-width:0;display:flex;flex-direction:column;gap:14px}
+svg.diagram{display:block;width:100%;max-width:520px;height:auto;margin:0 auto;touch-action:none}
+.howto{margin:0;font-size:.8125rem;line-height:1.25rem;color:rgb(var(--ink-3))}
+
+/* ===================================================================
+   algebra panel
+   =================================================================== */
+.alg{font-size:1.0625rem;line-height:1.95;color:rgb(var(--ink-1))}
+.ln.step{opacity:0;transition:opacity .25s ease}
+.ln.step.on{opacity:1}
+.ln.pop{display:none}
+.ln.pop.on{display:block}
+.ln.dim{font-size:.8125rem;color:rgb(var(--ink-3));line-height:1.35rem}
+.t{
+  padding:1px 3px;border-radius:4px;
+  text-decoration:underline 3px solid transparent;
+  text-underline-offset:5px;
+  transition:text-decoration-color .25s ease,background-color .25s ease;
+}
+.t.hl{text-decoration-color:rgb(var(--ring));background:rgb(var(--accent-soft) / .45)}
+.t.faded{visibility:hidden}
+.ln.struck,.t.struck{text-decoration:line-through 2px rgb(var(--danger));color:rgb(var(--danger))}
+.tagbad{font-size:.8125rem;font-weight:600;color:rgb(var(--danger))}
+.tagok{font-size:.8125rem;font-weight:600;color:rgb(var(--success))}
+
+/* ⊕ block */
+.added{
+  background:rgb(var(--live-soft));
+  border:1px solid rgb(var(--live-1) / .25);
+  border-radius:var(--r-xl);padding:12px 16px 14px;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.6875rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.14em;color:rgb(var(--live-1));
+}
+.badge .sym{font-size:.9375rem;line-height:1;letter-spacing:0}
+.why{margin:6px 0 10px;font-size:.875rem;line-height:1.375rem;color:rgb(var(--ink-2))}
+.added .alg,.added .ln{color:rgb(var(--ink-1))}
+
+/* ===================================================================
+   verification strip
+   =================================================================== */
+.verify{
+  background:rgb(var(--success-soft));
+  border:1px solid rgb(var(--success) / .22);
+  border-radius:var(--r-lg);
+  padding:10px 14px;
+  font-size:.875rem;line-height:1.375rem;color:rgb(var(--ink-1));
+  font-variant-numeric:tabular-nums;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  transition:background-color .25s ease,border-color .25s ease;
+}
+.verify.fail{background:rgb(var(--danger-soft));border-color:rgb(var(--danger) / .4)}
+.verify .cap{
+  font-size:.6875rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.14em;color:rgb(var(--ink-3));
+}
+.verify .sum{flex:1 1 auto}
+.tick{font-weight:700;color:rgb(var(--success))}
+.verify.fail .tick{color:rgb(var(--danger))}
+
+/* ===================================================================
+   buttons — Tome's primary and secondary
+   =================================================================== */
+button{
+  font-family:inherit;font-size:.875rem;font-weight:500;
+  display:inline-flex;align-items:center;justify-content:center;gap:.375rem;
+  height:2.5rem;padding:0 1rem;border-radius:var(--r-lg);
+  background:rgb(var(--accent-1));color:rgb(var(--on-accent));
+  border:1px solid transparent;
+  box-shadow:var(--shadow-soft);
+  cursor:pointer;align-self:flex-end;margin-top:auto;
+  transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .12s ease;
+}
+button:hover{background:rgb(var(--accent-2));box-shadow:var(--shadow-card)}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:disabled:hover{background:rgb(var(--accent-1));box-shadow:var(--shadow-soft)}
+button.undo,button.ghostbtn,.seg button,.picks button{
+  background:rgb(var(--bg-surface));color:rgb(var(--ink-1));
+  border:1px solid rgb(var(--border-strong));box-shadow:none;
+}
+button.undo:hover,button.ghostbtn:hover{
+  background:rgb(var(--bg-surface));
+  border-color:rgb(var(--accent-1));color:rgb(var(--accent-1));box-shadow:none;
+}
+button.ghostbtn{align-self:auto;margin-top:0;height:2rem;padding:0 .75rem;font-size:.8125rem}
+@media (max-width:899px){ button{align-self:flex-start;margin-top:4px} }
+
+/* segmented choice */
+.seg{display:inline-flex;border:1px solid rgb(var(--border-strong));border-radius:var(--r-lg);overflow:hidden}
+.seg button{
+  border:0;border-radius:0;margin:0;align-self:auto;box-shadow:none;
+  height:2rem;padding:0 .75rem;font-size:.8125rem;
+}
+.seg button + button{border-left:1px solid rgb(var(--border-strong))}
+.seg button:hover{background:rgb(var(--bg-muted));color:rgb(var(--ink-1))}
+.seg button[aria-pressed="true"]{background:rgb(var(--live-1));color:rgb(var(--on-accent))}
+.dark .seg button[aria-pressed="true"]{color:rgb(38 30 16)}
+.seg button[aria-pressed="true"]:hover{background:rgb(var(--live-2))}
+
+/* in-card choices */
+.picks{display:flex;flex-wrap:wrap;gap:8px}
+.picks button{align-self:auto;margin:0;height:auto;min-height:2.25rem;padding:.4rem .75rem;text-align:left}
+.picks button:hover{background:rgb(var(--bg-muted))}
+.picks button[aria-pressed="true"]{background:rgb(var(--live-1));color:rgb(var(--on-accent));border-color:transparent}
+.picks button.wrong{border-color:rgb(var(--danger));color:rgb(var(--danger));background:rgb(var(--danger-soft))}
+
+/* a line the page says back to the reader */
+.say{margin:0;font-size:.875rem;line-height:1.375rem;color:rgb(var(--ink-2));min-height:1.375rem}
+.say.bad{color:rgb(var(--danger));font-weight:500}
+.say.ok{color:rgb(var(--success));font-weight:500}
+
+/* a small table with the live row lit */
+table.rowtable{border-collapse:collapse;width:100%;font-size:.875rem;color:rgb(var(--ink-1))}
+table.rowtable th,table.rowtable td{
+  text-align:left;padding:7px 10px;border-bottom:1px solid rgb(var(--border) / .7);
+  font-variant-numeric:tabular-nums;
+}
+table.rowtable th{
+  font-size:.6875rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.14em;color:rgb(var(--ink-4));
+}
+table.rowtable tr.lit td{background:rgb(var(--live-soft));font-weight:600;color:rgb(var(--live-2))}
+table.rowtable tr.lit td:first-child{box-shadow:inset 3px 0 0 rgb(var(--live-1))}
+
+/* place-value blocks */
+.cells{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.cell{
+  border:1px solid rgb(var(--border));border-radius:var(--r-lg);padding:8px 12px;
+  min-width:72px;text-align:center;background:rgb(var(--bg-surface));
+  font-variant-numeric:tabular-nums;
+}
+
+/* ===================================================================
+   diagrams
+   =================================================================== */
+svg text{
+  font-family:var(--font-sans),ui-sans-serif,system-ui,sans-serif;
+  fill:rgb(var(--ink-1));
+}
+.rlab,.elab{font-size:var(--fs,15px);font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dlab{font-size:var(--fs2,14px);font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+
+/* four categorical tints — chart tokens at 35% with a full-strength edge */
+.c-sky   { --fill:rgb(var(--chart-4) / .22); --line:rgb(var(--chart-4)); }
+.c-mint  { --fill:rgb(var(--chart-2) / .22); --line:rgb(var(--chart-2)); }
+.c-butter{ --fill:rgb(var(--chart-3) / .22); --line:rgb(var(--chart-3)); }
+.c-peach { --fill:rgb(var(--chart-5) / .22); --line:rgb(var(--chart-5)); }
+.c-two1  { --fill:rgb(var(--chart-4) / .22); --line:rgb(var(--chart-4)); }
+.c-two2  { --fill:rgb(var(--chart-1) / .22); --line:rgb(var(--chart-1)); }
+
+.reg{
+  fill:var(--fill);stroke:var(--line);stroke-width:1.5;
+  transition:stroke .25s ease,stroke-width .25s ease;
+}
+.tri{fill:var(--fill);stroke:var(--line);stroke-width:2}
+.grp{cursor:default}
+.grp:focus{outline:none}
+.grp.hl .reg,.grp:focus-visible .reg,.grp.hl .tri,.grp:focus-visible .tri{
+  stroke:rgb(var(--ring));stroke-width:3;
+}
+.grp.hl .ray,.grp.hl .curve{stroke:rgb(var(--ring));stroke-width:3.2}
+.grp.removed .rlab{visibility:hidden}
+.grp.drag{cursor:grab}
+.grp.drag:active{cursor:grabbing}
+.frame{fill:none;stroke:rgb(var(--ink-1));stroke-width:1.6}
+.frame.hl{stroke:rgb(var(--ring));stroke-width:3}
+.ghost{fill:none;stroke:rgb(var(--border-strong) / .55);stroke-width:1.2;stroke-dasharray:5 5}
+.sqhl{fill:none;stroke:none;stroke-width:3;pointer-events:none}
+.sqhl.hl{stroke:rgb(var(--ring))}
+.dim{stroke:rgb(var(--ink-3));stroke-width:1.3;fill:none}
+.receded .elab{fill:rgb(var(--ink-3))}
+.receded .dim{stroke:rgb(var(--ink-4))}
+.dimadd{stroke:rgb(var(--live-1));stroke-width:1.6;fill:none}
+.dlab.add,.rlab.add{fill:rgb(var(--live-2))}
+.target{fill:none;stroke:rgb(var(--live-1));stroke-width:1.6;stroke-dasharray:6 5;opacity:0}
+.target.on{opacity:.9}
+.arc{fill:none;stroke:rgb(var(--chart-4));stroke-width:2}
+.ray{stroke:rgb(var(--ink-1));stroke-width:1.6;fill:none}
+.ray.soft{stroke:rgb(var(--ink-4));stroke-width:1.2}
+.dash{stroke:rgb(var(--ink-3));stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+.axis{stroke:rgb(var(--ink-4));stroke-width:1.2;fill:none}
+.curve{fill:none;stroke-width:2.4}
+.dot{fill:rgb(var(--chart-4))}
+.node{fill:rgb(var(--bg-surface));stroke:rgb(var(--ink-1));stroke-width:1.6}
+.node.on{fill:rgb(var(--chart-4));stroke:rgb(var(--bg-surface))}
+.ang{fill:none;stroke:rgb(var(--chart-4));stroke-width:2}
+.ang.soft{stroke:rgb(var(--ink-4))}
+.nope{stroke:rgb(var(--danger));stroke-width:2;fill:none}
+text.badlab{fill:rgb(var(--danger));font-weight:600}
+text.oklab{fill:rgb(var(--success));font-weight:600}
+/* a short leader line from a tight angle out to its value */
+.leader{stroke:rgb(var(--ink-3));stroke-width:1;fill:none}
+/* a halo so a label crossing a line stays readable */
+.halo{paint-order:stroke;stroke:rgb(var(--bg-surface));stroke-width:6px;stroke-linejoin:round}
+
+/* ===================================================================
+   the 3D stage and its floating labels
+   =================================================================== */
+.stage{
+  position:relative;width:100%;aspect-ratio:1/1;max-width:520px;margin:0 auto;
+  border:1px solid rgb(var(--border));border-radius:var(--r-xl);overflow:hidden;
+  background:rgb(var(--bg-surface));touch-action:none;
+}
+.stage canvas{display:block;width:100%;height:100%}
+.v3d{
+  position:absolute;transform:translate(-50%,-50%);
+  font-family:var(--font-sans),ui-sans-serif,system-ui,sans-serif;
+  font-size:14px;font-weight:600;color:rgb(var(--ink-1));
+  pointer-events:none;white-space:nowrap;
+  text-shadow:
+     0 0 6px rgb(var(--bg-surface)), 0 0 6px rgb(var(--bg-surface)),
+     0 0 6px rgb(var(--bg-surface)), 0 0 3px rgb(var(--bg-surface)),
+     1px 1px 0 rgb(var(--bg-surface)), -1px -1px 0 rgb(var(--bg-surface)),
+     1px -1px 0 rgb(var(--bg-surface)), -1px 1px 0 rgb(var(--bg-surface));
+}
+.v3d.sel{color:rgb(var(--chart-4))}
+.v3d.side{color:rgb(var(--ink-2));font-weight:500}
+.v3d.ang{color:rgb(var(--chart-1))}
+.v3d.hl{color:rgb(var(--ring));text-decoration:underline 2px rgb(var(--ring));text-underline-offset:3px}
+
+footer{
+  border-top:1px solid rgb(var(--border));
+  margin-top:8px;padding-top:16px;
+  font-size:.8125rem;color:rgb(var(--ink-4));
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>Line and plane</h1>
+    <div class="sliders">
+      <div class="ctl"><label for="iL" style="font-style:normal">AB</label>
+        <input id="iL" type="number" min="1" max="20" step="1" value="10"><span class="unit">cm</span></div>
+      <div class="ctl"><label for="iW" style="font-style:normal">BC</label>
+        <input id="iW" type="number" min="1" max="20" step="1" value="5"><span class="unit">cm</span></div>
+      <div class="ctl"><label for="iH" style="font-style:normal">height</label>
+        <input id="iH" type="number" min="1" max="20" step="1" value="5"><span class="unit">cm</span></div>
+      <div class="ctl"><button type="button" class="ghostbtn" id="resetView">Reset view</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<main>
+<p class="section-label">Finding the triangle inside a solid</p>
+
+<!-- ============================ CARD 1 ============================ -->
+<section class="card" id="card1">
+  <header><div>
+    <h2>The angle between a line and a plane</h2>
+    <p class="lead">Shine a light straight down on the line. Its shadow lands on the base,
+    and the angle you want is the one between the line and its own shadow. Tap two corners
+    to pick a different line.</p>
+  </div></header>
+  <div class="body">
+    <div class="left">
+      <div class="stage" id="stage"><div id="fallback" class="hidden" style="padding:24px;font-size:.875rem">
+        This browser cannot draw the solid. The card below does the same work flat on the page.
+      </div></div>
+      <p class="howto">Drag to turn it, pinch or scroll to zoom, tap a corner to pick it.</p>
+    </div>
+    <div class="right">
+      <div class="alg">
+        <div class="ln pop on" id="t1">The line is
+          <span class="t" data-keys="hyp" tabindex="0" id="lineName">AR</span>.</div>
+        <div class="ln pop" id="t2">Drop a perpendicular from
+          <span class="t" data-keys="height" tabindex="0" id="topName">R</span> to the base.
+          It lands at <span class="t" data-keys="foot" tabindex="0" id="footName">C</span>,
+          so the angle there is a right angle.</div>
+        <div class="ln pop" id="t3">The shadow of the line is
+          <span class="t" data-keys="diag" tabindex="0" id="projName">AC</span>, and the three
+          points make a right-angled triangle.</div>
+        <div class="ln pop" id="t4" id2="ang">The angle sits where the line meets the base:
+          <span class="t" data-keys="angle" tabindex="0" id="angName">θ = 24.1°</span></div>
+        <div class="ln pop" id="t5">Fold that triangle down flat and you have an ordinary
+          two-dimensional problem.</div>
+      </div>
+      <p class="say" id="say1"></p>
+      <div class="verify" id="v1"></div>
+      <button id="b1">Next step</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARD 2 ============================ -->
+<section class="card" id="card2">
+  <header><div>
+    <h2>tan θ = height ÷ base diagonal</h2>
+    <p class="lead">The same triangle, on its own and the right way up. Name three points,
+    draw the triangle flat, mark the right angle, then pick a ratio.</p>
+  </div></header>
+  <div class="body">
+    <div class="left">
+      <svg class="diagram" id="svg2" viewBox="0 0 400 260" role="img" aria-label="The right-angled triangle taken out of the solid and drawn flat"></svg>
+      <p class="howto">Hover a side here and the same side lights up in the solid.</p>
+    </div>
+    <div class="right">
+      <div class="alg">
+        <div class="ln pop on" id="m0"></div>
+        <div class="ln pop" id="m1"></div>
+        <div class="ln pop" id="m2">Opposite and adjacent, so the ratio is the tangent.</div>
+        <div class="ln pop" id="m3"></div>
+        <div class="ln pop" id="m4"></div>
+      </div>
+      <div class="verify" id="v2"></div>
+      <button id="b2">Next step</button>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>Steps marked ⊕ are extra working.</footer>
+</div>
+
+<script>
+/* ===================================================================
+   Shared helpers for the interactive pages: number formatting, label
+   placement, hover linking, the step-through engine, and the overlap
+   check that keeps text off the lines.
+   =================================================================== */
+"use strict";
+var VBW = 400;
+var RAD = Math.PI/180;
+var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(window.matchMedia){
+  try{ window.matchMedia('(prefers-reduced-motion: reduce)')
+        .addEventListener('change', function(e){ REDUCED = e.matches; }); }catch(err){}
+}
+
+/* ---------- numbers: as many decimals as the value needs, no more --- */
+function n(v){ return Math.round(v*1000)/1000; }
+function num(v, max){
+  if(!isFinite(v)) return '—';
+  max = (max == null) ? 2 : max;
+  if(Math.abs(v) < 5e-11) v = 0;
+  var s = v.toFixed(max);
+  if(s.indexOf('.') !== -1) s = s.replace(/0+$/,'').replace(/\.$/,'');
+  if(s === '-0') s = '0';
+  return s.replace('-','−');
+}
+function deg(v){ return num(v,1) + '°'; }
+function len(v){ return num(v,2); }
+function sg(v){ return String(v).replace('-','−'); }
+function br(v){ return v < 0 ? '(' + sg(v) + ')' : String(v); }
+
+/* ---------- animation ---------- */
+function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+function anim(dur, step, done){
+  if(REDUCED){ step(1); if(done) done(); return; }
+  var t0 = performance.now(), fin = false;
+  function end(){ if(fin) return; fin = true; step(1); if(done) done(); }
+  (function frame(now){
+    if(fin) return;
+    var t = Math.min(1,(now-t0)/dur); step(ease(t));
+    if(t<1) requestAnimationFrame(frame); else end();
+  })(performance.now());
+  setTimeout(end, dur+300);
+}
+var timers = [];
+function later(fn, ms){ if(REDUCED){ fn(); return; } timers.push(setTimeout(fn, ms)); }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+/* ---------- svg text ---------- */
+var _labSeq = 0;
+/* `dir` is the direction this label would rather move if it has to move */
+function lab(x,y,s,anchor,cls,dir,id){
+  return '<text class="'+(cls||'elab')+'" x="'+n(x)+'" y="'+n(y)+'"'
+       + (anchor?' style="text-anchor:'+anchor+'"':'')
+       + (dir?' data-dir="'+n(dir[0])+','+n(dir[1])+'"':'')
+       + (id?' data-id="'+id+'"':'') + '>'+s+'</text>';
+}
+/* the same, with a halo, for a label that has to sit over something */
+function haloLab(x,y,s,anchor,cls){
+  return lab(x,y,s,anchor,(cls||'elab')+' halo');
+}
+
+/* ---------- label placement ---------- *
+
+   unit(v)            — normalise a 2-vector
+   offSide(d, k)      — the perpendicular to d that points away from the
+                        figure's vertical spine, k pixels long
+   outward(v, c, k)   — from a centre c towards v, k pixels past it
+   bisectOut(a,b,k)   — at a vertex, along the bisector of the EXTERIOR
+                        angle between the two edge directions a and b
+   ------------------------------------------------------------------ */
+function unit(v){ var L = Math.hypot(v[0],v[1])||1; return [v[0]/L, v[1]/L]; }
+function offSide(d, k){
+  var p = [-d[1], d[0]];
+  if((p[0] < 0) !== (d[0] < 0)) p = [d[1], -d[0]];
+  return [p[0]*k, p[1]*k];
+}
+function outward(v, c, k){
+  var d = unit([v[0]-c[0], v[1]-c[1]]);
+  return [v[0]+d[0]*k, v[1]+d[1]*k];
+}
+/* a and b are the two edge directions leaving the vertex, in SCREEN
+   coordinates. The letter goes the opposite way to their bisector, so it
+   always lands outside the figure. */
+function bisectOut(vx, vy, a, b, k){
+  var ua = unit(a), ub = unit(b);
+  var s = [ua[0]+ub[0], ua[1]+ub[1]];
+  if(Math.hypot(s[0],s[1]) < 1e-6) s = [-ua[1], ua[0]];   /* straight through */
+  var o = unit(s);
+  var out = [vx - o[0]*k, vy - o[1]*k];
+  out.dir = [-o[0], -o[1]];
+  return out;
+}
+/* where an angle's value goes: inside the angle just past the arc. A
+   tight angle (under 20°) has no room in there, and neither has a wide
+   one whose inside is already occupied — `busy` lists points to keep
+   clear of — so those go outside on a short leader instead. */
+function angleValue(vx, vy, a, b, arcR, text, cls, busy){
+  var ua = unit(a), ub = unit(b);
+  var bis = unit([ua[0]+ub[0], ua[1]+ub[1]]);
+  var open = Math.acos(Math.max(-1, Math.min(1, ua[0]*ub[0]+ua[1]*ub[1])))/RAD;
+  var ix = vx + bis[0]*(arcR+16), iy = vy + bis[1]*(arcR+16);
+  var crowded = false;
+  (busy||[]).forEach(function(q){
+    if(Math.hypot(q[0]-ix, q[1]-iy) < 30) crowded = true;
+  });
+  if(open >= 20 && !crowded){
+    return lab(ix, iy, text, 'middle', cls||'dlab', bis);
+  }
+  /* outside: keep going along the bisector, past everything inside */
+  var out = arcR + 46;
+  var lx = vx + bis[0]*out, ly = vy + bis[1]*out;
+  (busy||[]).forEach(function(q){
+    while(Math.hypot(q[0]-lx, q[1]-ly) < 30 && out < arcR + 150){
+      out += 14; lx = vx + bis[0]*out; ly = vy + bis[1]*out;
+    }
+  });
+  var id = 'ang'+(++_labSeq);
+  var fx = vx + bis[0]*(arcR+5), fy = vy + bis[1]*(arcR+5);
+  return '<path class="leader" data-for="'+id+'" data-from="'+n(fx)+','+n(fy)+'" d="M'
+       + n(fx)+' '+n(fy)+' L'+n(vx + bis[0]*(out-13))+' '+n(vy + bis[1]*(out-13))+'"/>'
+       + lab(lx, ly, text, 'middle', cls||'dlab', bis, id);
+}
+/* a letter for a point that sits ON a line which carries on past it:
+   the exterior bisector would land on that line, so go perpendicular
+   to it instead, on the side away from `awayFrom`. */
+function perpLabel(p, along, awayFrom, k){
+  var d = unit(along), nrm = [-d[1], d[0]];
+  if(nrm[0]*(awayFrom[0]-p[0]) + nrm[1]*(awayFrom[1]-p[1]) > 0) nrm = [-nrm[0], -nrm[1]];
+  var out = [p[0] + nrm[0]*k, p[1] + nrm[1]*k];
+  out.dir = nrm;
+  return out;
+}
+/* a length label: midpoint of the edge, pushed off the interior side,
+   rotated with the edge only when the edge is near horizontal */
+function edgeLabel(p, q, interior, k, text, cls){
+  var mx = (p[0]+q[0])/2, my = (p[1]+q[1])/2;
+  var d = unit([q[0]-p[0], q[1]-p[1]]);
+  var nrm = [-d[1], d[0]];
+  if((mx+nrm[0]-interior[0])*(mx-interior[0]) + (my+nrm[1]-interior[1])*(my-interior[1]) < 0)
+    nrm = [d[1], -d[0]];
+  if(nrm[0]*(mx-interior[0]) + nrm[1]*(my-interior[1]) < 0) nrm = [-nrm[0], -nrm[1]];
+  var x = mx + nrm[0]*k, y = my + nrm[1]*k;
+  var ang = Math.atan2(d[1], d[0])/RAD;
+  if(ang > 90) ang -= 180; if(ang < -90) ang += 180;
+  if(Math.abs(ang) <= 20 && Math.abs(ang) > 2){
+    return '<text class="'+(cls||'dlab')+'" x="'+n(x)+'" y="'+n(y)
+         + '" data-dir="'+n(nrm[0])+','+n(nrm[1])+'"'
+         + ' transform="rotate('+n(ang)+' '+n(x)+' '+n(y)+')">'+text+'</text>';
+  }
+  return lab(x, y, text, 'middle', cls||'dlab', nrm);
+}
+
+/* ---------- hover / tap / focus linking ---------- */
+function keysOf(el){ return (el.getAttribute('data-keys')||'').split(/\s+/).filter(Boolean); }
+function setHL(card, keys){
+  if(typeof card === 'string') card = document.getElementById(card);
+  var want = (typeof keys === 'string' ? keys.split(/\s+/) : (keys||[])).filter(Boolean);
+  card.querySelectorAll('[data-keys]').forEach(function(el){
+    el.classList.toggle('hl', keysOf(el).some(function(k){ return want.indexOf(k) !== -1; }));
+  });
+}
+function clearHL(card){
+  if(typeof card === 'string') card = document.getElementById(card);
+  card.querySelectorAll('[data-keys].hl').forEach(function(el){ el.classList.remove('hl'); });
+}
+function wireCards(ids){
+  ids.forEach(function(id){
+    var card = document.getElementById(id);
+    if(!card) return;
+    card.addEventListener('pointerover', function(e){
+      var el = e.target.closest('[data-keys]');
+      if(el && card.contains(el)) setHL(card, el.getAttribute('data-keys'));
+    });
+    card.addEventListener('pointerout', function(e){
+      if(e.target.closest('[data-keys]')) clearHL(card);
+    });
+    card.addEventListener('pointerleave', function(){ clearHL(card); });
+    card.addEventListener('focusin', function(e){
+      var el = e.target.closest('[data-keys]');
+      if(el) setHL(card, el.getAttribute('data-keys'));
+    });
+    card.addEventListener('focusout', function(e){
+      if(e.target.closest('[data-keys]')) clearHL(card);
+    });
+    /* Enter or Space anywhere in the card takes the next step */
+    card.addEventListener('keydown', function(e){
+      if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+      var t = e.target;
+      if(t.tagName === 'BUTTON' || t.tagName === 'INPUT' || t.tagName === 'SELECT') return;
+      var b = card.querySelector('.stepbtn') || card.querySelector('button');
+      if(!b || b.disabled) return;
+      e.preventDefault(); b.click();
+    });
+  });
+}
+
+/* ---------- keep diagram text at a constant rendered size ---------- */
+function applyTextScale(){
+  document.querySelectorAll('svg.diagram').forEach(function(s){
+    var w = s.getBoundingClientRect().width; if(!w) return;
+    var vb = (s.getAttribute('viewBox')||'0 0 400 400').split(/\s+/);
+    var k = (+vb[2] || VBW) / w;
+    s.style.setProperty('--fs',  (15*k).toFixed(2)+'px');
+    s.style.setProperty('--fs2', (14*k).toFixed(2)+'px');
+  });
+}
+function watchTextScale(){
+  applyTextScale();
+  if(window.ResizeObserver){
+    var ro = new ResizeObserver(applyTextScale);
+    document.querySelectorAll('svg.diagram').forEach(function(s){ ro.observe(s); });
+  }
+  window.addEventListener('resize', applyTextScale);
+}
+
+/* ---------- verification strip ---------- */
+function strip(el, text, ok){
+  if(typeof el === 'string') el = document.getElementById(el);
+  el.classList.toggle('fail', !ok);
+  el.innerHTML = '<span class="cap">Check</span>'
+               + '<span class="sum">'+text+'</span>'
+               + '<span class="tick">'+(ok?'✓':'✗')+'</span>';
+}
+function close(a,b,tol){ tol = tol || 1e-9;
+  return Math.abs(a-b) <= tol*Math.max(1, Math.abs(a), Math.abs(b)); }
+
+/* ===================================================================
+   Stepper — one click, one block.
+
+   new Stepper('card2', 'b2', [
+     { show:'l1', hl:'triL' },          // reveal #l1, light data-keys triL
+     { show:['l2','l3'], hl:'' },       // a block may be several lines
+     { run:function(){...} }            // or a move instead of a reveal
+   ], { onChange:fn, first:'Next step' })
+
+   The button reads "Next step" until the last block is out, then
+   "Start again". Nothing auto-plays past a step.
+   =================================================================== */
+var _steppers = [];
+window.__steps = function(){ return _steppers.map(function(s){ return s.steps.length; }); };
+function Stepper(cardId, btnId, steps, opts){
+  _steppers.push(this);
+  opts = opts || {};
+  var card = document.getElementById(cardId);
+  var btn  = document.getElementById(btnId);
+  var self = this;
+  this.i = 0;
+  this.steps = steps;
+  btn.classList.add('stepbtn');
+
+  function ids(s){ return !s ? [] : (typeof s === 'string' ? [s] : s); }
+
+  this.apply = function(){
+    steps.forEach(function(st, k){
+      ids(st.show).forEach(function(id){
+        var el = document.getElementById(id);
+        if(el) el.classList.toggle('on', k < self.i);
+      });
+    });
+    ids(opts.always).forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.classList.add('on');
+    });
+    var cur = self.i > 0 ? steps[self.i-1] : null;
+    if(cur && cur.hl) setHL(card, cur.hl); else clearHL(card);
+    var done = self.i >= steps.length;
+    btn.textContent = done ? 'Start again' : (self.i === 0 && opts.first ? opts.first : 'Next step');
+    btn.classList.toggle('undo', done);
+    if(opts.onChange) opts.onChange(self.i);
+  };
+  this.reset = function(){
+    self.i = 0;
+    steps.forEach(function(st){ if(st.undo) st.undo(); });
+    self.apply();
+  };
+  this.next = function(){
+    if(self.i >= steps.length){ self.reset(); return; }
+    var st = steps[self.i];
+    self.i += 1;
+    self.apply();
+    if(st.run) st.run();
+  };
+  this.toEnd = function(){ self.i = steps.length; self.apply(); };
+  btn.addEventListener('click', function(){ self.next(); });
+  this.apply();
+}
+
+/* ===================================================================
+   Overlap check — no <text> may touch another <text>, a stroked line,
+   an arc, or a plotted point. Returns [] when the page is clean.
+   =================================================================== */
+function _vis(el){
+  if(!el.getClientRects || !el.getClientRects().length) return false;
+  var cs = getComputedStyle(el);
+  if(cs.display === 'none' || cs.visibility === 'hidden') return false;
+  if(parseFloat(cs.opacity) < 0.06) return false;
+  var p = el.parentElement;
+  while(p && p !== document.body){
+    var pc = getComputedStyle(p);
+    if(pc.display === 'none' || pc.visibility === 'hidden') return false;
+    if(parseFloat(pc.opacity) < 0.06) return false;
+    p = p.parentElement;
+  }
+  return true;
+}
+function _collidable(g){
+  var tag = g.tagName.toLowerCase();
+  var cs = getComputedStyle(g);
+  if(tag === 'circle' || tag === 'ellipse'){
+    return cs.fill !== 'none' || cs.stroke !== 'none';
+  }
+  return cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0;
+}
+function _sample(g){
+  var pts = [];
+  try{
+    if(typeof g.getTotalLength !== 'function') return pts;
+    var L = g.getTotalLength();
+    if(!isFinite(L) || L <= 0) return pts;
+    var m = g.getScreenCTM(); if(!m) return pts;
+    var steps = Math.min(400, Math.max(16, Math.round(L/1.5)));
+    for(var i=0;i<=steps;i++){
+      var p = g.getPointAtLength(L*i/steps);
+      pts.push([m.a*p.x + m.c*p.y + m.e, m.b*p.x + m.d*p.y + m.f]);
+    }
+  }catch(e){}
+  return pts;
+}
+function _inset(r, pad){
+  return { left:r.left+pad, right:r.right-pad, top:r.top+pad, bottom:r.bottom-pad };
+}
+function _hit(r, a, b){
+  return a.left < r.right && r.left < a.right && a.top < r.bottom && r.top < a.bottom;
+}
+function overlapReport(){
+  var out = [], seen = {};
+  function push(o){
+    var k = o.where+'|'+o.kind+'|'+o.a+'|'+(o.b||'');
+    if(seen[k]) return; seen[k] = 1; out.push(o);
+  }
+  document.querySelectorAll('svg.diagram').forEach(function(svg){
+    if(!svg.getBoundingClientRect().width) return;
+    var texts = [];
+    svg.querySelectorAll('text').forEach(function(t){
+      if(!_vis(t) || !t.textContent.trim()) return;
+      texts.push({ el:t, s:t.textContent.trim(), r:t.getBoundingClientRect() });
+    });
+    for(var i=0;i<texts.length;i++){
+      for(var j=i+1;j<texts.length;j++){
+        if(_hit(_inset(texts[i].r,0.5), _inset(texts[j].r,0.5)))
+          push({where:svg.id, kind:'text/text', a:texts[i].s, b:texts[j].s});
+      }
+    }
+    svg.querySelectorAll('path,line,polyline,polygon,circle,ellipse,rect').forEach(function(g){
+      if(!_vis(g) || !_collidable(g)) return;
+      var pts = _sample(g), cls = g.getAttribute('class') || g.tagName;
+      if(!pts.length) return;
+      var owner = g.classList.contains('leader') ? g.getAttribute('data-for') : null;
+      for(var t=0;t<texts.length;t++){
+        if(owner && texts[t].el.getAttribute('data-id') === owner) continue;
+        var r = _inset(texts[t].r, 1.5);
+        if(r.right <= r.left || r.bottom <= r.top) continue;
+        for(var k=0;k<pts.length;k++){
+          if(pts[k][0] > r.left && pts[k][0] < r.right &&
+             pts[k][1] > r.top  && pts[k][1] < r.bottom){
+            push({where:svg.id, kind:'text/line', a:texts[t].s, b:cls});
+            break;
+          }
+        }
+      }
+    });
+  });
+  var labs = [];
+  document.querySelectorAll('.v3d').forEach(function(l){
+    if(_vis(l) && l.textContent.trim())
+      labs.push({ s:l.textContent.trim(), r:l.getBoundingClientRect() });
+  });
+  for(var a=0;a<labs.length;a++) for(var b=a+1;b<labs.length;b++){
+    if(_hit(_inset(labs[a].r,0.5), _inset(labs[b].r,0.5)))
+      push({where:'stage', kind:'label/label', a:labs[a].s, b:labs[b].s});
+  }
+  return out;
+}
+window.__overlap = overlapReport;
+
+/* ===================================================================
+   declutter — after a diagram is written, walk its labels and move any
+   that touch a line, a point or another label. Each label keeps the
+   direction it was placed in as its first choice and moves the shortest
+   distance that clears; a leader line follows its own label.
+   =================================================================== */
+var _RINGS = [0, 8, 14, 20, 27, 34, 42, 52, 64, 78];
+function _geomPoints(svg){
+  var out = { general: [], leaders: {} };
+  svg.querySelectorAll('path,line,polyline,polygon,circle,ellipse,rect').forEach(function(g){
+    if(!_vis(g) || !_collidable(g)) return;
+    var pts = _sample(g);
+    if(g.classList.contains('leader')){
+      /* a leader belongs to one label and follows it; every other label
+         still has to keep off it */
+      var id = g.getAttribute('data-for') || '_';
+      out.leaders[id] = (out.leaders[id] || []).concat(pts);
+      return;
+    }
+    for(var i=0;i<pts.length;i++) out.general.push(pts[i]);
+  });
+  return out;
+}
+/* pull a leader back so it stops at the edge of its own label */
+function _trimLeader(svg, led, s){
+  var id = led.getAttribute('data-for');
+  var tx = svg.querySelector('text[data-id="'+id+'"]');
+  var from = (led.getAttribute('data-from')||'').split(',').map(Number);
+  if(!tx || from.length !== 2 || !isFinite(from[0])) return;
+  var lx = parseFloat(tx.getAttribute('x')), ly = parseFloat(tx.getAttribute('y'));
+  var r = tx.getBoundingClientRect();
+  var hw = (r.width/2)/s + 2/s, hh = (r.height/2)/s + 2/s;
+  var d = unit([lx-from[0], ly-from[1]]);
+  var back = Math.min(hw / (Math.abs(d[0]) || 1e-6), hh / (Math.abs(d[1]) || 1e-6));
+  var ex = lx - d[0]*back, ey = ly - d[1]*back;
+  var g0 = 4/s;
+  if(Math.hypot(ex-from[0], ey-from[1]) <= g0 + 2/s){ led.setAttribute('d','M0 0'); return; }
+  led.setAttribute('d','M'+n(from[0]+d[0]*g0)+' '+n(from[1]+d[1]*g0)+' L'+n(ex)+' '+n(ey));
+}
+function _shift(r, dx, dy){
+  return { left:r.left+dx, right:r.right+dx, top:r.top+dy, bottom:r.bottom+dy };
+}
+function _clearOf(r, geo, placed, ownId){
+  var q = _inset(r, 1.5);
+  if(q.right <= q.left || q.bottom <= q.top) return true;
+  function against(pts){
+    for(var i=0;i<pts.length;i++){
+      if(pts[i][0] > q.left && pts[i][0] < q.right &&
+         pts[i][1] > q.top  && pts[i][1] < q.bottom) return false;
+    }
+    return true;
+  }
+  if(!against(geo.general)) return false;
+  for(var id in geo.leaders){
+    if(id === ownId) continue;
+    if(!against(geo.leaders[id])) return false;
+  }
+  for(var j=0;j<placed.length;j++){
+    if(_hit(_inset(r,0.5), _inset(placed[j],0.5))) return false;
+  }
+  return true;
+}
+function declutter(svgRef){
+  var svg = (typeof svgRef === 'string') ? document.getElementById(svgRef) : svgRef;
+  if(!svg) return [];
+  var ctm = svg.getScreenCTM(); if(!ctm) return [];
+  var s = Math.hypot(ctm.a, ctm.b) || 1;                /* screen px per unit */
+  var vb = (svg.getAttribute('viewBox')||'0 0 400 400').split(/\s+/).map(Number);
+  var geo = _geomPoints(svg);
+  var placed = [], stuck = [], moved = 0;
+
+  var dirs = [];
+  for(var k=0;k<12;k++){ var a = k*30*RAD; dirs.push([Math.cos(a), Math.sin(a)]); }
+
+  var list = [], owners = [];
+  svg.querySelectorAll('text').forEach(function(t){
+    if(!_vis(t) || !t.textContent.trim()) return;
+    if(t.getAttribute('data-fixed') === '1'){ placed.push(t.getBoundingClientRect()); return; }
+    (t.getAttribute('data-id') ? owners : list).push(t);
+  });
+  list = owners.concat(list);
+
+  list.forEach(function(t){
+    var ox = parseFloat(t.getAttribute('x')), oy = parseFloat(t.getAttribute('y'));
+    if(!isFinite(ox) || !isFinite(oy)){ placed.push(t.getBoundingClientRect()); return; }
+    var r0 = t.getBoundingClientRect();
+    var pref = (t.getAttribute('data-dir')||'').split(',').map(Number);
+    var order = dirs.slice();
+    if(pref.length === 2 && isFinite(pref[0]) && (pref[0] || pref[1])) order.unshift(unit(pref));
+    var got = null, gx = ox, gy = oy;
+    for(var ri=0; ri<_RINGS.length && !got; ri++){
+      var rad = _RINGS[ri];
+      for(var di=0; di<order.length; di++){
+        if(rad === 0 && di > 0) break;
+        var dx = order[di][0]*rad/s, dy = order[di][1]*rad/s;
+        var nx = ox + dx, ny = oy + dy;
+        if(nx < vb[0]+8 || nx > vb[0]+vb[2]-8 || ny < vb[1]+9 || ny > vb[1]+vb[3]-7) continue;
+        var cand = _shift(r0, dx*s, dy*s);
+        if(_clearOf(cand, geo, placed, t.getAttribute('data-id'))){ got = cand; gx = nx; gy = ny; if(rad) moved++; break; }
+      }
+    }
+    if(!got){ got = r0; stuck.push(t.textContent.trim()); }
+    if(gx !== ox || gy !== oy){
+      var tr = t.getAttribute('transform');
+      if(tr){
+        var m = /rotate\(\s*(-?[\d.]+)/.exec(tr);
+        if(m) t.setAttribute('transform', 'rotate('+m[1]+' '+n(gx)+' '+n(gy)+')');
+      }
+      t.setAttribute('x', n(gx)); t.setAttribute('y', n(gy));
+    }
+    placed.push(got);
+    var own = t.getAttribute('data-id');
+    if(own){
+      var led = svg.querySelector('.leader[data-for="'+own+'"]');
+      if(led){
+        _trimLeader(svg, led, s);
+        geo.leaders[own] = _sample(led);
+      }
+    }
+  });
+  return { moved: moved, stuck: stuck };
+}
+/* diagrams redraw on every slider tick and on every animation frame, so the
+   sweep is debounced to the settled state */
+var _declutterTimer = null, _declutterStats = { moved:0, stuck:[] }, _declutterTotal = 0;
+window.__declutterTotal = function(){ return _declutterTotal; };
+function scheduleDeclutter(){
+  if(_declutterTimer) clearTimeout(_declutterTimer);
+  _declutterTimer = setTimeout(function(){
+    _declutterTimer = null;
+    _declutterStats = _sweep();
+    _declutterTotal += _declutterStats.moved;
+  }, 60);
+}
+/* sweep the page until nothing is touching, or four tries have gone by */
+function _sweep(){
+  var moved = 0, stuck = [];
+  for(var pass=0; pass<4; pass++){
+    stuck = [];
+    document.querySelectorAll('svg.diagram').forEach(function(svg){
+      var r = declutter(svg);
+      if(r && r.moved !== undefined){ moved += r.moved; stuck = stuck.concat(r.stuck); }
+    });
+    if(overlapReport().length === 0) break;
+  }
+  return { moved: moved, stuck: stuck, left: overlapReport().length };
+}
+window.__declutter = function(){ _declutterStats = _sweep(); return _declutterStats; };
+window.__declutterStats = function(){ return _declutterStats; };
+
+
+
+/* ---------- the solid: base ABCD, top PQRS, R above C ---------- */
+var L = 10, W = 5, H = 5;
+var NAMES = ['A','B','C','D','P','Q','R','S'];
+function corners(){
+  return { A:[0,0,0], B:[L,0,0], C:[L,W,0], D:[0,W,0],
+           P:[0,0,H], Q:[L,0,H], R:[L,W,H], S:[0,W,H] };
+}
+var EDGES = [['A','B'],['B','C'],['C','D'],['D','A'],
+             ['P','Q'],['Q','R'],['R','S'],['S','P'],
+             ['A','P'],['B','Q'],['C','R'],['D','S']];
+var sel = ['A','R'];
+var STEP = 0;              /* 0 line · 1 perpendicular · 2 shade · 3 angle · 4 folded */
+
+function solve(){
+  var c = corners(), p = c[sel[0]], q = c[sel[1]];
+  var lo = p[2] <= q[2] ? p : q, hi = p[2] <= q[2] ? q : p;
+  var loN = p[2] <= q[2] ? sel[0] : sel[1], hiN = p[2] <= q[2] ? sel[1] : sel[0];
+  var foot = [hi[0], hi[1], lo[2]];
+  var diag = Math.hypot(foot[0]-lo[0], foot[1]-lo[1]);
+  var rise = hi[2] - lo[2];
+  var len3 = Math.hypot(diag, rise);
+  var theta = (diag === 0 && rise === 0) ? 0 : Math.atan2(rise, diag)/RAD;
+  var footName = null, cc = corners();
+  NAMES.forEach(function(k){
+    if(Math.abs(cc[k][0]-foot[0])<1e-9 && Math.abs(cc[k][1]-foot[1])<1e-9
+       && Math.abs(cc[k][2]-foot[2])<1e-9) footName = k;
+  });
+  var flat = rise === 0, vertical = diag < 1e-12 && rise > 0;
+  return { lo:lo, hi:hi, loN:loN, hiN:hiN, foot:foot, footName:footName,
+           diag:diag, rise:rise, len:len3, theta:theta,
+           dx: Math.abs(foot[0]-lo[0]), dy: Math.abs(foot[1]-lo[1]),
+           flat:flat, vertical:vertical, noTri: flat || vertical };
+}
+
+/* =================================================================
+   CARD 2 — the same triangle, flat, with the same markings
+   ================================================================= */
+function drawFlat(){
+  var s = solve(), out = '';
+  if(s.noTri){
+    out += lab(200, 110, s.vertical
+      ? (s.loN+s.hiN+' stands straight up from the base, so the angle is 90°.')
+      : 'Both ends are the same height, so the line lies flat and the angle is 0°.',
+      'middle', 'dlab');
+    document.getElementById('svg2').innerHTML = out;
+    scheduleDeclutter();
+    return s;
+  }
+  var box = {x:70, y:44, w:250, h:150};
+  var sc = Math.min(box.w/s.diag, box.h/s.rise) * 0.88;
+  var ox = box.x + (box.w - s.diag*sc)/2, oy = box.y + (box.h + s.rise*sc)/2;
+  var A = [ox, oy], C = [ox + s.diag*sc, oy], R = [ox + s.diag*sc, oy - s.rise*sc];
+  var mid = [(A[0]+C[0]+R[0])/3, (A[1]+C[1]+R[1])/3];
+  out += '<g class="grp c-two1"><polygon class="tri" points="'+n(A[0])+','+n(A[1])+' '
+       + n(C[0])+','+n(C[1])+' '+n(R[0])+','+n(R[1])+'"/></g>';
+  out += '<g class="grp" data-keys="diag" tabindex="0" role="button" aria-label="the base diagonal">'
+       + '<path class="ray" style="stroke-width:2.4" d="M'+n(A[0])+' '+n(A[1])+' L'+n(C[0])+' '+n(C[1])+'"/>'
+       + edgeLabel(A, C, mid, 18, 'base diagonal = '+len(s.diag), 'dlab') + '</g>';
+  out += '<g class="grp" data-keys="height" tabindex="0" role="button" aria-label="the height">'
+       + '<path class="ray" style="stroke-width:2.4;stroke:rgb(var(--live-1))" d="M'+n(C[0])+' '+n(C[1])+' L'+n(R[0])+' '+n(R[1])+'"/>'
+       + edgeLabel(C, R, mid, 18, 'height = '+len(s.rise), 'dlab') + '</g>';
+  out += '<g class="grp" data-keys="hyp" tabindex="0" role="button" aria-label="the line itself">'
+       + '<path class="ray" style="stroke-width:2.8;stroke:rgb(var(--chart-4))" d="M'+n(A[0])+' '+n(A[1])+' L'+n(R[0])+' '+n(R[1])+'"/>'
+       + edgeLabel(A, R, mid, 18, s.loN+s.hiN+' = '+len(s.len), 'dlab') + '</g>';
+  /* the right angle at the foot, exactly as in the solid */
+  out += '<path class="dim" d="M'+n(C[0]-11)+' '+n(C[1])+' L'+n(C[0]-11)+' '+n(C[1]-11)
+       + ' L'+n(C[0])+' '+n(C[1]-11)+'"/>';
+  var ar = 30;
+  var dAC = unit([C[0]-A[0], C[1]-A[1]]), dAR = unit([R[0]-A[0], R[1]-A[1]]);
+  out += '<g class="grp" data-keys="angle" tabindex="0" role="button" aria-label="the angle theta">'
+       + '<path class="ang" d="M'+n(A[0]+dAC[0]*ar)+' '+n(A[1]+dAC[1]*ar)+' A '+ar+' '+ar
+       + ' 0 0 1 '+n(A[0]+dAR[0]*ar)+' '+n(A[1]+dAR[1]*ar)+'"/>'
+       + angleValue(A[0], A[1], dAC, dAR, ar, 'θ = '+deg(s.theta), 'dlab') + '</g>';
+  var lA = bisectOut(A[0], A[1], dAC, dAR, 18);
+  out += lab(lA[0], lA[1], s.loN, 'middle', 'elab', lA.dir);
+  var lC = bisectOut(C[0], C[1], unit([A[0]-C[0],A[1]-C[1]]), unit([R[0]-C[0],R[1]-C[1]]), 18);
+  out += lab(lC[0], lC[1], s.footName || '·', 'middle', 'elab', lC.dir);
+  var lR = bisectOut(R[0], R[1], unit([A[0]-R[0],A[1]-R[1]]), unit([C[0]-R[0],C[1]-R[1]]), 18);
+  out += lab(lR[0], lR[1], s.hiN, 'middle', 'elab', lR.dir);
+  document.getElementById('svg2').innerHTML = out;
+  scheduleDeclutter();
+  return s;
+}
+
+/* =================================================================
+   words and checks
+   ================================================================= */
+function strip3(){
+  var s = solve();
+  var v = [s.hi[0]-s.lo[0], s.hi[1]-s.lo[1], s.hi[2]-s.lo[2]];
+  var p = [v[0], v[1], 0];
+  var dot = v[0]*p[0]+v[1]*p[1];
+  var m3d = (Math.hypot(v[0],v[1],v[2])*Math.hypot(p[0],p[1])) || 0;
+  var measured = m3d ? Math.acos(Math.min(1,dot/m3d))/RAD : (s.flat ? 0 : 90);
+  strip('v1',
+        s.flat ? 'both ends sit at the same height, so the line runs parallel to the base and the angle is 0°'
+        : s.vertical ? 'the line rises '+len(s.rise)+' and goes nowhere across the base, so it stands at '+num(measured)+'° to it'
+        : 'the angle between the line and its shadow, measured in the solid, is '+num(measured)
+          +'° — tan⁻¹('+len(s.rise)+' ÷ '+len(s.diag)+') = '+num(s.theta)+'°',
+        Math.abs(measured - s.theta) < 1e-6);
+  var tanT = Math.tan(s.theta*RAD), ratio = s.diag ? s.rise/s.diag : 0;
+  var pyth = Math.abs(s.diag*s.diag - (s.dx*s.dx + s.dy*s.dy)) < 1e-9;
+  strip('v2',
+        s.flat ? 'θ = 0°, and the line never leaves the base'
+        : s.vertical ? 'the shadow has no length, so there is no ratio to take and the angle is 90°'
+        : 'tan '+deg(s.theta)+' = '+len(tanT)+' — height ÷ shadow = '+len(s.rise)+' ÷ '+len(s.diag)
+          +' = '+len(ratio)+' — '+num(s.dx)+'² + '+num(s.dy)+'² = '+num(s.diag*s.diag),
+        s.vertical ? Math.abs(s.theta - 90) < 1e-9
+                   : (Math.abs(tanT - ratio) < 1e-9 && pyth));
+}
+function updateWords(){
+  var s = drawFlat();
+  document.getElementById('lineName').textContent = s.flat ? sel[0]+sel[1] : s.loN + s.hiN;
+  document.getElementById('topName').textContent = s.noTri ? '—' : s.hiN;
+  document.getElementById('footName').textContent = s.noTri ? '—' : s.footName;
+  document.getElementById('projName').textContent =
+    s.flat ? '—' : s.vertical ? 'just the point ' + s.loN : s.loN + s.footName;
+  document.getElementById('angName').textContent =
+    s.flat ? 'θ = 0°' : s.vertical ? 'θ = 90°' : 'θ = ' + deg(s.theta);
+  document.getElementById('say1').textContent = s.flat
+    ? 'Pick one corner on the base and one on the top to get an angle worth measuring.'
+    : s.vertical
+      ? 'A vertical edge is the easy case: no shadow, no triangle. Pick a corner across the base instead.'
+      : '';
+  var shadow = s.noTri ? '' : s.loN + s.footName;
+  var acrossBase = s.dx > 0 && s.dy > 0;
+  document.getElementById('m0').innerHTML = s.flat
+    ? 'The line lies flat on the base, so there is no triangle to take out.'
+    : s.vertical
+    ? 'A vertical edge casts no shadow, so there is no triangle to take out.'
+    : (acrossBase
+       ? 'In the base: <span class="t" data-keys="diag" tabindex="0">'+shadow+'</span>² = '
+         + num(s.dx)+'² + '+num(s.dy)+'²'
+       : 'In the base, the shadow <span class="t" data-keys="diag" tabindex="0">'+shadow
+         + '</span> is an edge, '+len(s.diag)+' cm long.');
+  document.getElementById('m1').textContent = s.noTri ? ''
+    : (acrossBase
+       ? shadow+'² = '+num(s.dx*s.dx)+' + '+num(s.dy*s.dy)+' = '+num(s.diag*s.diag)
+         +', so '+shadow+' = '+len(s.diag)
+       : shadow+' = '+len(s.diag)+', straight off the given lengths.');
+  document.getElementById('m3').textContent = s.noTri ? ''
+    : 'tan θ = ' + len(s.rise) + ' ÷ ' + len(s.diag) + ' = ' + len(s.rise/s.diag);
+  document.getElementById('m4').textContent = s.noTri ? '' : 'θ = ' + deg(s.theta);
+  strip3();
+}
+
+/* ---------- linking, across both views ---------- */
+var light3D = function(){};
+function lightBoth(keys){
+  setHL('card1', keys); setHL('card2', keys); light3D(keys);
+}
+['card1','card2'].forEach(function(id){
+  var card = document.getElementById(id);
+  card.addEventListener('pointerover', function(e){
+    var el = e.target.closest('[data-keys]');
+    if(el) lightBoth(el.getAttribute('data-keys'));
+  });
+  card.addEventListener('pointerout', function(e){ if(e.target.closest('[data-keys]')) lightBoth(''); });
+  card.addEventListener('pointerleave', function(){ lightBoth(''); });
+  card.addEventListener('focusin', function(e){
+    var el = e.target.closest('[data-keys]'); if(el) lightBoth(el.getAttribute('data-keys'));
+  });
+  card.addEventListener('focusout', function(e){ if(e.target.closest('[data-keys]')) lightBoth(''); });
+  card.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    var t = e.target;
+    if(t.tagName === 'BUTTON' || t.tagName === 'INPUT') return;
+    var b = card.querySelector('.stepbtn'); if(!b || b.disabled) return;
+    e.preventDefault(); b.click();
+  });
+});
+
+var step1 = new Stepper('card1','b1',
+  [{show:'t2', hl:'height foot'},{show:'t3', hl:'diag'},{show:'t4', hl:'angle'},{show:'t5'}],
+  { always:'t1', onChange: function(i){ STEP = i; if(window.__rebuild3d) window.__rebuild3d(); } });
+var step2 = new Stepper('card2','b2',
+  [{show:'m1', hl:'diag'},{show:'m2'},{show:'m3', hl:'height diag'},{show:'m4', hl:'angle'}],
+  { always:'m0' });
+
+function readDims(){
+  function get(id, dflt){
+    var el = document.getElementById(id), v = Math.round(+el.value);
+    if(!isFinite(v) || v < 1) v = dflt;
+    if(v > 20) v = 20;
+    el.value = String(v);
+    return v;
+  }
+  L = get('iL', 10); W = get('iW', 5); H = get('iH', 5);
+  updateWords();
+  if(window.__rebuild3d) window.__rebuild3d();
+  applyTextScale();
+}
+['iL','iW','iH'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', readDims);
+  document.getElementById(id).addEventListener('change', readDims);
+});
+
+updateWords();
+watchTextScale();
+
+window.__page = {
+  setDims: function(l,w,h){
+    document.getElementById('iL').value = l;
+    document.getElementById('iW').value = w;
+    document.getElementById('iH').value = h;
+    readDims();
+  },
+  setPair: function(a,b){ sel = [a,b]; updateWords(); if(window.__rebuild3d) window.__rebuild3d(); },
+  pair: function(){ return sel.slice(); },
+  theta: function(){ return solve().theta; },
+  step: function(k){ document.getElementById('b'+k).click(); },
+  ticks: function(){ return ['v1','v2'].map(function(id){
+           return document.getElementById(id).querySelector('.tick').textContent; }); }
+};
+window.__extraStates = {
+  pairBR:   function(){ sel = ['B','R']; updateWords(); if(window.__rebuild3d) window.__rebuild3d(); },
+  pairPR:   function(){ sel = ['P','R']; updateWords(); if(window.__rebuild3d) window.__rebuild3d(); },
+  pairCR:   function(){ sel = ['C','R']; updateWords(); if(window.__rebuild3d) window.__rebuild3d(); },
+  folded:   function(){ sel = ['A','R']; updateWords(); step1.toEnd(); },
+  __home:   function(){ sel = ['A','R']; step1.reset(); updateWords(); if(window.__rebuild3d) window.__rebuild3d(); }
+};
+</script>
+
+<script type="module">
+import * as THREE from '../../vendor/three.module.min.js';
+
+var stage = document.getElementById('stage');
+var fallback = document.getElementById('fallback');
+var renderer = null;
+try{ renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false }); }catch(err){ renderer = null; }
+
+if(!renderer || !renderer.getContext || !renderer.getContext()){
+  fallback.classList.remove('hidden');
+  stage.style.aspectRatio = 'auto';
+  var b1 = document.getElementById('b1');
+  b1.disabled = true; b1.textContent = 'Not available here';
+} else {
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  stage.appendChild(renderer.domElement);
+
+  var scene  = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+  var key = new THREE.DirectionalLight(0xffffff, 0.45); key.position.set(4,7,6); scene.add(key);
+
+  function tok(name){
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    var p = v.split(/[\s,\/]+/).map(Number);
+    if(p.length < 3 || !isFinite(p[0])) return 0x888888;
+    return (p[0]<<16) | (p[1]<<8) | p[2];
+  }
+  var COL = {};
+  function readTokens(){
+    COL.ink   = tok('--ink-1');
+    COL.line  = tok('--ink-2');
+    COL.face  = tok('--bg-surface');
+    COL.hyp   = tok('--chart-4');
+    COL.drop  = tok('--live-1');
+    COL.tri   = tok('--chart-4');
+    COL.ring  = tok('--ring');
+    COL.base  = tok('--bg-muted');
+    renderer.setClearColor(tok('--bg-surface'), 1);
+  }
+  readTokens();
+
+  var HOME = { th: 0.95, ph: 1.25, r: 15.5 };
+  var cam = { th: HOME.th, ph: HOME.ph, r: HOME.r };
+  function place(){
+    var s = Math.sin(cam.ph);
+    camera.position.set(cam.r*s*Math.sin(cam.th), cam.r*Math.cos(cam.ph), cam.r*s*Math.cos(cam.th));
+    camera.lookAt(0, 0, 0);
+  }
+  var SC = 1;
+  function P(p){ return new THREE.Vector3((p[0]-L/2)*SC, p[2]*SC - H*SC/2, (p[1]-W/2)*SC); }
+
+  var parts = new THREE.Group(); scene.add(parts);
+  var labels = [], picks = [], sides = [];
+  function clearLabels(){ labels.forEach(function(l){ l.el.remove(); }); labels = []; }
+  function addLabel(pos, html, cls, keys){
+    var el = document.createElement('div');
+    el.className = 'v3d' + (cls ? ' '+cls : '');
+    el.innerHTML = html;
+    if(keys){ el.setAttribute('data-keys', keys); el.style.pointerEvents = 'auto'; }
+    stage.appendChild(el);
+    labels.push({ el:el, pos:pos.clone(), keys:keys||'' });
+  }
+  function tube(a, b, colour, rad, keys){
+    var d = new THREE.Vector3().subVectors(b, a), L2 = d.length();
+    if(L2 < 1e-6) return null;
+    var m = new THREE.Mesh(new THREE.CylinderGeometry(rad, rad, L2, 12),
+                           new THREE.MeshBasicMaterial({ color: colour }));
+    m.position.copy(a).addScaledVector(d, 0.5);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), d.clone().normalize());
+    if(keys){ m.userData.keys = keys; m.userData.baseColour = colour; sides.push(m); }
+    return m;
+  }
+  /* rotate v about the unit axis u by angle a (Rodrigues) */
+  function rot(v, u, a){
+    var c = Math.cos(a), s = Math.sin(a);
+    var cross = new THREE.Vector3().crossVectors(u, v);
+    return v.clone().multiplyScalar(c)
+            .add(cross.multiplyScalar(s))
+            .add(u.clone().multiplyScalar(u.dot(v)*(1-c)));
+  }
+
+  function build(){
+    while(parts.children.length){
+      var ch = parts.children.pop();
+      if(ch.geometry) ch.geometry.dispose();
+      if(ch.material) ch.material.dispose();
+    }
+    clearLabels(); picks = []; sides = [];
+    SC = 7 / Math.max(L, W, H);
+    var c = corners(), s = solve();
+
+    EDGES.forEach(function(e){
+      var t = tube(P(c[e[0]]), P(c[e[1]]), COL.line, 0.032);
+      if(t) parts.add(t);
+    });
+    var base = new THREE.Mesh(new THREE.PlaneGeometry(L*SC, W*SC),
+      new THREE.MeshBasicMaterial({ color: COL.base, transparent:true, opacity:0.55,
+                                    side:THREE.DoubleSide }));
+    base.rotation.x = -Math.PI/2;
+    base.position.y = -H*SC/2 + 0.004;
+    parts.add(base);
+
+    var A3 = P(s.lo), F3 = P(s.foot), R3 = P(s.hi);
+    /* step 4 folds the triangle down about its base line, so the solid and
+       the flat drawing are visibly the same triangle */
+    if(STEP >= 4 && !s.noTri){
+      var axis = new THREE.Vector3().subVectors(F3, A3).normalize();
+      var relC = new THREE.Vector3().subVectors(R3, A3);
+      var plus  = rot(relC, axis,  Math.PI/2).add(A3.clone());
+      var minus = rot(relC, axis, -Math.PI/2).add(A3.clone());
+      var origin = new THREE.Vector3(0, -H*SC/2, 0);
+      R3 = (plus.distanceTo(origin) >= minus.distanceTo(origin)) ? plus : minus;
+      F3 = P(s.foot);
+    }
+
+    if(!s.noTri && STEP >= 2){
+      var tri = new THREE.BufferGeometry();
+      tri.setAttribute('position', new THREE.Float32BufferAttribute(
+        [A3.x,A3.y,A3.z, F3.x,F3.y,F3.z, R3.x,R3.y,R3.z], 3));
+      tri.computeVertexNormals();
+      parts.add(new THREE.Mesh(tri, new THREE.MeshBasicMaterial({
+        color: COL.tri, transparent:true, opacity:0.3, side:THREE.DoubleSide })));
+    }
+    if(!s.noTri){
+      parts.add(tube(A3, R3, COL.hyp, 0.055, 'hyp'));
+      if(STEP >= 1){
+        parts.add(tube(F3, R3, COL.drop, 0.042, 'height'));
+        parts.add(tube(A3, F3, COL.hyp, 0.038, 'diag'));
+        /* the right-angle square at the foot, in the triangle's own plane */
+        var u1 = new THREE.Vector3().subVectors(A3, F3).normalize();
+        var u2 = new THREE.Vector3().subVectors(R3, F3).normalize();
+        var k = 0.5;
+        var q1 = F3.clone().addScaledVector(u1, k);
+        var q2 = F3.clone().addScaledVector(u1, k).addScaledVector(u2, k);
+        var q3 = F3.clone().addScaledVector(u2, k);
+        parts.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([q1,q2,q3]),
+          new THREE.LineBasicMaterial({ color: COL.ink })));
+      }
+      if(STEP >= 3){
+        /* the θ arc, drawn in the plane of the triangle, at the point where
+           the line meets the base */
+        var a1 = new THREE.Vector3().subVectors(F3, A3).normalize();
+        var a2 = new THREE.Vector3().subVectors(R3, A3).normalize();
+        var perp = new THREE.Vector3().subVectors(a2, a1.clone().multiplyScalar(a1.dot(a2))).normalize();
+        var rad = Math.min(1.6, A3.distanceTo(F3)*0.42);
+        var open = Math.acos(Math.max(-1, Math.min(1, a1.dot(a2))));
+        var pts = [];
+        for(var i=0;i<=30;i++){
+          var t = open*i/30;
+          pts.push(A3.clone().addScaledVector(a1, Math.cos(t)*rad)
+                             .addScaledVector(perp, Math.sin(t)*rad));
+        }
+        parts.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),
+          new THREE.LineBasicMaterial({ color: COL.ring })));
+        var mid = pts[15].clone().add(
+          new THREE.Vector3().subVectors(pts[15], A3).multiplyScalar(0.55));
+        addLabel(mid, 'θ = ' + deg(s.theta), 'ang', 'angle');
+      }
+      /* the three side labels — the same three names the flat drawing uses */
+      addLabel(A3.clone().add(R3).multiplyScalar(0.5),
+               s.loN+s.hiN+' = '+len(s.len), 'side', 'hyp');
+      if(STEP >= 1){
+        addLabel(A3.clone().add(F3).multiplyScalar(0.5),
+                 'base diagonal = '+len(s.diag), 'side', 'diag');
+        addLabel(F3.clone().add(R3).multiplyScalar(0.5),
+                 'height = '+len(s.rise), 'side', 'height');
+      }
+    }
+    /* the eight corners */
+    NAMES.forEach(function(nm){
+      var on = sel.indexOf(nm) !== -1;
+      var sp = new THREE.Mesh(new THREE.SphereGeometry(on ? 0.2 : 0.13, 16, 12),
+        new THREE.MeshBasicMaterial({ color: on ? COL.hyp : COL.line }));
+      sp.position.copy(P(c[nm]));
+      sp.userData.name = nm;
+      parts.add(sp); picks.push(sp);
+      var isFoot = (!s.noTri && nm === s.footName);
+      addLabel(P(c[nm]), nm, on ? 'sel' : (isFoot ? 'sel' : ''), isFoot ? 'foot' : '');
+    });
+    if(STEP >= 4 && !s.noTri){
+      var sp2 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12),
+        new THREE.MeshBasicMaterial({ color: COL.hyp }));
+      sp2.position.copy(R3); parts.add(sp2);
+      addLabel(R3, s.hiN+'′', 'sel');
+    }
+  }
+
+  function sizeTo(){
+    var r = stage.getBoundingClientRect();
+    if(!r.width) return;
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / Math.max(1, r.height);
+    camera.updateProjectionMatrix();
+  }
+
+  /* ---- label layout: project, push apart, keep off the drawn lines ---- */
+  var pv = new THREE.Vector3();
+  function layout(){
+    var r = stage.getBoundingClientRect();
+    var boxes = [];
+    labels.forEach(function(l){
+      pv.copy(l.pos).project(camera);
+      if(pv.z > 1){ l.el.style.display = 'none'; return; }
+      l.el.style.display = '';
+      var w = l.el.offsetWidth || 20, h = l.el.offsetHeight || 14;
+      boxes.push({ el:l.el, x:(pv.x*0.5+0.5)*r.width, y:(-pv.y*0.5+0.5)*r.height,
+                   w:w, h:h, ax:(pv.x*0.5+0.5)*r.width, ay:(-pv.y*0.5+0.5)*r.height });
+    });
+    /* keep clear of the three drawn lines */
+    var segs = [];
+    sides.forEach(function(m){
+      var g = m.geometry.parameters, half = g.height/2;
+      var a = new THREE.Vector3(0,-half,0).applyQuaternion(m.quaternion).add(m.position);
+      var b = new THREE.Vector3(0, half,0).applyQuaternion(m.quaternion).add(m.position);
+      var pa = a.clone().project(camera), pb = b.clone().project(camera);
+      segs.push([[(pa.x*0.5+0.5)*r.width, (-pa.y*0.5+0.5)*r.height],
+                 [(pb.x*0.5+0.5)*r.width, (-pb.y*0.5+0.5)*r.height]]);
+    });
+    function onSeg(b){
+      for(var s=0;s<segs.length;s++){
+        for(var k=0;k<=24;k++){
+          var t = k/24;
+          var x = segs[s][0][0] + (segs[s][1][0]-segs[s][0][0])*t;
+          var y = segs[s][0][1] + (segs[s][1][1]-segs[s][0][1])*t;
+          if(Math.abs(x-b.x) < b.w/2+1 && Math.abs(y-b.y) < b.h/2+1) return [x,y];
+        }
+      }
+      return null;
+    }
+    for(var it=0; it<26; it++){
+      var busy = false;
+      /* clamp inside the loop, so a label pinned to the edge still pushes */
+      for(var q=0;q<boxes.length;q++){
+        boxes[q].x = Math.max(boxes[q].w/2+2, Math.min(r.width - boxes[q].w/2 - 2, boxes[q].x));
+        boxes[q].y = Math.max(boxes[q].h/2+2, Math.min(r.height - boxes[q].h/2 - 2, boxes[q].y));
+      }
+      for(var i=0;i<boxes.length;i++){
+        var hit = onSeg(boxes[i]);
+        if(hit){
+          var dx = boxes[i].x - hit[0], dy = boxes[i].y - hit[1];
+          var m = Math.hypot(dx,dy) || 1;
+          boxes[i].x += (dx/m)*4; boxes[i].y += (dy/m)*4;
+          if(m < 0.5){ boxes[i].y -= 5; }
+          busy = true;
+        }
+        for(var j=i+1;j<boxes.length;j++){
+          var a = boxes[i], b = boxes[j];
+          var ox = (a.w+b.w)/2 + 3 - Math.abs(a.x-b.x);
+          var oy = (a.h+b.h)/2 + 2 - Math.abs(a.y-b.y);
+          if(ox > 0 && oy > 0){
+            busy = true;
+            if(ox < oy){
+              var sx = (a.x <= b.x ? -1 : 1) * (ox/2 + 0.6);
+              a.x += sx; b.x -= sx;
+            } else {
+              var sy = (a.y <= b.y ? -1 : 1) * (oy/2 + 0.6);
+              a.y += sy; b.y -= sy;
+            }
+          }
+        }
+      }
+      if(!busy) break;
+    }
+    boxes.forEach(function(b){
+      b.x = Math.max(b.w/2+2, Math.min(r.width - b.w/2 - 2, b.x));
+      b.y = Math.max(b.h/2+2, Math.min(r.height - b.h/2 - 2, b.y));
+      b.el.style.left = b.x + 'px';
+      b.el.style.top  = b.y + 'px';
+    });
+  }
+  function frame(){ place(); renderer.render(scene, camera); layout(); requestAnimationFrame(frame); }
+
+  light3D = function(keys){
+    var want = (keys||'').split(/\s+/).filter(Boolean);
+    labels.forEach(function(l){
+      l.el.classList.toggle('hl', !!l.keys && want.indexOf(l.keys) !== -1);
+    });
+    sides.forEach(function(m){
+      m.material.color.setHex(want.indexOf(m.userData.keys) !== -1 ? COL.ring : m.userData.baseColour);
+    });
+  };
+
+  /* ---- turn, zoom, tap, hover ---- */
+  var pointers = new Map(), last = null, moved = 0, pinch0 = null;
+  stage.addEventListener('pointerdown', function(e){
+    pointers.set(e.pointerId, [e.clientX, e.clientY]);
+    last = [e.clientX, e.clientY]; moved = 0;
+    if(pointers.size === 2){
+      var v = Array.from(pointers.values());
+      pinch0 = { d: Math.hypot(v[0][0]-v[1][0], v[0][1]-v[1][1]), r: cam.r };
+    }
+    try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault();
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!pointers.has(e.pointerId)){ hover(e); return; }
+    pointers.set(e.pointerId, [e.clientX, e.clientY]);
+    if(pointers.size === 2 && pinch0){
+      var v = Array.from(pointers.values());
+      var d = Math.hypot(v[0][0]-v[1][0], v[0][1]-v[1][1]);
+      if(d > 0) cam.r = Math.max(6, Math.min(26, pinch0.r * pinch0.d / d));
+      moved += 10; return;
+    }
+    if(!last) return;
+    var dx = e.clientX - last[0], dy = e.clientY - last[1];
+    moved += Math.abs(dx) + Math.abs(dy);
+    cam.th -= dx * 0.008;
+    cam.ph = Math.max(0.18, Math.min(Math.PI - 0.18, cam.ph - dy * 0.008));
+    last = [e.clientX, e.clientY];
+  });
+  function endPointer(e){
+    if(moved < 6 && pointers.size === 1) tap(e);
+    pointers.delete(e.pointerId);
+    if(pointers.size < 2) pinch0 = null;
+    if(pointers.size === 0) last = null;
+  }
+  stage.addEventListener('pointerup', endPointer);
+  stage.addEventListener('pointercancel', function(e){ pointers.delete(e.pointerId); });
+  stage.addEventListener('pointerleave', function(){ lightBoth(''); });
+  stage.addEventListener('wheel', function(e){
+    e.preventDefault();
+    cam.r = Math.max(6, Math.min(26, cam.r * (1 + Math.sign(e.deltaY)*0.09)));
+  }, { passive:false });
+
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  function castAt(e, objs){
+    var r = stage.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left)/r.width)*2 - 1;
+    ndc.y = -((e.clientY - r.top)/r.height)*2 + 1;
+    ray.setFromCamera(ndc, camera);
+    return ray.intersectObjects(objs, false);
+  }
+  function tap(e){
+    var hits = castAt(e, picks);
+    if(!hits.length) return;
+    var nm = hits[0].object.userData.name;
+    if(sel[0] === nm || sel[1] === nm) return;
+    sel = [sel[1], nm];
+    updateWords(); build();
+  }
+  var lastHover = '';
+  function hover(e){
+    var hits = castAt(e, sides);
+    var k = hits.length ? hits[0].object.userData.keys : '';
+    if(k === lastHover) return;
+    lastHover = k;
+    lightBoth(k);
+  }
+
+  document.getElementById('resetView').addEventListener('click', function(){
+    cam = { th: HOME.th, ph: HOME.ph, r: HOME.r };
+  });
+
+  window.__rebuild3d = build;
+  window.addEventListener('resize', sizeTo);
+  if(window.ResizeObserver) new ResizeObserver(sizeTo).observe(stage);
+  new MutationObserver(function(){ readTokens(); build(); })
+    .observe(document.documentElement, { attributes:true, attributeFilter:['class'] });
+  build(); sizeTo(); frame();
+
+  window.__three = {
+    tapVertex: function(nm){ if(sel[0]!==nm && sel[1]!==nm){ sel = [sel[1], nm]; updateWords(); build(); } },
+    cam: function(){ return { th: cam.th, ph: cam.ph, r: cam.r }; },
+    setcam: function(th,ph,r){ cam = { th:th, ph:ph, r:r }; },
+    labels: function(){ return labels.map(function(l){ return l.el.textContent; }); }
+  };
+}
+</script>
+</body>
+</html>
